@@ -1,0 +1,3103 @@
+
+<!DOCTYPE html><html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>Linux x86_64 系统调用表 - Redstone6835's blog</title>
+
+  
+    <meta name="description" content="说明：  调用号存放在 %rax  前六个参数依次在 %rdi, %rsi, %rdx, %r10, %r8, %r9  返回值存放在 %rax  错误时返回 -1 并设置 errno       系统调用号 名称 函数原型 说明    0 read ssize_t read(int fd, void *buf, size_t count); 此系统调用用于从指定的文件描述符 fd 所代表的设备">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux x86_64 系统调用表">
+<meta property="og:url" content="http://redstone6835.github.io/2025/11/12/Linux-x86-64-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E8%A1%A8/">
+<meta property="og:site_name" content="Redstone6835&#39;s blog">
+<meta property="og:description" content="说明：  调用号存放在 %rax  前六个参数依次在 %rdi, %rsi, %rdx, %r10, %r8, %r9  返回值存放在 %rax  错误时返回 -1 并设置 errno       系统调用号 名称 函数原型 说明    0 read ssize_t read(int fd, void *buf, size_t count); 此系统调用用于从指定的文件描述符 fd 所代表的设备">
+<meta property="og:locale">
+<meta property="article:published_time" content="2025-11-12T07:27:52.000Z">
+<meta property="article:modified_time" content="2025-11-12T07:29:02.106Z">
+<meta property="article:author" content="Redstone6835">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  <meta name="keywords" content="Linux">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[]},"dateCreated":"2025-11-12T15:27:52+08:00","dateModified":"2025-11-12T15:29:02+08:00","datePublished":"2025-11-12T15:27:52+08:00","description":"","headline":"Linux x86_64 系统调用表","mainEntityOfPage":{"@type":"WebPage","@id":"http://redstone6835.github.io/2025/11/12/Linux-x86-64-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E8%A1%A8/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[]},"url":"http://redstone6835.github.io/2025/11/12/Linux-x86-64-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E8%A1%A8/","keywords":"Linux","image":[]}</script>
+  
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Redstone6835's blog</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="Search"></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">Recent Update</span></div><div class="widget-body fs14"><a class="item title" href="/2025/11/12/Linux-x86-64-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E8%A1%A8/"><span class="title">Linux x86_64 系统调用表</span></a><a class="item title" href="/2025/11/12/Hello-world%EF%BC%81/"><span class="title">Hello world！</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">Posted on: <time datetime="2025-11-12T07:27:52.000Z">2025-11-12</time></span><span class="sep updated"></span><span class="text updated">Updated on: <time datetime="2025-11-12T07:29:02.106Z">2025-11-12</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>Linux x86_64 系统调用表</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><blockquote>
+<p>说明：</p>
+<ul>
+<li><p>调用号存放在 <code>%rax</code></p>
+</li>
+<li><p>前六个参数依次在 <code>%rdi</code>, <code>%rsi</code>, <code>%rdx</code>, <code>%r10</code>, <code>%r8</code>, <code>%r9</code></p>
+</li>
+<li><p>返回值存放在 <code>%rax</code></p>
+</li>
+<li><p>错误时返回 <code>-1</code> 并设置 <code>errno</code></p>
+</li>
+</ul>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>系统调用号</th>
+<th>名称</th>
+<th>函数原型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>0</code></td>
+<td><code>read</code></td>
+<td><code>ssize_t read(int fd, void *buf, size_t count);</code></td>
+<td>此系统调用用于从指定的文件描述符 <code>fd</code> 所代表的设备或文件中读取数据。它将最多 <code>count</code> 字节的数据传输至由 <code>buf</code> 指向的用户空间缓冲区。返回值为实际读取的字节数，若到达文件末尾则返回 <code>0</code>，若发生错误则返回 <code>-1</code>。该调用是一个阻塞式操作，除非文件描述符被设置为非阻塞模式。</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td><code>write</code></td>
+<td><code>ssize_t write(int fd, const void *buf, size_t count);</code></td>
+<td>此系统调用用于将最多 <code>count</code> 字节的数据从用户空间缓冲区 <code>buf</code> 写入由文件描述符 <code>fd</code> 所代表的文件或设备中。返回值为实际写入的字节数，若发生错误则返回 <code>-1</code>。在某些情况下，写入的字节数可能小于请求的 <code>count</code>。</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td><code>open</code></td>
+<td><code>int open(const char *pathname, int flags, mode_t mode);</code></td>
+<td>此系统调用用于打开一个由 <code>pathname</code> 指定的文件，并返回一个可用于后续操作（如 <code>read</code> 或 <code>write</code>）的文件描述符。<code>flags</code> 参数控制打开模式（如只读、只写或读写），<code>mode</code> 参数则在创建新文件时指定其权限。若成功则返回文件描述符，失败则返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>3</code></td>
+<td><code>close</code></td>
+<td><code>int close(int fd);</code></td>
+<td>此系统调用用于关闭指定的文件描述符 <code>fd</code>，使其不再引用任何文件，并释放该描述符所关联的系统资源。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>4</code></td>
+<td><code>stat</code></td>
+<td><code>int stat(const char *pathname, struct stat *statbuf);</code></td>
+<td>此系统调用用于获取由 <code>pathname</code> 指定的文件的状态信息，并将其存储在 <code>statbuf</code> 结构体中。这些信息包括文件类型、权限、大小、最后修改时间等。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>5</code></td>
+<td><code>fstat</code></td>
+<td><code>int fstat(int fd, struct stat *statbuf);</code></td>
+<td>此系统调用与 <code>stat</code> 类似，但它通过文件描述符 <code>fd</code> 来获取已打开文件的状态信息。这避免了文件路径解析过程中的潜在竞态条件。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>6</code></td>
+<td><code>lstat</code></td>
+<td><code>int lstat(const char *pathname, struct stat *statbuf);</code></td>
+<td>此系统调用类似于 <code>stat</code>，但如果 <code>pathname</code> 是一个符号链接，它会返回符号链接本身的状态信息，而不是它所指向的文件的状态信息。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>7</code></td>
+<td><code>poll</code></td>
+<td><code>int poll(struct pollfd *fds, nfds_t nfds, int timeout);</code></td>
+<td>此系统调用用于监视一组文件描述符，以等待其中一个或多个描述符准备好进行 I&#x2F;O 操作。它检查每个 <code>pollfd</code> 结构体中的 <code>events</code>，并在相应的 <code>revents</code> 字段中返回就绪事件。<code>timeout</code> 参数指定了等待的毫秒数。返回值为就绪的文件描述符总数，超时返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>8</code></td>
+<td><code>lseek</code></td>
+<td><code>off_t lseek(int fd, off_t offset, int whence);</code></td>
+<td>此系统调用用于重新定位文件描述符 <code>fd</code> 的读&#x2F;写位置。<code>offset</code> 参数指定偏移量，<code>whence</code> 则指定偏移的起始位置（如文件开头 <code>SEEK_SET</code>、当前位置 <code>SEEK_CUR</code> 或文件末尾 <code>SEEK_END</code>）。返回值为新的文件位置，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>9</code></td>
+<td><code>mmap</code></td>
+<td><code>void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);</code></td>
+<td>此系统调用用于将一个文件或设备的一部分映射到进程的虚拟地址空间。它允许进程像访问内存一样访问文件内容，从而避免了 <code>read</code>&#x2F;<code>write</code> 调用带来的开销。成功返回映射区域的起始地址，失败返回 <code>MAP_FAILED</code>。</td>
+</tr>
+<tr>
+<td><code>10</code></td>
+<td><code>mprotect</code></td>
+<td><code>int mprotect(void *addr, size_t len, int prot);</code></td>
+<td>此系统调用用于修改一个进程内存区域的保护权限。<code>addr</code> 和 <code>len</code> 指定了要修改的内存区域，<code>prot</code> 参数则设置新的权限，如可读、可写或可执行。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>11</code></td>
+<td><code>munmap</code></td>
+<td><code>int munmap(void *addr, size_t length);</code></td>
+<td>此系统调用用于取消进程的虚拟地址空间中的映射。它释放了由 <code>mmap</code> 创建的内存区域，使其不再可访问。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>12</code></td>
+<td><code>brk</code></td>
+<td><code>int brk(void *addr);</code></td>
+<td>此系统调用用于改变进程数据段的结束位置，通常称为 <code>program break</code>。它可以通过调整 <code>brk</code> 的值来动态地分配或释放内存。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>13</code></td>
+<td><code>rt_sigaction</code></td>
+<td><code>int rt_sigaction(int signum, const struct sigaction *act, struct sigaction *oldact, size_t sigsetsize);</code></td>
+<td>此系统调用用于检查或改变与特定信号 <code>signum</code> 相关的处理行为。它是一个更先进和更健壮的信号处理版本，支持实时信号。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>14</code></td>
+<td><code>rt_sigprocmask</code></td>
+<td><code>int rt_sigprocmask(int how, const sigset_t *set, sigset_t *oldset, size_t sigsetsize);</code></td>
+<td>此系统调用用于检查或改变进程的信号阻塞掩码。它可以用于阻塞（<code>SIG_BLOCK</code>）、解除阻塞（<code>SIG_UNBLOCK</code>）或设置（<code>SIG_SETMASK</code>）信号集。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>15</code></td>
+<td><code>rt_sigreturn</code></td>
+<td><code>int rt_sigreturn(void);</code></td>
+<td>此系统调用用于从信号处理函数中返回。它恢复了在进入信号处理函数之前保存的进程上下文，包括寄存器和信号掩码。该调用通常由内核自动生成，而不是由用户直接调用。</td>
+</tr>
+<tr>
+<td><code>16</code></td>
+<td><code>ioctl</code></td>
+<td><code>int ioctl(int fd, unsigned long request, ...);</code></td>
+<td>此系统调用用于对设备执行特定的 I&#x2F;O 控制操作。<code>fd</code> 是设备的文件描述符，<code>request</code> 指定要执行的操作。其后的参数取决于具体请求。该调用提供了对设备底层功能的访问，如配置终端、调整驱动程序参数等。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>17</code></td>
+<td><code>pread64</code></td>
+<td><code>ssize_t pread64(int fd, void *buf, size_t count, off64_t offset);</code></td>
+<td>此系统调用用于从指定的文件描述符 <code>fd</code> 中读取数据，但它在 <code>offset</code> 处开始读取，并且不改变文件描述符的当前读&#x2F;写位置。这对于多线程或并发访问同一个文件非常有用。返回值为实际读取的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>18</code></td>
+<td><code>pwrite64</code></td>
+<td><code>ssize_t pwrite64(int fd, const void *buf, size_t count, off64_t offset);</code></td>
+<td>此系统调用用于向指定的文件描述符 <code>fd</code> 写入数据，但它在 <code>offset</code> 处开始写入，并且不改变文件描述符的当前读&#x2F;写位置。这与 <code>pread64</code> 类似，提供了原子性的写入操作，避免了文件指针的竞争。返回值为实际写入的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>19</code></td>
+<td><code>readv</code></td>
+<td><code>ssize_t readv(int fd, const struct iovec *iov, int iovcnt);</code></td>
+<td>此系统调用执行一个分散读取操作。它从文件描述符 <code>fd</code> 中读取数据，并按顺序将数据分散到由 <code>iov</code> 数组（<code>iovec</code> 结构体）指定的多个缓冲区中。<code>iovcnt</code> 是 <code>iov</code> 数组中元素的数量。返回值为读取的总字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>20</code></td>
+<td><code>writev</code></td>
+<td><code>ssize_t writev(int fd, const struct iovec *iov, int iovcnt);</code></td>
+<td>此系统调用执行一个集中写入操作。它将由 <code>iov</code> 数组（<code>iovec</code> 结构体）指定的多个缓冲区中的数据，按顺序集中写入到文件描述符 <code>fd</code> 中。<code>iovcnt</code> 是 <code>iov</code> 数组中元素的数量。返回值为写入的总字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>21</code></td>
+<td><code>access</code></td>
+<td><code>int access(const char *pathname, int mode);</code></td>
+<td>此系统调用用于检查调用进程是否具有对 <code>pathname</code> 指定的文件或目录的访问权限。<code>mode</code> 参数指定要检查的权限类型，如 <code>R_OK</code>（可读）、<code>W_OK</code>（可写）、<code>X_OK</code>（可执行）或 <code>F_OK</code>（文件存在）。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>22</code></td>
+<td><code>pipe</code></td>
+<td><code>int pipe(int pipefd[2]);</code></td>
+<td>此系统调用用于创建一个简单的管道，用于进程间的通信。它创建两个文件描述符，<code>pipefd[0]</code> 用于读取，<code>pipefd[1]</code> 用于写入。写入 <code>pipefd[1]</code> 的数据可以从 <code>pipefd[0]</code> 中读取。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>23</code></td>
+<td><code>select</code></td>
+<td><code>int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);</code></td>
+<td>此系统调用用于监视多个文件描述符集，以等待其中任何一个描述符准备好进行 I&#x2F;O 操作。它能够同时监视可读、可写和异常情况。返回值为就绪的文件描述符总数，超时返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>24</code></td>
+<td><code>sched_yield</code></td>
+<td><code>int sched_yield(void);</code></td>
+<td>此系统调用用于自愿地放弃 CPU，允许其他具有相同或更高优先级的线程或进程运行。它将调用进程从运行队列中移到就绪队列的末尾。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>25</code></td>
+<td><code>mremap</code></td>
+<td><code>void *mremap(void *old_address, size_t old_size, size_t new_size, int flags, ... /* void *new_address */);</code></td>
+<td>此系统调用用于调整现有内存映射的大小。它将 <code>old_address</code> 开始的 <code>old_size</code> 字节内存映射重新映射到 <code>new_size</code> 字节。可以用于扩大或缩小一个内存区域。成功返回新映射的起始地址，失败返回 <code>MAP_FAILED</code>。</td>
+</tr>
+<tr>
+<td><code>26</code></td>
+<td><code>msync</code></td>
+<td><code>int msync(void *addr, size_t length, int flags);</code></td>
+<td>此系统调用用于将内存映射区域中的修改数据同步到文件。它确保对内存中的更改被写入到底层文件系统，从而保持文件和内存的同步。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>27</code></td>
+<td><code>mincore</code></td>
+<td><code>int mincore(void *addr, size_t length, unsigned char *vec);</code></td>
+<td>此系统调用用于确定虚拟内存区域的哪些页面当前位于物理内存（RAM）中。它将结果存储在 <code>vec</code> 数组中，其中每个字节对应一个页面。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>28</code></td>
+<td><code>madvise</code></td>
+<td><code>int madvise(void *addr, size_t length, int advice);</code></td>
+<td>此系统调用用于告知内核如何处理一个进程的内存区域。<code>advice</code> 参数可以提供关于未来内存访问模式的建议，例如 <code>MADV_SEQUENTIAL</code>（按顺序访问）或 <code>MADV_WILLNEED</code>（即将访问），从而帮助内核进行性能优化。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>29</code></td>
+<td><code>shmget</code></td>
+<td><code>int shmget(key_t key, size_t size, int shmflg);</code></td>
+<td>此系统调用用于创建一个新的共享内存段或获取一个已有的共享内存段。<code>key</code> 用于标识共享内存段，<code>size</code> 指定段的大小，<code>shmflg</code> 则控制创建标志和权限。成功返回共享内存标识符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>30</code></td>
+<td><code>shmat</code></td>
+<td><code>void *shmat(int shmid, const void *shmaddr, int shmflg);</code></td>
+<td>此系统调用用于将由 <code>shmid</code> 标识的共享内存段附加到调用进程的地址空间。<code>shmaddr</code> 可用于指定附加地址，如果为 <code>NULL</code> 则由内核选择。成功返回附加的地址，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>31</code></td>
+<td><code>shmctl</code></td>
+<td><code>int shmctl(int shmid, int cmd, struct shmid_ds *buf);</code></td>
+<td>此系统调用用于对由 <code>shmid</code> 标识的共享内存段执行控制操作。<code>cmd</code> 参数指定要执行的操作，例如删除共享内存段（<code>IPC_RMID</code>）或获取状态信息（<code>IPC_STAT</code>）。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>32</code></td>
+<td><code>dup</code></td>
+<td><code>int dup(int oldfd);</code></td>
+<td>此系统调用用于创建一个新的文件描述符，它是 <code>oldfd</code> 的一个副本。新的文件描述符指向与 <code>oldfd</code> 相同的底层文件或设备，并且共享文件指针、文件状态标志等。返回值为新的文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>33</code></td>
+<td><code>dup2</code></td>
+<td><code>int dup2(int oldfd, int newfd);</code></td>
+<td>此系统调用用于将 <code>newfd</code> 重定向为 <code>oldfd</code> 的副本。如果 <code>newfd</code> 已经打开，它会先被关闭。此操作是原子性的。<code>dup2</code> 是一个常用的技巧，例如用于重定向标准输入&#x2F;输出。成功返回 <code>newfd</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>34</code></td>
+<td><code>pause</code></td>
+<td><code>int pause(void);</code></td>
+<td>此系统调用用于使调用进程进入睡眠状态，直到接收到一个信号为止。它不会返回，除非信号处理函数返回，或者进程被一个未被忽略的信号终止。返回值为 <code>-1</code> 并设置 <code>errno</code> 为 <code>EINTR</code>。</td>
+</tr>
+<tr>
+<td><code>35</code></td>
+<td><code>nanosleep</code></td>
+<td><code>int nanosleep(const struct timespec *req, struct timespec *rem);</code></td>
+<td>此系统调用用于让调用进程精确地暂停指定的纳秒级时间。<code>req</code> 指定请求的睡眠时间，<code>rem</code> 可用于获取剩余的睡眠时间，如果调用被信号中断。成功返回 <code>0</code>，被信号中断返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>36</code></td>
+<td><code>getitimer</code></td>
+<td><code>int getitimer(int which, struct itimerval *curr_value);</code></td>
+<td>此系统调用用于获取指定间隔定时器的当前值。<code>which</code> 参数指定定时器的类型，例如 <code>ITIMER_REAL</code>（实时定时器）。当前值被存储在 <code>curr_value</code> 结构体中。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>37</code></td>
+<td><code>alarm</code></td>
+<td><code>unsigned int alarm(unsigned int seconds);</code></td>
+<td>此系统调用用于设置一个定时器，在指定的 <code>seconds</code> 秒后向调用进程发送 <code>SIGALRM</code> 信号。如果 <code>seconds</code> 为 <code>0</code>，则取消任何待定的定时器。返回值为前一个定时器剩余的秒数。</td>
+</tr>
+<tr>
+<td><code>38</code></td>
+<td><code>setitimer</code></td>
+<td><code>int setitimer(int which, const struct itimerval *new_value, struct itimerval *old_value);</code></td>
+<td>此系统调用用于设置或修改指定的间隔定时器。<code>which</code> 指定定时器类型，<code>new_value</code> 设置新的值，而 <code>old_value</code> 则可选地用于获取前一个值。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>39</code></td>
+<td><code>getpid</code></td>
+<td><code>pid_t getpid(void);</code></td>
+<td>此系统调用用于获取调用进程的进程 ID。该 ID 在系统范围内是唯一的。返回值为进程 ID。</td>
+</tr>
+<tr>
+<td><code>40</code></td>
+<td><code>sendfile</code></td>
+<td><code>ssize_t sendfile(int out_fd, int in_fd, off_t *offset, size_t count);</code></td>
+<td>此系统调用用于在两个文件描述符之间零拷贝地传输数据。它直接从 <code>in_fd</code> 传输最多 <code>count</code> 字节数据到 <code>out_fd</code>，无需通过用户空间缓冲区。这对于高效地传输文件内容非常有用。返回值为实际传输的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>41</code></td>
+<td><code>socket</code></td>
+<td><code>int socket(int domain, int type, int protocol);</code></td>
+<td>此系统调用用于创建一个新的套接字。<code>domain</code> 参数指定协议族（如 <code>AF_INET</code> 用于 IPv4），<code>type</code> 指定套接字类型（如 <code>SOCK_STREAM</code> 用于 TCP），<code>protocol</code> 通常为 <code>0</code>。成功返回新的套接字文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>42</code></td>
+<td><code>connect</code></td>
+<td><code>int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code></td>
+<td>此系统调用用于将一个套接字连接到指定的网络地址 <code>addr</code>。这通常用于客户端程序建立与服务器的连接。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>43</code></td>
+<td><code>accept</code></td>
+<td><code>int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);</code></td>
+<td>此系统调用用于接受一个传入的连接请求。它从监听套接字 <code>sockfd</code> 的队列中取出一个连接，并创建一个新的已连接套接字。新套接字的文件描述符被返回，可用于与客户端通信。成功返回新的文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>44</code></td>
+<td><code>sendto</code></td>
+<td><code>ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);</code></td>
+<td>此系统调用用于在无连接的套接字（如 UDP）上发送数据。它将 <code>buf</code> 中的数据发送到由 <code>dest_addr</code> 指定的目标地址。返回值为发送的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>45</code></td>
+<td><code>recvfrom</code></td>
+<td><code>ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags, struct sockaddr *src_addr, socklen_t *addrlen);</code></td>
+<td>此系统调用用于在无连接的套接字（如 UDP）上接收数据。它从套接字 <code>sockfd</code> 中读取数据并将其存储在 <code>buf</code> 中，同时将发送方的地址信息存储在 <code>src_addr</code> 中。返回值为接收的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>46</code></td>
+<td><code>sendmsg</code></td>
+<td><code>ssize_t sendmsg(int sockfd, const struct msghdr *msg, int flags);</code></td>
+<td>此系统调用提供了比 <code>sendto</code> 更通用的数据发送方式。它通过 <code>msghdr</code> 结构体，可以发送多个不连续的缓冲区，并支持发送辅助数据（如文件描述符）。返回值为发送的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>47</code></td>
+<td><code>recvmsg</code></td>
+<td><code>ssize_t recvmsg(int sockfd, struct msghdr *msg, int flags);</code></td>
+<td>此系统调用提供了比 <code>recvfrom</code> 更通用的数据接收方式。它通过 <code>msghdr</code> 结构体，可以接收多个不连续的缓冲区，并支持接收辅助数据。返回值为接收的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>48</code></td>
+<td><code>shutdown</code></td>
+<td><code>int shutdown(int sockfd, int how);</code></td>
+<td>此系统调用用于部分或完全关闭一个套接字的连接。<code>how</code> 参数控制关闭方向：<code>SHUT_RD</code>（禁止后续读取）、<code>SHUT_WR</code>（禁止后续写入）或 <code>SHUT_RDWR</code>（禁止读写）。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>49</code></td>
+<td><code>bind</code></td>
+<td><code>int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code></td>
+<td>此系统调用用于将一个套接字与一个特定的本地地址（如 IP 地址和端口号）关联起来。这通常用于服务器程序，以便监听该地址上的传入连接。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>50</code></td>
+<td><code>listen</code></td>
+<td><code>int listen(int sockfd, int backlog);</code></td>
+<td>此系统调用用于将一个套接字设置为被动模式，以便接受传入的连接。<code>backlog</code> 参数指定了等待接受的连接请求队列的最大长度。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>51</code></td>
+<td><code>getsockname</code></td>
+<td><code>int getsockname(int sockfd, struct sockaddr *addr, socklen_t *addrlen);</code></td>
+<td>此系统调用用于获取指定套接字 <code>sockfd</code> 的本地地址信息。地址信息被存储在 <code>addr</code> 中。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>52</code></td>
+<td><code>getpeername</code></td>
+<td><code>int getpeername(int sockfd, struct sockaddr *addr, socklen_t *addrlen);</code></td>
+<td>此系统调用用于获取与指定套接字 <code>sockfd</code> 连接的对端（peer）的地址信息。地址信息被存储在 <code>addr</code> 中。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>53</code></td>
+<td><code>socketpair</code></td>
+<td><code>int socketpair(int domain, int type, int protocol, int sv[2]);</code></td>
+<td>此系统调用用于创建一对相互连接的无名套接字。<code>sv</code> 数组将包含两个新的文件描述符，它们可以用于双向通信。这通常用于父子进程或同一进程内的线程间通信。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>54</code></td>
+<td><code>setsockopt</code></td>
+<td><code>int setsockopt(int sockfd, int level, int optname, const void *optval, socklen_t optlen);</code></td>
+<td>此系统调用用于设置套接字选项。<code>level</code> 指定选项的协议层，<code>optname</code> 指定选项名称，<code>optval</code> 和 <code>optlen</code> 提供选项值。例如，可以用来设置套接字为非阻塞模式或启用地址重用。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>55</code></td>
+<td><code>getsockopt</code></td>
+<td><code>int getsockopt(int sockfd, int level, int optname, void *optval, socklen_t *optlen);</code></td>
+<td>此系统调用用于获取套接字选项。它与 <code>setsockopt</code> 类似，但用于检索选项的当前值。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>56</code></td>
+<td><code>clone</code></td>
+<td><code>int clone(int (*fn)(void *), void *child_stack, int flags, void *arg, ...);</code></td>
+<td>此系统调用用于创建一个新的子进程或线程。它比 <code>fork</code> 更灵活，允许调用者精确控制新进程与父进程共享哪些资源，如内存、文件描述符和信号处理程序。成功返回子进程的 PID，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>57</code></td>
+<td><code>fork</code></td>
+<td><code>pid_t fork(void);</code></td>
+<td>此系统调用用于创建一个新的子进程，它是调用进程的一个完全独立的副本。子进程与父进程拥有相同的代码、数据和文件描述符副本，但有自己的独立的地址空间。成功返回子进程的 PID（在父进程中），或 <code>0</code>（在子进程中），失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>58</code></td>
+<td><code>vfork</code></td>
+<td><code>pid_t vfork(void);</code></td>
+<td>此系统调用用于创建一个新的子进程，与 <code>fork</code> 类似，但它在创建后共享父进程的地址空间。父进程会阻塞，直到子进程调用 <code>execve</code> 或 <code>_exit</code>。它主要用于快速创建新进程以执行新程序。返回规则与 <code>fork</code> 相同。</td>
+</tr>
+<tr>
+<td><code>59</code></td>
+<td><code>execve</code></td>
+<td><code>int execve(const char *pathname, char *const argv[], char *const envp[]);</code></td>
+<td>此系统调用用于在当前进程的上下文中执行一个新的程序。它加载 <code>pathname</code> 指定的可执行文件，并用 <code>argv</code> 和 <code>envp</code> 提供的参数和环境变量替换当前进程的映像。如果成功，它不会返回，如果失败，则返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>60</code></td>
+<td><code>exit</code></td>
+<td><code>void exit(int status);</code></td>
+<td>此系统调用用于终止调用进程。<code>status</code> 参数是一个整数，作为进程的退出状态码返回给父进程。它会执行所有必要的清理工作，包括关闭所有文件描述符。此调用永不返回。</td>
+</tr>
+<tr>
+<td><code>61</code></td>
+<td><code>wait4</code></td>
+<td><code>pid_t wait4(pid_t pid, int *wstatus, int options, struct rusage *rusage);</code></td>
+<td>此系统调用用于等待一个子进程状态的改变（如终止或停止）。它可以等待指定 PID 的子进程，或者任何子进程。它还可以在 <code>rusage</code> 中返回子进程的资源使用情况。成功返回已终止子进程的 PID，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>62</code></td>
+<td><code>kill</code></td>
+<td><code>int kill(pid_t pid, int sig);</code></td>
+<td>此系统调用用于向指定的进程或进程组发送信号。<code>pid</code> 指定目标进程，<code>sig</code> 指定要发送的信号。它可以用于终止进程、暂停进程或执行其他信号相关的操作。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>63</code></td>
+<td><code>uname</code></td>
+<td><code>int uname(struct utsname *buf);</code></td>
+<td>此系统调用用于获取当前系统的信息。它将系统名称、版本号、内核版本等信息填充到 <code>utsname</code> 结构体中。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>64</code></td>
+<td><code>semget</code></td>
+<td><code>int semget(key_t key, int nsems, int semflg);</code></td>
+<td>此系统调用用于创建一个新的信号量集或获取一个已有的信号量集。<code>key</code> 用于标识信号量集，<code>nsems</code> 指定信号量的数量，<code>semflg</code> 则控制创建标志和权限。成功返回信号量集标识符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>65</code></td>
+<td><code>semop</code></td>
+<td><code>int semop(int semid, struct sembuf *sops, size_t nsops);</code></td>
+<td>此系统调用用于在由 <code>semid</code> 标识的信号量集上执行原子性的操作。<code>sops</code> 是一个 <code>sembuf</code> 结构体数组，每个结构体定义一个操作。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>66</code></td>
+<td><code>semctl</code></td>
+<td><code>int semctl(int semid, int semnum, int cmd, ...);</code></td>
+<td>此系统调用用于对由 <code>semid</code> 标识的信号量集执行控制操作。<code>cmd</code> 参数指定要执行的操作，例如删除信号量集（<code>IPC_RMID</code>）或设置信号量值（<code>SETVAL</code>）。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>67</code></td>
+<td><code>shmdt</code></td>
+<td><code>int shmdt(const void *shmaddr);</code></td>
+<td>此系统调用用于将由 <code>shmaddr</code> 指定的共享内存段从调用进程的地址空间中分离。它不会删除共享内存段，只是解除进程与其的关联。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>68</code></td>
+<td><code>msgget</code></td>
+<td><code>int msgget(key_t key, int msgflg);</code></td>
+<td>此系统调用用于创建一个新的消息队列或获取一个已有的消息队列。<code>key</code> 用于标识消息队列，<code>msgflg</code> 则控制创建标志和权限。成功返回消息队列标识符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>69</code></td>
+<td><code>msgsnd</code></td>
+<td><code>int msgsnd(int msqid, const void *msgp, size_t msgsz, int msgflg);</code></td>
+<td>此系统调用用于将一条消息发送到由 <code>msqid</code> 标识的消息队列。<code>msgp</code> 指向消息数据，<code>msgsz</code> 指定消息大小。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>70</code></td>
+<td><code>msgrcv</code></td>
+<td><code>ssize_t msgrcv(int msqid, void *msgp, size_t msgsz, long msgtyp, int msgflg);</code></td>
+<td>此系统调用用于从由 <code>msqid</code> 标识的消息队列中接收一条消息。<code>msgtyp</code> 指定要接收的消息类型。成功返回接收的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>71</code></td>
+<td><code>msgctl</code></td>
+<td><code>int msgctl(int msqid, int cmd, struct msqid_ds *buf);</code></td>
+<td>此系统调用用于对由 <code>msqid</code> 标识的消息队列执行控制操作。<code>cmd</code> 参数指定要执行的操作，例如删除消息队列（<code>IPC_RMID</code>）或获取状态信息（<code>IPC_STAT</code>）。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>72</code></td>
+<td><code>fcntl</code></td>
+<td><code>int fcntl(int fd, int cmd, ... /* arg */);</code></td>
+<td>此系统调用用于对文件描述符 <code>fd</code> 执行控制操作。<code>cmd</code> 参数指定要执行的操作，如复制文件描述符（<code>F_DUPFD</code>）、获取&#x2F;设置文件状态标志（<code>F_GETFL</code>&#x2F;<code>F_SETFL</code>）或管理文件锁。成功返回取决于 <code>cmd</code> 的值，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>73</code></td>
+<td><code>flock</code></td>
+<td><code>int flock(int fd, int operation);</code></td>
+<td>此系统调用用于对整个文件应用或移除文件锁。<code>fd</code> 是文件描述符，<code>operation</code> 指定锁的类型（共享锁 <code>LOCK_SH</code>、排他锁 <code>LOCK_EX</code>）或操作（解锁 <code>LOCK_UN</code>）。该锁是建议性锁。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>74</code></td>
+<td><code>fsync</code></td>
+<td><code>int fsync(int fd);</code></td>
+<td>此系统调用用于将文件描述符 <code>fd</code> 所代表的文件所有被修改的缓冲区数据写入底层磁盘，并等待 I&#x2F;O 完成。这确保了数据在系统崩溃时不会丢失。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>75</code></td>
+<td><code>fdatasync</code></td>
+<td><code>int fdatasync(int fd);</code></td>
+<td>此系统调用与 <code>fsync</code> 类似，但它只同步文件数据，不包括元数据（如文件大小或时间戳），除非这些元数据对于后续的数据读取至关重要。这通常比 <code>fsync</code> 更快。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>76</code></td>
+<td><code>truncate</code></td>
+<td><code>int truncate(const char *path, off_t length);</code></td>
+<td>此系统调用用于将由 <code>path</code> 指定的文件截断为指定的 <code>length</code> 字节大小。如果文件大于 <code>length</code>，则多余的数据将被丢弃；如果文件小于 <code>length</code>，则文件将被扩展，扩展的部分将填充零。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>77</code></td>
+<td><code>ftruncate</code></td>
+<td><code>int ftruncate(int fd, off_t length);</code></td>
+<td>此系统调用与 <code>truncate</code> 类似，但它通过文件描述符 <code>fd</code> 来操作已打开的文件。它将文件截断或扩展到指定的 <code>length</code> 字节大小。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>78</code></td>
+<td><code>getdents</code></td>
+<td><code>int getdents(int fd, struct linux_dirent *dirp, unsigned int count);</code></td>
+<td>此系统调用用于读取由文件描述符 <code>fd</code> 指定的目录中的目录项。它将目录项信息填充到 <code>dirp</code> 缓冲区中，最多读取 <code>count</code> 字节。返回值为实际读取的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>79</code></td>
+<td><code>getcwd</code></td>
+<td><code>char *getcwd(char *buf, size_t size);</code></td>
+<td>此系统调用用于获取调用进程的当前工作目录的绝对路径名。路径名被复制到 <code>buf</code> 中，最多 <code>size</code> 字节。成功返回 <code>buf</code>，失败返回 <code>NULL</code>。</td>
+</tr>
+<tr>
+<td><code>80</code></td>
+<td><code>chdir</code></td>
+<td><code>int chdir(const char *path);</code></td>
+<td>此系统调用用于将调用进程的当前工作目录更改为由 <code>path</code> 指定的目录。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>81</code></td>
+<td><code>fchdir</code></td>
+<td><code>int fchdir(int fd);</code></td>
+<td>此系统调用与 <code>chdir</code> 类似，但它通过文件描述符 <code>fd</code> 来更改当前工作目录。这允许在不指定路径名的情况下更改目录。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>82</code></td>
+<td><code>rename</code></td>
+<td><code>int rename(const char *oldpath, const char *newpath);</code></td>
+<td>此系统调用用于更改文件或目录的名称或位置。它将 <code>oldpath</code> 指定的文件或目录重命名为 <code>newpath</code>。如果 <code>newpath</code> 已经存在，则它会被原子性地替换。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>83</code></td>
+<td><code>mkdir</code></td>
+<td><code>int mkdir(const char *pathname, mode_t mode);</code></td>
+<td>此系统调用用于创建一个新的目录。<code>pathname</code> 指定新目录的路径，<code>mode</code> 则指定新目录的权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>84</code></td>
+<td><code>rmdir</code></td>
+<td><code>int rmdir(const char *pathname);</code></td>
+<td>此系统调用用于删除一个空目录。如果目录不为空，则此调用会失败。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>85</code></td>
+<td><code>creat</code></td>
+<td><code>int creat(const char *pathname, mode_t mode);</code></td>
+<td>此系统调用用于创建并打开一个文件。如果文件已经存在，则其内容会被截断为零字节。它等同于 &#96;open(pathname, O_CREAT</td>
+</tr>
+<tr>
+<td><code>86</code></td>
+<td><code>link</code></td>
+<td><code>int link(const char *oldpath, const char *newpath);</code></td>
+<td>此系统调用用于创建一个硬链接。它将 <code>newpath</code> 指向与 <code>oldpath</code> 相同的底层文件。硬链接不能跨越文件系统，也不能链接到目录。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>87</code></td>
+<td><code>unlink</code></td>
+<td><code>int unlink(const char *pathname);</code></td>
+<td>此系统调用用于删除文件系统中的一个名称。如果 <code>pathname</code> 是一个文件的最后一个硬链接，并且没有任何进程打开该文件，那么文件本身将被删除。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>88</code></td>
+<td><code>symlink</code></td>
+<td><code>int symlink(const char *target, const char *linkpath);</code></td>
+<td>此系统调用用于创建一个符号链接（软链接）。它将 <code>linkpath</code> 创建为指向 <code>target</code> 的符号链接。<code>target</code> 可以是文件或目录，并且可以跨越文件系统。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>89</code></td>
+<td><code>readlink</code></td>
+<td><code>ssize_t readlink(const char *pathname, char *buf, size_t bufsiz);</code></td>
+<td>此系统调用用于读取由 <code>pathname</code> 指定的符号链接的值（即它所指向的路径）。它将路径名复制到 <code>buf</code> 中，最多 <code>bufsiz</code> 字节。成功返回读取的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>90</code></td>
+<td><code>chmod</code></td>
+<td><code>int chmod(const char *pathname, mode_t mode);</code></td>
+<td>此系统调用用于改变由 <code>pathname</code> 指定的文件或目录的权限。<code>mode</code> 参数指定新的权限位掩码。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>91</code></td>
+<td><code>fchmod</code></td>
+<td><code>int fchmod(int fd, mode_t mode);</code></td>
+<td>此系统调用与 <code>chmod</code> 类似，但它通过文件描述符 <code>fd</code> 来改变已打开文件的权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>92</code></td>
+<td><code>chown</code></td>
+<td><code>int chown(const char *pathname, uid_t owner, gid_t group);</code></td>
+<td>此系统调用用于改变由 <code>pathname</code> 指定的文件或目录的所有者和组。<code>owner</code> 和 <code>group</code> 分别指定新的用户 ID 和组 ID。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>93</code></td>
+<td><code>fchown</code></td>
+<td><code>int fchown(int fd, uid_t owner, gid_t group);</code></td>
+<td>此系统调用与 <code>chown</code> 类似，但它通过文件描述符 <code>fd</code> 来改变已打开文件的所有者和组。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>94</code></td>
+<td><code>lchown</code></td>
+<td><code>int lchown(const char *pathname, uid_t owner, gid_t group);</code></td>
+<td>此系统调用与 <code>chown</code> 类似，但如果 <code>pathname</code> 是一个符号链接，它会改变符号链接本身的所有者和组，而不是它所指向的文件。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>95</code></td>
+<td><code>umask</code></td>
+<td><code>mode_t umask(mode_t mask);</code></td>
+<td>此系统调用用于设置文件创建掩码，并返回旧的掩码。文件创建掩码用于限制新文件和目录的权限。<code>mask</code> 参数中的位在创建文件时会被清零。</td>
+</tr>
+<tr>
+<td><code>96</code></td>
+<td><code>gettimeofday</code></td>
+<td><code>int gettimeofday(struct timeval *tv, struct timezone *tz);</code></td>
+<td>此系统调用用于获取当前时间和时区信息。<code>tv</code> 结构体中包含秒数和微秒数，<code>tz</code> 结构体（通常被忽略）包含时区信息。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>97</code></td>
+<td><code>getrlimit</code></td>
+<td><code>int getrlimit(int resource, struct rlimit *rlim);</code></td>
+<td>此系统调用用于获取调用进程的资源限制。<code>resource</code> 指定要查询的资源类型，例如 <code>RLIMIT_NOFILE</code>（最大文件描述符数）。<code>rlim</code> 结构体用于存储软限制和硬限制。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>98</code></td>
+<td><code>getrusage</code></td>
+<td><code>int getrusage(int who, struct rusage *usage);</code></td>
+<td>此系统调用用于获取调用进程或其子进程的资源使用情况。<code>who</code> 参数指定要查询的对象，例如 <code>RUSAGE_SELF</code>（当前进程）或 <code>RUSAGE_CHILDREN</code>（已终止的子进程）。<code>usage</code> 结构体用于存储使用情况。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>99</code></td>
+<td><code>sysinfo</code></td>
+<td><code>int sysinfo(struct sysinfo *info);</code></td>
+<td>此系统调用用于获取关于系统整体的统计信息。它将内存、交换空间、进程数等信息填充到 <code>sysinfo</code> 结构体中。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>100</code></td>
+<td><code>times</code></td>
+<td><code>clock_t times(struct tms *buf);</code></td>
+<td>此系统调用用于获取调用进程及其已终止子进程的用户和系统 CPU 时间。这些时间信息被填充到 <code>tms</code> 结构体中。成功返回自某个任意时间点（如系统启动）以来的时钟滴答数，失败返回 <code>(clock_t)-1</code>。</td>
+</tr>
+<tr>
+<td><code>101</code></td>
+<td><code>ptrace</code></td>
+<td><code>long ptrace(enum ptrace_request request, pid_t pid, void *addr, void *data);</code></td>
+<td>此系统调用为进程提供了对另一个进程（跟踪对象）的控制。它允许一个进程检查和修改另一个进程的内存和寄存器，并控制其执行。这通常用于实现调试器和跟踪工具。成功返回取决于 <code>request</code> 的值，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>102</code></td>
+<td><code>getuid</code></td>
+<td><code>uid_t getuid(void);</code></td>
+<td>此系统调用用于获取调用进程的实际用户 ID。返回值为实际用户 ID。</td>
+</tr>
+<tr>
+<td><code>103</code></td>
+<td><code>syslog</code></td>
+<td><code>int syslog(int type, char *bufp, int len);</code></td>
+<td>此系统调用用于与内核日志缓冲区进行交互。它可以用于读取、清空或控制内核日志。返回值为读取的字节数，或取决于 <code>type</code> 的值，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>104</code></td>
+<td><code>getgid</code></td>
+<td><code>gid_t getgid(void);</code></td>
+<td>此系统调用用于获取调用进程的实际组 ID。返回值为实际组 ID。</td>
+</tr>
+<tr>
+<td><code>105</code></td>
+<td><code>setuid</code></td>
+<td><code>int setuid(uid_t uid);</code></td>
+<td>此系统调用用于设置调用进程的实际用户 ID、有效用户 ID 和保存的用户 ID。如果进程具有适当的权限，它可以用于更改其身份。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>106</code></td>
+<td><code>setgid</code></td>
+<td><code>int setgid(gid_t gid);</code></td>
+<td>此系统调用用于设置调用进程的实际组 ID、有效组 ID 和保存的组 ID。如果进程具有适当的权限，它可以用于更改其组身份。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>107</code></td>
+<td><code>geteuid</code></td>
+<td><code>uid_t geteuid(void);</code></td>
+<td>此系统调用用于获取调用进程的有效用户 ID。有效用户 ID 用于确定文件访问权限。返回值为有效用户 ID。</td>
+</tr>
+<tr>
+<td><code>108</code></td>
+<td><code>getegid</code></td>
+<td><code>gid_t getegid(void);</code></td>
+<td>此系统调用用于获取调用进程的有效组 ID。有效组 ID 用于确定文件访问权限。返回值为有效组 ID。</td>
+</tr>
+<tr>
+<td><code>109</code></td>
+<td><code>setpgid</code></td>
+<td><code>int setpgid(pid_t pid, pid_t pgid);</code></td>
+<td>此系统调用用于设置指定进程的进程组 ID。<code>pid</code> 指定目标进程，<code>pgid</code> 指定新的进程组 ID。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>110</code></td>
+<td><code>getppid</code></td>
+<td><code>pid_t getppid(void);</code></td>
+<td>此系统调用用于获取调用进程的父进程 ID。返回值为父进程 ID。</td>
+</tr>
+<tr>
+<td><code>111</code></td>
+<td><code>getpgrp</code></td>
+<td><code>pid_t getpgrp(void);</code></td>
+<td>此系统调用用于获取调用进程的进程组 ID。返回值为进程组 ID。</td>
+</tr>
+<tr>
+<td><code>112</code></td>
+<td><code>setsid</code></td>
+<td><code>pid_t setsid(void);</code></td>
+<td>此系统调用用于创建一个新的会话。调用进程成为新会话的会话领导者，并成为一个新的进程组的领导者。此调用通常用于创建守护进程。成功返回新的会话 ID，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>113</code></td>
+<td><code>setreuid</code></td>
+<td><code>int setreuid(uid_t ruid, uid_t euid);</code></td>
+<td>此系统调用用于设置调用进程的实际和有效用户 ID。<code>ruid</code> 设置实际用户 ID，<code>euid</code> 设置有效用户 ID。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>114</code></td>
+<td><code>setregid</code></td>
+<td><code>int setregid(gid_t rgid, gid_t egid);</code></td>
+<td>此系统调用用于设置调用进程的实际和有效组 ID。<code>rgid</code> 设置实际组 ID，<code>egid</code> 设置有效组 ID。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>115</code></td>
+<td><code>getgroups</code></td>
+<td><code>int getgroups(int gidsetsize, gid_t grouplist[]);</code></td>
+<td>此系统调用用于获取调用进程的附加组 ID 列表。它将这些 ID 存储在 <code>grouplist</code> 数组中，最多 <code>gidsetsize</code> 个。返回值为实际获取的组 ID 数量，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>116</code></td>
+<td><code>setgroups</code></td>
+<td><code>int setgroups(size_t gidsetsize, const gid_t *grouplist);</code></td>
+<td>此系统调用用于设置调用进程的附加组 ID 列表。它将列表设置为由 <code>grouplist</code> 指向的数组，其中包含 <code>gidsetsize</code> 个 ID。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>117</code></td>
+<td><code>setresuid</code></td>
+<td><code>int setresuid(uid_t ruid, uid_t euid, uid_t suid);</code></td>
+<td>此系统调用用于设置调用进程的实际、有效和保存的用户 ID。<code>ruid</code>、<code>euid</code> 和 <code>suid</code> 分别指定新的 ID。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>118</code></td>
+<td><code>getresuid</code></td>
+<td><code>int getresuid(uid_t *ruid, uid_t *euid, uid_t *suid);</code></td>
+<td>此系统调用用于获取调用进程的实际、有效和保存的用户 ID，并将它们存储在相应的指针指向的变量中。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>119</code></td>
+<td><code>setresgid</code></td>
+<td><code>int setresgid(gid_t rgid, gid_t egid, gid_t sgid);</code></td>
+<td>此系统调用用于设置调用进程的实际、有效和保存的组 ID。<code>rgid</code>、<code>egid</code> 和 <code>sgid</code> 分别指定新的 ID。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>120</code></td>
+<td><code>getresgid</code></td>
+<td><code>int getresgid(gid_t *rgid, gid_t *egid, gid_t *sgid);</code></td>
+<td>此系统调用用于获取调用进程的实际、有效和保存的组 ID，并将它们存储在相应的指针指向的变量中。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>121</code></td>
+<td><code>getpgid</code></td>
+<td><code>pid_t getpgid(pid_t pid);</code></td>
+<td>此系统调用用于获取指定进程 <code>pid</code> 的进程组 ID。如果 <code>pid</code> 为 <code>0</code>，则获取调用进程的进程组 ID。返回值为进程组 ID，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>122</code></td>
+<td><code>setfsuid</code></td>
+<td><code>int setfsuid(uid_t fsuid);</code></td>
+<td>此系统调用用于设置调用进程的文件系统用户 ID。文件系统用户 ID 用于在文件系统操作时检查权限。它通常与有效用户 ID 相同。成功返回旧的文件系统用户 ID，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>123</code></td>
+<td><code>setfsgid</code></td>
+<td><code>int setfsgid(gid_t fsgid);</code></td>
+<td>此系统调用用于设置调用进程的文件系统组 ID。文件系统组 ID 用于在文件系统操作时检查权限。它通常与有效组 ID 相同。成功返回旧的文件系统组 ID，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>124</code></td>
+<td><code>getsid</code></td>
+<td><code>pid_t getsid(pid_t pid);</code></td>
+<td>此系统调用用于获取指定进程 <code>pid</code> 的会话 ID。如果 <code>pid</code> 为 <code>0</code>，则获取调用进程的会话 ID。返回值为会话 ID，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>125</code></td>
+<td><code>capget</code></td>
+<td><code>int capget(cap_user_header_t header, cap_user_data_t data);</code></td>
+<td>此系统调用用于获取调用线程或指定线程的能力。<code>header</code> 结构体提供版本信息，<code>data</code> 结构体用于存储获取的能力位掩码。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>126</code></td>
+<td><code>capset</code></td>
+<td><code>int capset(cap_user_header_t header, const cap_user_data_t data);</code></td>
+<td>此系统调用用于设置调用线程或指定线程的能力。<code>header</code> 结构体提供版本信息，<code>data</code> 结构体用于指定要设置的能力位掩码。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>127</code></td>
+<td><code>rt_sigpending</code></td>
+<td><code>int rt_sigpending(sigset_t *set, size_t sigsetsize);</code></td>
+<td>此系统调用用于获取当前挂起的、被阻塞的信号集合。<code>set</code> 结构体用于存储这些信号。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>128</code></td>
+<td><code>rt_sigtimedwait</code></td>
+<td><code>int rt_sigtimedwait(const sigset_t *set, siginfo_t *info, const struct timespec *timeout, size_t sigsetsize);</code></td>
+<td>此系统调用用于等待 <code>set</code> 集合中的任何信号传递。如果一个信号被接收，该调用会返回，信号信息存储在 <code>info</code> 中。<code>timeout</code> 参数指定等待的超时时间。成功返回信号编号，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>129</code></td>
+<td><code>rt_sigqueueinfo</code></td>
+<td><code>int rt_sigqueueinfo(pid_t pid, int sig, siginfo_t *uinfo);</code></td>
+<td>此系统调用用于向指定的进程 <code>pid</code> 发送一个信号 <code>sig</code>，并传递一个 <code>siginfo_t</code> 结构体。这允许在信号中携带额外的信息。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>130</code></td>
+<td><code>rt_sigsuspend</code></td>
+<td><code>int rt_sigsuspend(const sigset_t *set, size_t sigsetsize);</code></td>
+<td>此系统调用用于临时替换进程的信号掩码，并使进程进入睡眠状态，直到接收到一个未被阻塞的信号。成功时，此调用永远不会返回。如果被信号中断，它返回 <code>-1</code> 并设置 <code>errno</code> 为 <code>EINTR</code>。</td>
+</tr>
+<tr>
+<td><code>131</code></td>
+<td><code>sigaltstack</code></td>
+<td><code>int sigaltstack(const stack_t *ss, stack_t *old_ss);</code></td>
+<td>此系统调用用于设置或获取信号处理程序的备用栈。这可以用于处理 <code>SIGSEGV</code> 或 <code>SIGBUS</code> 等信号，以避免在主栈上处理信号时出现栈溢出。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>132</code></td>
+<td><code>utime</code></td>
+<td><code>int utime(const char *filename, const struct utimbuf *times);</code></td>
+<td>此系统调用用于改变指定文件 <code>filename</code> 的访问和修改时间。<code>times</code> 结构体包含了新的访问时间和修改时间。如果 <code>times</code> 为 <code>NULL</code>，则时间将被设置为当前时间。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>133</code></td>
+<td><code>mknod</code></td>
+<td><code>int mknod(const char *pathname, mode_t mode, dev_t dev);</code></td>
+<td>此系统调用用于在文件系统上创建一个特殊文件。<code>pathname</code> 指定路径，<code>mode</code> 指定文件类型和权限，<code>dev</code> 用于设备文件。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>134</code></td>
+<td><code>uselib</code></td>
+<td><code>int uselib(const char *library);</code></td>
+<td>此系统调用用于加载共享库。它已经被弃用，不再推荐使用。</td>
+</tr>
+<tr>
+<td><code>135</code></td>
+<td><code>personality</code></td>
+<td><code>int personality(unsigned long persona);</code></td>
+<td>此系统调用用于获取或设置调用进程的执行域（personality）。执行域会影响某些系统调用的行为，例如 <code>fork</code> 和 <code>execve</code>。成功返回旧的 <code>persona</code> 值，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>136</code></td>
+<td><code>ustat</code></td>
+<td><code>int ustat(dev_t dev, struct ustat *ubuf);</code></td>
+<td>此系统调用用于获取一个挂载文件系统的统计信息。<code>dev</code> 指定设备号，<code>ubuf</code> 结构体用于存储可用块数和可用节点数等信息。此调用已被弃用，推荐使用 <code>statfs</code> 或 <code>fstatfs</code>。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>137</code></td>
+<td><code>statfs</code></td>
+<td><code>int statfs(const char *path, struct statfs *buf);</code></td>
+<td>此系统调用用于获取包含 <code>path</code> 的文件系统的统计信息。<code>buf</code> 结构体用于存储文件系统类型、总块数、空闲块数等信息。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>138</code></td>
+<td><code>fstatfs</code></td>
+<td><code>int fstatfs(int fd, struct statfs *buf);</code></td>
+<td>此系统调用与 <code>statfs</code> 类似，但它通过文件描述符 <code>fd</code> 来获取文件系统的统计信息。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>139</code></td>
+<td><code>sysfs</code></td>
+<td><code>int sysfs(int option, ...);</code></td>
+<td>此系统调用用于获取或设置内核的 <code>sysfs</code> 文件系统相关信息。它主要用于获取文件系统的类型或挂载点信息。此调用已被弃用。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>140</code></td>
+<td><code>getpriority</code></td>
+<td><code>int getpriority(int which, id_t who);</code></td>
+<td>此系统调用用于获取进程、进程组或用户优先级。<code>which</code> 指定要查询的对象类型，<code>who</code> 指定其 ID。返回值为优先级值，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>141</code></td>
+<td><code>setpriority</code></td>
+<td><code>int setpriority(int which, id_t who, int prio);</code></td>
+<td>此系统调用用于设置进程、进程组或用户优先级。<code>prio</code> 参数指定新的优先级值。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>142</code></td>
+<td><code>sched_setparam</code></td>
+<td><code>int sched_setparam(pid_t pid, const struct sched_param *param);</code></td>
+<td>此系统调用用于设置指定进程的调度参数。<code>pid</code> 指定目标进程，<code>param</code> 结构体包含了调度参数（如优先级）。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>143</code></td>
+<td><code>sched_getparam</code></td>
+<td><code>int sched_getparam(pid_t pid, struct sched_param *param);</code></td>
+<td>此系统调用用于获取指定进程的调度参数。<code>param</code> 结构体用于存储获取的参数。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>144</code></td>
+<td><code>sched_setscheduler</code></td>
+<td><code>int sched_setscheduler(pid_t pid, int policy, const struct sched_param *param);</code></td>
+<td>此系统调用用于设置指定进程的调度策略和参数。<code>policy</code> 指定调度策略，如 <code>SCHED_FIFO</code> 或 <code>SCHED_RR</code>。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>145</code></td>
+<td><code>sched_getscheduler</code></td>
+<td><code>int sched_getscheduler(pid_t pid);</code></td>
+<td>此系统调用用于获取指定进程的调度策略。返回值为调度策略（如 <code>SCHED_FIFO</code> 或 <code>SCHED_RR</code>），失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>146</code></td>
+<td><code>sched_get_priority_max</code></td>
+<td><code>int sched_get_priority_max(int policy);</code></td>
+<td>此系统调用用于获取指定调度策略的最高优先级值。返回值为最高优先级值，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>147</code></td>
+<td><code>sched_get_priority_min</code></td>
+<td><code>int sched_get_priority_min(int policy);</code></td>
+<td>此系统调用用于获取指定调度策略的最低优先级值。返回值为最低优先级值，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>148</code></td>
+<td><code>sched_rr_get_interval</code></td>
+<td><code>int sched_rr_get_interval(pid_t pid, struct timespec *tp);</code></td>
+<td>此系统调用用于获取指定进程的 <code>SCHED_RR</code> 调度策略的时间片（time slice）间隔。<code>tp</code> 结构体用于存储该间隔。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>149</code></td>
+<td><code>mlock</code></td>
+<td><code>int mlock(const void *addr, size_t len);</code></td>
+<td>此系统调用用于将指定内存区域锁定在物理内存中。这可以防止该区域被换出到交换空间，对于需要实时性能的应用非常有用。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>150</code></td>
+<td><code>munlock</code></td>
+<td><code>int munlock(const void *addr, size_t len);</code></td>
+<td>此系统调用用于解除对指定内存区域的锁定，允许其被换出到交换空间。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>151</code></td>
+<td><code>mlockall</code></td>
+<td><code>int mlockall(int flags);</code></td>
+<td>此系统调用用于锁定调用进程的所有当前和未来的内存。<code>flags</code> 参数控制锁定范围，例如 <code>MCL_CURRENT</code>（当前内存）和 <code>MCL_FUTURE</code>（未来内存）。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>152</code></td>
+<td><code>munlockall</code></td>
+<td><code>int munlockall(void);</code></td>
+<td>此系统调用用于解除对调用进程所有内存的锁定。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>153</code></td>
+<td><code>vhangup</code></td>
+<td><code>int vhangup(void);</code></td>
+<td>此系统调用用于模拟虚拟终端的挂断操作，从而关闭所有与当前虚拟终端相关的终端设备。这主要由 <code>init</code> 进程用于系统重启。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>154</code></td>
+<td><code>modify_ldt</code></td>
+<td><code>int modify_ldt(int func, void *ptr, unsigned long bytecount);</code></td>
+<td>此系统调用用于修改本地描述符表（LDT）。<code>func</code> 指定操作类型（如读或写），<code>ptr</code> 指向数据，<code>bytecount</code> 指定字节数。此调用通常由 C 库使用，不应由普通应用程序直接调用。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>155</code></td>
+<td><code>pivot_root</code></td>
+<td><code>int pivot_root(const char *new_root, const char *put_old);</code></td>
+<td>此系统调用用于改变进程的根文件系统。它将当前根文件系统移动到 <code>put_old</code>，并将 <code>new_root</code> 设置为新的根文件系统。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>156</code></td>
+<td><code>_sysctl</code></td>
+<td><code>int _sysctl(struct __sysctl_args *args);</code></td>
+<td>此系统调用用于在运行时配置内核参数。它通过 <code>__sysctl_args</code> 结构体来指定要操作的参数。此调用已被弃用，推荐使用 <code>/proc/sys</code> 文件系统。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>157</code></td>
+<td><code>prctl</code></td>
+<td><code>int prctl(int option, unsigned long arg2, unsigned long arg3, unsigned long arg4, unsigned long arg5);</code></td>
+<td>此系统调用用于对调用进程执行特定的操作。<code>option</code> 指定操作类型，例如设置进程的名称（<code>PR_SET_NAME</code>）或控制其能力。返回值为 <code>option</code> 相关的结果，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>158</code></td>
+<td><code>arch_prctl</code></td>
+<td><code>int arch_prctl(int code, unsigned long addr);</code></td>
+<td>此系统调用用于对进程执行特定于架构的操作。<code>code</code> 指定操作类型，例如设置 <code>fs</code> 或 <code>gs</code> 段寄存器的基址。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>159</code></td>
+<td><code>adjtimex</code></td>
+<td><code>int adjtimex(struct timex *buf);</code></td>
+<td>此系统调用用于调整系统时钟。<code>timex</code> 结构体包含了用于调整时钟频率和相位的参数。这通常用于实现 NTP（网络时间协议）守护进程。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>160</code></td>
+<td><code>setrlimit</code></td>
+<td><code>int setrlimit(int resource, const struct rlimit *rlim);</code></td>
+<td>此系统调用用于设置调用进程的资源限制。<code>resource</code> 指定要修改的资源类型，<code>rlim</code> 结构体包含新的软限制和硬限制。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>161</code></td>
+<td><code>chroot</code></td>
+<td><code>int chroot(const char *path);</code></td>
+<td>此系统调用用于改变调用进程的根目录。这有效地将进程及其子进程限制在由 <code>path</code> 指定的目录子树中。需要超级用户权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>162</code></td>
+<td><code>sync</code></td>
+<td><code>void sync(void);</code></td>
+<td>此系统调用用于将所有文件系统缓存数据写入底层磁盘。它启动同步操作，但不会等待 I&#x2F;O 完成。</td>
+</tr>
+<tr>
+<td><code>163</code></td>
+<td><code>acct</code></td>
+<td><code>int acct(const char *filename);</code></td>
+<td>此系统调用用于启用或禁用进程会计。当启用时，内核会为每个终止的进程写入一个记录。<code>filename</code> 指定会计文件的路径。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>164</code></td>
+<td><code>settimeofday</code></td>
+<td><code>int settimeofday(const struct timeval *tv, const struct timezone *tz);</code></td>
+<td>此系统调用用于设置系统时间和时区。<code>tv</code> 结构体包含了新的时间，<code>tz</code> 结构体包含了新的时区信息。需要适当的权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>165</code></td>
+<td><code>mount</code></td>
+<td><code>int mount(const char *source, const char *target, const char *filesystemtype, unsigned long mountflags, const void *data);</code></td>
+<td>此系统调用用于将一个文件系统挂载到指定位置。<code>source</code> 指定设备或文件，<code>target</code> 指定挂载点，<code>filesystemtype</code> 指定文件系统类型。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>166</code></td>
+<td><code>umount2</code></td>
+<td><code>int umount2(const char *target, int flags);</code></td>
+<td>此系统调用用于卸载一个文件系统。<code>target</code> 指定挂载点。<code>flags</code> 参数提供了额外的卸载选项，如延迟卸载（<code>MNT_DETACH</code>）。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>167</code></td>
+<td><code>swapon</code></td>
+<td><code>int swapon(const char *path, int swapflags);</code></td>
+<td>此系统调用用于启用一个交换设备或文件。<code>path</code> 指定交换设备的路径，<code>swapflags</code> 提供选项。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>168</code></td>
+<td><code>swapoff</code></td>
+<td><code>int swapoff(const char *path);</code></td>
+<td>此系统调用用于禁用一个交换设备或文件。<code>path</code> 指定交换设备的路径。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>169</code></td>
+<td><code>reboot</code></td>
+<td><code>int reboot(int magic, int magic2, int cmd, void *arg);</code></td>
+<td>此系统调用用于重启、关闭或挂起系统。<code>magic</code> 和 <code>magic2</code> 是特定的魔术数字，<code>cmd</code> 指定要执行的操作（如 <code>LINUX_REBOOT_CMD_RESTART</code>）。需要适当的权限。成功后永不返回，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>170</code></td>
+<td><code>sethostname</code></td>
+<td><code>int sethostname(const char *name, size_t len);</code></td>
+<td>此系统调用用于设置系统的主机名。<code>name</code> 指向新的主机名，<code>len</code> 是其长度。需要适当的权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>171</code></td>
+<td><code>setdomainname</code></td>
+<td><code>int setdomainname(const char *name, size_t len);</code></td>
+<td>此系统调用用于设置系统的域名。<code>name</code> 指向新的域名，<code>len</code> 是其长度。需要适当的权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>172</code></td>
+<td><code>iopl</code></td>
+<td><code>int iopl(int level);</code></td>
+<td>此系统调用用于改变调用进程的 I&#x2F;O 特权级别。<code>level</code> 指定新的特权级别。此调用仅在 x86 架构上可用，且需要适当的权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>173</code></td>
+<td><code>ioperm</code></td>
+<td><code>int ioperm(unsigned long from, unsigned long num, int turn_on);</code></td>
+<td>此系统调用用于设置或移除对 I&#x2F;O 端口的访问权限。<code>from</code> 和 <code>num</code> 指定 I&#x2F;O 端口的范围，<code>turn_on</code> 控制是启用还是禁用权限。此调用仅在 x86 架构上可用，且需要适当的权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>174</code></td>
+<td><code>create_module</code></td>
+<td><code>int create_module(const char *name, size_t size);</code></td>
+<td>此系统调用用于在内核中创建一个空的模块空间。此调用已被弃用，推荐使用 <code>init_module</code>。</td>
+</tr>
+<tr>
+<td><code>175</code></td>
+<td><code>init_module</code></td>
+<td><code>int init_module(const void *module_image, unsigned long len, const char *param_values);</code></td>
+<td>此系统调用用于将一个内核模块加载到内核。<code>module_image</code> 指向模块的二进制映像，<code>len</code> 是其大小，<code>param_values</code> 是模块参数。需要适当的权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>176</code></td>
+<td><code>delete_module</code></td>
+<td><code>int delete_module(const char *name, unsigned int flags);</code></td>
+<td>此系统调用用于从内核中移除一个已加载的模块。<code>name</code> 指定模块名称，<code>flags</code> 提供卸载选项。需要适当的权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>177</code></td>
+<td><code>get_kernel_syms</code></td>
+<td><code>int get_kernel_syms(struct kernel_sym *table);</code></td>
+<td>此系统调用用于获取内核符号表。此调用已被弃用，推荐使用 <code>/proc/kallsyms</code>。</td>
+</tr>
+<tr>
+<td><code>178</code></td>
+<td><code>query_module</code></td>
+<td><code>int query_module(const char *name, int what, void *buf, size_t bufsize, size_t *ret);</code></td>
+<td>此系统调用用于查询内核模块的信息。此调用已被弃用。</td>
+</tr>
+<tr>
+<td><code>179</code></td>
+<td><code>quotactl</code></td>
+<td><code>int quotactl(int cmd, const char *special, qid_t id, void *addr);</code></td>
+<td>此系统调用用于管理文件系统配额。<code>cmd</code> 指定操作，<code>special</code> 是设备名称，<code>id</code> 是用户或组 ID。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>180</code></td>
+<td><code>nfsservctl</code></td>
+<td><code>long nfsservctl(int cmd, struct nfsctl_arg *argp, union nfsctl_res *resp);</code></td>
+<td>此系统调用用于控制 NFS 服务器。此调用已被弃用。</td>
+</tr>
+<tr>
+<td><code>181</code></td>
+<td><code>getpmsg</code></td>
+<td><code>int getpmsg(void);</code></td>
+<td>此系统调用是与流（stream）相关的系统调用，已过时。</td>
+</tr>
+<tr>
+<td><code>182</code></td>
+<td><code>putpmsg</code></td>
+<td><code>int putpmsg(void);</code></td>
+<td>此系统调用是与流（stream）相关的系统调用，已过时。</td>
+</tr>
+<tr>
+<td><code>183</code></td>
+<td><code>afs_syscall</code></td>
+<td><code>int afs_syscall(void);</code></td>
+<td>此系统调用是 AFS（Andrew File System）专用的，用于执行特定于 AFS 的操作。</td>
+</tr>
+<tr>
+<td><code>184</code></td>
+<td><code>tuxcall</code></td>
+<td><code>int tuxcall(void);</code></td>
+<td>此系统调用是 TUX 网络服务器专用的。</td>
+</tr>
+<tr>
+<td><code>185</code></td>
+<td><code>security</code></td>
+<td><code>int security(void);</code></td>
+<td>此系统调用用于与 Linux 安全模块（LSM）进行交互。它已过时，相关功能已集成到其他系统调用中。</td>
+</tr>
+<tr>
+<td><code>186</code></td>
+<td><code>gettid</code></td>
+<td><code>pid_t gettid(void);</code></td>
+<td>此系统调用用于获取调用线程的线程 ID（TID）。线程 ID 在系统范围内是唯一的，但与进程 ID（PID）不同。返回值为线程 ID。</td>
+</tr>
+<tr>
+<td><code>187</code></td>
+<td><code>readahead</code></td>
+<td><code>ssize_t readahead(int fd, off64_t offset, size_t count);</code></td>
+<td>此系统调用用于预读文件数据到页面缓存中。它从文件描述符 <code>fd</code> 的 <code>offset</code> 处开始，预读 <code>count</code> 字节数据。这可以帮助减少后续 <code>read</code> 调用的延迟。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>188</code></td>
+<td><code>setxattr</code></td>
+<td><code>int setxattr(const char *path, const char *name, const void *value, size_t size, int flags);</code></td>
+<td>此系统调用用于设置文件或目录的扩展属性。<code>path</code> 指定文件，<code>name</code> 指定属性名，<code>value</code> 和 <code>size</code> 指定属性值。<code>flags</code> 提供选项，如 <code>XATTR_CREATE</code>（只在属性不存在时创建）。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>189</code></td>
+<td><code>lsetxattr</code></td>
+<td><code>int lsetxattr(const char *path, const char *name, const void *value, size_t size, int flags);</code></td>
+<td>此系统调用与 <code>setxattr</code> 类似，但如果 <code>path</code> 是一个符号链接，它会改变符号链接本身的扩展属性，而不是它所指向的文件。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>190</code></td>
+<td><code>fsetxattr</code></td>
+<td><code>int fsetxattr(int fd, const char *name, const void *value, size_t size, int flags);</code></td>
+<td>此系统调用与 <code>setxattr</code> 类似，但它通过文件描述符 <code>fd</code> 来设置已打开文件的扩展属性。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>191</code></td>
+<td><code>getxattr</code></td>
+<td><code>ssize_t getxattr(const char *path, const char *name, void *value, size_t size);</code></td>
+<td>此系统调用用于获取文件或目录的扩展属性值。<code>path</code> 指定文件，<code>name</code> 指定属性名。属性值被复制到 <code>value</code> 缓冲区中，最多 <code>size</code> 字节。返回值为属性值的大小，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>192</code></td>
+<td><code>lgetxattr</code></td>
+<td><code>ssize_t lgetxattr(const char *path, const char *name, void *value, size_t size);</code></td>
+<td>此系统调用与 <code>getxattr</code> 类似，但如果 <code>path</code> 是一个符号链接，它会获取符号链接本身的扩展属性。返回值为属性值的大小，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>193</code></td>
+<td><code>fgetxattr</code></td>
+<td><code>ssize_t fgetxattr(int fd, const char *name, void *value, size_t size);</code></td>
+<td>此系统调用与 <code>getxattr</code> 类似，但它通过文件描述符 <code>fd</code> 来获取已打开文件的扩展属性值。返回值为属性值的大小，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>194</code></td>
+<td><code>listxattr</code></td>
+<td><code>ssize_t listxattr(const char *path, char *list, size_t size);</code></td>
+<td>此系统调用用于获取文件或目录所有扩展属性的名称列表。属性名被复制到 <code>list</code> 缓冲区中，以空字符分隔。返回值为列表的总大小，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>195</code></td>
+<td><code>llistxattr</code></td>
+<td><code>ssize_t llistxattr(const char *path, char *list, size_t size);</code></td>
+<td>此系统调用与 <code>listxattr</code> 类似，但如果 <code>path</code> 是一个符号链接，它会获取符号链接本身的扩展属性名称列表。返回值为列表的总大小，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>196</code></td>
+<td><code>flistxattr</code></td>
+<td><code>ssize_t flistxattr(int fd, char *list, size_t size);</code></td>
+<td>此系统调用与 <code>listxattr</code> 类似，但它通过文件描述符 <code>fd</code> 来获取已打开文件的扩展属性名称列表。返回值为列表的总大小，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>197</code></td>
+<td><code>removexattr</code></td>
+<td><code>int removexattr(const char *path, const char *name);</code></td>
+<td>此系统调用用于移除文件或目录的扩展属性。<code>path</code> 指定文件，<code>name</code> 指定要移除的属性名。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>198</code></td>
+<td><code>lremovexattr</code></td>
+<td><code>int lremovexattr(const char *path, const char *name);</code></td>
+<td>此系统调用与 <code>removexattr</code> 类似，但如果 <code>path</code> 是一个符号链接，它会移除符号链接本身的扩展属性。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>199</code></td>
+<td><code>fremovexattr</code></td>
+<td><code>int fremovexattr(int fd, const char *name);</code></td>
+<td>此系统调用与 <code>removexattr</code> 类似，但它通过文件描述符 <code>fd</code> 来移除已打开文件的扩展属性。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>200</code></td>
+<td><code>tkill</code></td>
+<td><code>int tkill(int tid, int sig);</code></td>
+<td>此系统调用用于向指定的线程 <code>tid</code> 发送信号。它比 <code>kill</code> 更精确，因为它直接针对单个线程。此调用已被弃用，推荐使用 <code>tgkill</code>。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>201</code></td>
+<td><code>time</code></td>
+<td><code>time_t time(time_t *tloc);</code></td>
+<td>此系统调用用于获取自 Epoch（1970-01-01 00:00:00 +0000 (UTC)）以来的秒数。如果 <code>tloc</code> 非空，则该值也会存储在 <code>tloc</code> 中。返回值为秒数，失败返回 <code>(time_t)-1</code>。</td>
+</tr>
+<tr>
+<td><code>202</code></td>
+<td><code>futex</code></td>
+<td><code>int futex(int *uaddr, int futex_op, int val, const struct timespec *timeout, int *uaddr2, int val3);</code></td>
+<td>此系统调用用于实现用户空间的快速互斥锁（fast user-space mutexes）。它在用户空间提供原子操作，并且只在必要时才调用内核。<code>futex_op</code> 指定操作类型，如等待（<code>FUTEX_WAIT</code>）或唤醒（<code>FUTEX_WAKE</code>）。成功返回取决于操作类型，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>203</code></td>
+<td><code>sched_setaffinity</code></td>
+<td><code>int sched_setaffinity(pid_t pid, size_t cpusize, cpu_set_t *mask);</code></td>
+<td>此系统调用用于设置指定进程的 CPU 亲和力掩码。<code>mask</code> 指定进程可以在哪些 CPU 上运行。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>204</code></td>
+<td><code>sched_getaffinity</code></td>
+<td><code>int sched_getaffinity(pid_t pid, size_t cpusize, cpu_set_t *mask);</code></td>
+<td>此系统调用用于获取指定进程的 CPU 亲和力掩码。<code>mask</code> 结构体用于存储该掩码。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>205</code></td>
+<td><code>set_thread_area</code></td>
+<td><code>int set_thread_area(struct user_desc *u_info);</code></td>
+<td>此系统调用用于设置线程的本地存储（TLS）区域。它用于实现线程局部变量。此调用仅在 x86 架构上可用。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>206</code></td>
+<td><code>io_setup</code></td>
+<td><code>int io_setup(unsigned nr_events, aio_context_t *ctxp);</code></td>
+<td>此系统调用用于设置异步 I&#x2F;O 上下文。<code>nr_events</code> 指定队列中的最大事件数，<code>ctxp</code> 用于存储上下文句柄。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>207</code></td>
+<td><code>io_destroy</code></td>
+<td><code>int io_destroy(aio_context_t ctx);</code></td>
+<td>此系统调用用于销毁指定的异步 I&#x2F;O 上下文。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>208</code></td>
+<td><code>io_getevents</code></td>
+<td><code>int io_getevents(aio_context_t ctx_id, long min_nr, long nr, struct io_event *events, struct timespec *timeout);</code></td>
+<td>此系统调用用于从异步 I&#x2F;O 上下文中检索已完成的事件。<code>events</code> 结构体用于存储事件信息。返回值为获取的事件数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>209</code></td>
+<td><code>io_submit</code></td>
+<td><code>int io_submit(aio_context_t ctx_id, long nr, struct iocb **iocbpp);</code></td>
+<td>此系统调用用于向异步 I&#x2F;O 上下文提交 I&#x2F;O 请求。<code>iocbpp</code> 是指向 <code>iocb</code> 结构体指针数组的指针，每个结构体描述一个 I&#x2F;O 操作。返回值为提交的请求数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>210</code></td>
+<td><code>io_cancel</code></td>
+<td><code>int io_cancel(aio_context_t ctx_id, struct iocb *iocb, struct io_event *result);</code></td>
+<td>此系统调用用于取消一个已提交的异步 I&#x2F;O 请求。<code>iocb</code> 结构体指定要取消的请求。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>211</code></td>
+<td><code>get_thread_area</code></td>
+<td><code>int get_thread_area(struct user_desc *u_info);</code></td>
+<td>此系统调用用于获取线程的本地存储（TLS）区域。它用于获取由 <code>set_thread_area</code> 设置的信息。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>212</code></td>
+<td><code>lookup_dcookie</code></td>
+<td><code>int lookup_dcookie(u64 cookie, char *buffer, size_t len);</code></td>
+<td>此系统调用用于将一个目录 “cookie” 转换为其路径名。<code>cookie</code> 是一个内核内部标识符。成功返回路径名的长度，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>213</code></td>
+<td><code>epoll_create</code></td>
+<td><code>int epoll_create(int size);</code></td>
+<td>此系统调用用于创建一个 epoll 实例。<code>size</code> 参数现在已被忽略，但必须大于 <code>0</code>。返回一个 epoll 实例的文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>214</code></td>
+<td><code>epoll_ctl_old</code></td>
+<td><code>int epoll_ctl_old(void);</code></td>
+<td>此系统调用是 <code>epoll_ctl</code> 的旧版本，已过时。</td>
+</tr>
+<tr>
+<td><code>215</code></td>
+<td><code>epoll_wait_old</code></td>
+<td><code>int epoll_wait_old(void);</code></td>
+<td>此系统调用是 <code>epoll_wait</code> 的旧版本，已过时。</td>
+</tr>
+<tr>
+<td><code>216</code></td>
+<td><code>remap_file_pages</code></td>
+<td><code>int remap_file_pages(unsigned long start, unsigned long size, unsigned long prot, unsigned long pgoff, unsigned long flags);</code></td>
+<td>此系统调用用于将文件映射区域的页面重新映射到新的虚拟地址。此调用已被弃用。</td>
+</tr>
+<tr>
+<td><code>217</code></td>
+<td><code>getdents64</code></td>
+<td><code>int getdents64(int fd, struct linux_dirent64 *dirp, unsigned int count);</code></td>
+<td>此系统调用是 <code>getdents</code> 的 64 位版本，用于读取目录项。它用于处理具有 64 位 inode 号的文件系统。返回值为实际读取的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>218</code></td>
+<td><code>set_tid_address</code></td>
+<td><code>long set_tid_address(int *tidptr);</code></td>
+<td>此系统调用用于设置一个地址，当线程终止时，内核会将线程的 TID 写入该地址，并可能发送一个信号。这对于实现线程库非常有用。返回值为线程 ID。</td>
+</tr>
+<tr>
+<td><code>219</code></td>
+<td><code>restart_syscall</code></td>
+<td><code>long restart_syscall(void);</code></td>
+<td>此系统调用用于在从信号处理函数返回后重新启动一个被中断的系统调用。它通常由内核在后台自动调用。</td>
+</tr>
+<tr>
+<td><code>220</code></td>
+<td><code>semtimedop</code></td>
+<td><code>int semtimedop(int semid, struct sembuf *sops, size_t nsops, const struct timespec *timeout);</code></td>
+<td>此系统调用是 <code>semop</code> 的一个版本，它允许指定一个超时时间。如果信号量操作无法在超时时间内完成，则调用会返回。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>221</code></td>
+<td><code>fadvise64</code></td>
+<td><code>int fadvise64(int fd, off64_t offset, off64_t len, int advice);</code></td>
+<td>此系统调用用于对文件数据进行预读和缓存策略的建议。它告诉内核应用程序将如何访问文件，以便内核可以优化其 I&#x2F;O 行为。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>222</code></td>
+<td><code>timer_create</code></td>
+<td><code>int timer_create(clockid_t clockid, struct sigevent *sevp, timer_t *timerid);</code></td>
+<td>此系统调用用于创建一个新的 POSIX 计时器。<code>clockid</code> 指定时钟类型，<code>sevp</code> 指定计时器到期时要发送的通知事件，<code>timerid</code> 用于存储新的计时器 ID。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>223</code></td>
+<td><code>timer_settime</code></td>
+<td><code>int timer_settime(timer_t timerid, int flags, const struct itimerspec *new_value, struct itimerspec *old_value);</code></td>
+<td>此系统调用用于设置或修改指定的 POSIX 计时器。<code>timerid</code> 指定计时器，<code>new_value</code> 设置新的到期时间和间隔。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>224</code></td>
+<td><code>timer_gettime</code></td>
+<td><code>int timer_gettime(timer_t timerid, struct itimerspec *curr_value);</code></td>
+<td>此系统调用用于获取指定的 POSIX 计时器的当前值。<code>curr_value</code> 结构体用于存储剩余时间和间隔。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>225</code></td>
+<td><code>timer_getoverrun</code></td>
+<td><code>int timer_getoverrun(timer_t timerid);</code></td>
+<td>此系统调用用于获取指定的 POSIX 计时器的到期溢出计数。它返回计时器到期时，由于进程未及时处理而错过的信号数。返回值为溢出计数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>226</code></td>
+<td><code>timer_delete</code></td>
+<td><code>int timer_delete(timer_t timerid);</code></td>
+<td>此系统调用用于删除指定的 POSIX 计时器。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>227</code></td>
+<td><code>clock_settime</code></td>
+<td><code>int clock_settime(clockid_t clockid, const struct timespec *tp);</code></td>
+<td>此系统调用用于设置指定时钟的时间。<code>clockid</code> 指定时钟类型，<code>tp</code> 结构体包含了新的时间。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>228</code></td>
+<td><code>clock_gettime</code></td>
+<td><code>int clock_gettime(clockid_t clockid, struct timespec *tp);</code></td>
+<td>此系统调用用于获取指定时钟的当前时间。<code>tp</code> 结构体用于存储时间。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>229</code></td>
+<td><code>clock_getres</code></td>
+<td><code>int clock_getres(clockid_t clockid, struct timespec *res);</code></td>
+<td>此系统调用用于获取指定时钟的分辨率（即最小可测量的时间间隔）。<code>res</code> 结构体用于存储分辨率。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>230</code></td>
+<td><code>clock_nanosleep</code></td>
+<td><code>int clock_nanosleep(clockid_t clockid, int flags, const struct timespec *request, struct timespec *remain);</code></td>
+<td>此系统调用用于在高精度时钟上暂停执行。它比 <code>nanosleep</code> 更灵活，允许指定时钟类型和相对&#x2F;绝对时间。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>231</code></td>
+<td><code>exit_group</code></td>
+<td><code>void exit_group(int status);</code></td>
+<td>此系统调用用于终止调用进程所属的整个线程组。<code>status</code> 参数是一个整数，作为进程的退出状态码。与 <code>exit</code> 不同，它会终止所有线程，而不仅仅是调用线程。此调用永不返回。</td>
+</tr>
+<tr>
+<td><code>232</code></td>
+<td><code>epoll_wait</code></td>
+<td><code>int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout);</code></td>
+<td>此系统调用用于等待 epoll 实例上的事件。它阻塞直到 <code>epfd</code> 上的事件发生或超时。就绪的事件被存储在 <code>events</code> 数组中。返回值为就绪事件的数量，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>233</code></td>
+<td><code>epoll_ctl</code></td>
+<td><code>int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);</code></td>
+<td>此系统调用用于控制 epoll 实例。<code>op</code> 指定操作类型，如添加（<code>EPOLL_CTL_ADD</code>）、修改（<code>EPOLL_CTL_MOD</code>）或删除（<code>EPOLL_CTL_DEL</code>）文件描述符 <code>fd</code>。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>234</code></td>
+<td><code>tgkill</code></td>
+<td><code>int tgkill(int tgid, int tid, int sig);</code></td>
+<td>此系统调用用于向指定的线程 <code>tid</code> 发送信号。它通过指定线程组 ID（<code>tgid</code>）来确保目标线程属于正确的进程。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>235</code></td>
+<td><code>utimes</code></td>
+<td><code>int utimes(const char *filename, const struct timeval times[2]);</code></td>
+<td>此系统调用用于改变指定文件 <code>filename</code> 的访问和修改时间。它比 <code>utime</code> 提供了更高的精度，支持微秒。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>236</code></td>
+<td><code>vserver</code></td>
+<td><code>int vserver(void);</code></td>
+<td>此系统调用用于虚拟化服务器。该调用已被弃用，因为虚拟化技术已经通过其他方式实现。</td>
+</tr>
+<tr>
+<td><code>237</code></td>
+<td><code>mbind</code></td>
+<td><code>long mbind(unsigned long start, unsigned long len, unsigned long mode, unsigned long *nmask, unsigned long maxnode, unsigned flags);</code></td>
+<td>此系统调用用于将一个进程的内存区域绑定到一组指定的 NUMA（非均匀内存访问）节点。这有助于在 NUMA 架构上优化内存访问。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>238</code></td>
+<td><code>set_mempolicy</code></td>
+<td><code>long set_mempolicy(int mode, const unsigned long *nmask, unsigned long maxnode);</code></td>
+<td>此系统调用用于设置调用进程的默认内存分配策略。<code>mode</code> 指定策略，<code>nmask</code> 指定要使用的 NUMA 节点。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>239</code></td>
+<td><code>get_mempolicy</code></td>
+<td><code>long get_mempolicy(int *mode, unsigned long *nmask, unsigned long maxnode, unsigned long addr, unsigned long flags);</code></td>
+<td>此系统调用用于获取调用进程的内存分配策略或指定地址的策略。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>240</code></td>
+<td><code>mq_open</code></td>
+<td><code>mqd_t mq_open(const char *name, int oflag, ...);</code></td>
+<td>此系统调用用于打开或创建一个 POSIX 消息队列。<code>name</code> 指定队列名称，<code>oflag</code> 指定打开标志。成功返回消息队列描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>241</code></td>
+<td><code>mq_unlink</code></td>
+<td><code>int mq_unlink(const char *name);</code></td>
+<td>此系统调用用于删除指定的 POSIX 消息队列。<code>name</code> 指定要删除的队列名称。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>242</code></td>
+<td><code>mq_timedsend</code></td>
+<td><code>int mq_timedsend(mqd_t mqdes, const char *msg_ptr, size_t msg_len, unsigned int msg_prio, const struct timespec *abs_timeout);</code></td>
+<td>此系统调用用于向消息队列发送消息，并指定一个绝对超时时间。如果无法在超时时间内发送消息，则调用失败。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>243</code></td>
+<td><code>mq_timedreceive</code></td>
+<td><code>ssize_t mq_timedreceive(mqd_t mqdes, char *msg_ptr, size_t msg_len, unsigned int *msg_prio, const struct timespec *abs_timeout);</code></td>
+<td>此系统调用用于从消息队列接收消息，并指定一个绝对超时时间。如果无法在超时时间内接收消息，则调用失败。成功返回接收的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>244</code></td>
+<td><code>mq_notify</code></td>
+<td><code>int mq_notify(mqd_t mqdes, const struct sigevent *sevp);</code></td>
+<td>此系统调用用于注册或取消消息队列的通知。<code>sevp</code> 结构体指定当消息到达一个空队列时，要发送的通知类型。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>245</code></td>
+<td><code>mq_getsetattr</code></td>
+<td><code>int mq_getsetattr(mqd_t mqdes, const struct mq_attr *newattr, struct mq_attr *oldattr);</code></td>
+<td>此系统调用用于获取或设置消息队列的属性。<code>newattr</code> 指定新的属性，<code>oldattr</code> 用于获取旧的属性。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>246</code></td>
+<td><code>kexec_load</code></td>
+<td><code>long kexec_load(unsigned long entry, unsigned long nr_segments, struct kexec_segment *segments, unsigned long flags);</code></td>
+<td>此系统调用用于加载一个新的内核镜像，以便在不重启物理机器的情况下启动它。<code>entry</code> 指定新内核的入口点，<code>segments</code> 描述内核和初始 RAM 盘的内存布局。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>247</code></td>
+<td><code>waitid</code></td>
+<td><code>int waitid(idtype_t idtype, id_t id, siginfo_t *infop, int options);</code></td>
+<td>此系统调用用于等待一个子进程状态的改变。它比 <code>waitpid</code> 更灵活，允许指定要等待的进程类型和 ID，并提供更详细的信号信息。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>248</code></td>
+<td><code>add_key</code></td>
+<td><code>key_serial_t add_key(const char *type, const char *description, const void *payload, size_t plen, key_serial_t keyring);</code></td>
+<td>此系统调用用于向内核密钥环添加一个新的密钥。<code>type</code> 指定密钥类型，<code>description</code> 提供了描述，<code>payload</code> 是密钥数据。成功返回新密钥的序列号，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>249</code></td>
+<td><code>request_key</code></td>
+<td><code>key_serial_t request_key(const char *type, const char *description, const char *callout_info, key_serial_t keyring);</code></td>
+<td>此系统调用用于从内核密钥环中查找一个密钥。如果密钥不存在，它会尝试调用 <code>keyctl</code> 实用程序来获取。成功返回找到的密钥的序列号，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>250</code></td>
+<td><code>keyctl</code></td>
+<td><code>long keyctl(int operation, ...);</code></td>
+<td>此系统调用用于对内核密钥环执行各种操作。<code>operation</code> 指定操作类型，例如获取密钥属性（<code>KEYCTL_GET_KEYRING_ID</code>）或链接密钥（<code>KEYCTL_LINK</code>）。成功返回取决于操作类型，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>251</code></td>
+<td><code>ioprio_set</code></td>
+<td><code>int ioprio_set(int which, int who, int ioprio);</code></td>
+<td>此系统调用用于设置进程、进程组或用户的 I&#x2F;O 调度优先级。<code>ioprio</code> 指定新的优先级值。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>252</code></td>
+<td><code>ioprio_get</code></td>
+<td><code>int ioprio_get(int which, int who);</code></td>
+<td>此系统调用用于获取进程、进程组或用户的 I&#x2F;O 调度优先级。返回值为优先级值，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>253</code></td>
+<td><code>inotify_init</code></td>
+<td><code>int inotify_init(void);</code></td>
+<td>此系统调用用于初始化一个 <code>inotify</code> 实例，并返回一个文件描述符。<code>inotify</code> 实例用于监视文件系统的事件。返回值为文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>254</code></td>
+<td><code>inotify_add_watch</code></td>
+<td><code>int inotify_add_watch(int fd, const char *pathname, uint32_t mask);</code></td>
+<td>此系统调用用于向 <code>inotify</code> 实例添加一个监视。<code>fd</code> 是 <code>inotify</code> 实例的文件描述符，<code>pathname</code> 指定要监视的文件，<code>mask</code> 指定要监视的事件类型。成功返回监视描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>255</code></td>
+<td><code>inotify_rm_watch</code></td>
+<td><code>int inotify_rm_watch(int fd, int wd);</code></td>
+<td>此系统调用用于从 <code>inotify</code> 实例中移除一个监视。<code>fd</code> 是 <code>inotify</code> 实例的文件描述符，<code>wd</code> 是要移除的监视描述符。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>256</code></td>
+<td><code>migrate_pages</code></td>
+<td><code>long migrate_pages(int pid, unsigned long maxnode, const unsigned long *old_nodes, const unsigned long *new_nodes);</code></td>
+<td>此系统调用用于将指定进程的内存页面从一组 NUMA 节点迁移到另一组。<code>old_nodes</code> 和 <code>new_nodes</code> 分别指定源和目标节点。成功返回迁移的页面数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>257</code></td>
+<td><code>openat</code></td>
+<td><code>int openat(int dirfd, const char *pathname, int flags, ...);</code></td>
+<td>此系统调用是 <code>open</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点。这可以防止在文件路径中存在符号链接攻击。成功返回新的文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>258</code></td>
+<td><code>mkdirat</code></td>
+<td><code>int mkdirat(int dirfd, const char *pathname, mode_t mode);</code></td>
+<td>此系统调用是 <code>mkdir</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>259</code></td>
+<td><code>mknodat</code></td>
+<td><code>int mknodat(int dirfd, const char *pathname, mode_t mode, dev_t dev);</code></td>
+<td>此系统调用是 <code>mknod</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>260</code></td>
+<td><code>fchownat</code></td>
+<td><code>int fchownat(int dirfd, const char *pathname, uid_t owner, gid_t group, int flags);</code></td>
+<td>此系统调用是 <code>chown</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点，并支持额外的标志，如 <code>AT_EMPTY_PATH</code>。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>261</code></td>
+<td><code>futimesat</code></td>
+<td><code>int futimesat(int dirfd, const char *pathname, const struct timeval times[2]);</code></td>
+<td>此系统调用是 <code>utimes</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>262</code></td>
+<td><code>newfstatat</code></td>
+<td><code>int newfstatat(int dirfd, const char *pathname, struct stat *statbuf, int flags);</code></td>
+<td>此系统调用是 <code>fstatat</code> 的一个版本。它获取指定文件的状态信息，并支持额外的标志，如 <code>AT_SYMLINK_NOFOLLOW</code>。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>263</code></td>
+<td><code>unlinkat</code></td>
+<td><code>int unlinkat(int dirfd, const char *pathname, int flags);</code></td>
+<td>此系统调用是 <code>unlink</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点。<code>flags</code> 参数可用于指定是删除文件还是目录。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>264</code></td>
+<td><code>renameat</code></td>
+<td><code>int renameat(int olddirfd, const char *oldpath, int newdirfd, const char *newpath);</code></td>
+<td>此系统调用是 <code>rename</code> 的一个版本，它允许在两个不同的目录中进行重命名操作。<code>olddirfd</code> 和 <code>newdirfd</code> 分别指定源和目标目录。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>265</code></td>
+<td><code>linkat</code></td>
+<td><code>int linkat(int olddirfd, const char *oldpath, int newdirfd, const char *newpath, int flags);</code></td>
+<td>此系统调用是 <code>link</code> 的一个版本，它允许在两个不同的目录中创建硬链接。<code>flags</code> 参数可用于控制符号链接的行为。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>266</code></td>
+<td><code>symlinkat</code></td>
+<td><code>int symlinkat(const char *target, int newdirfd, const char *linkpath);</code></td>
+<td>此系统调用是 <code>symlink</code> 的一个版本，它允许在指定的目录中创建符号链接。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>267</code></td>
+<td><code>readlinkat</code></td>
+<td><code>ssize_t readlinkat(int dirfd, const char *pathname, char *buf, size_t bufsiz);</code></td>
+<td>此系统调用是 <code>readlink</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点。返回值为读取的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>268</code></td>
+<td><code>fchmodat</code></td>
+<td><code>int fchmodat(int dirfd, const char *pathname, mode_t mode, int flags);</code></td>
+<td>此系统调用是 <code>chmod</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>269</code></td>
+<td><code>faccessat</code></td>
+<td><code>int faccessat(int dirfd, const char *pathname, int mode, int flags);</code></td>
+<td>此系统调用是 <code>access</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>270</code></td>
+<td><code>pselect6</code></td>
+<td><code>int pselect6(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, const struct timespec *timeout, const sigset_t *sigmask);</code></td>
+<td>此系统调用是 <code>select</code> 的一个版本，它允许原子性地改变信号掩码和等待文件描述符事件。<code>timeout</code> 参数以纳秒为单位。返回值为就绪的文件描述符总数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>271</code></td>
+<td><code>ppoll</code></td>
+<td><code>int ppoll(struct pollfd *fds, nfds_t nfds, const struct timespec *tmo_p, const sigset_t *sigmask);</code></td>
+<td>此系统调用是 <code>poll</code> 的一个版本，它允许原子性地改变信号掩码和等待文件描述符事件。<code>tmo_p</code> 参数以纳秒为单位。返回值为就绪的文件描述符总数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>272</code></td>
+<td><code>unshare</code></td>
+<td><code>int unshare(int flags);</code></td>
+<td>此系统调用用于将调用进程从其父进程的共享资源中分离出来，从而创建新的命名空间。<code>flags</code> 参数指定要分离的资源类型，如文件系统、PID 或网络。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>273</code></td>
+<td><code>set_robust_list</code></td>
+<td><code>int set_robust_list(struct robust_list_head *head, size_t len);</code></td>
+<td>此系统调用用于为调用进程设置一个健壮的互斥锁列表。该列表用于在进程崩溃时自动释放互斥锁，从而防止死锁。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>274</code></td>
+<td><code>get_robust_list</code></td>
+<td><code>int get_robust_list(int pid, struct robust_list_head **head_ptr, size_t *len_ptr);</code></td>
+<td>此系统调用用于获取指定进程的健壮互斥锁列表。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>275</code></td>
+<td><code>splice</code></td>
+<td><code>ssize_t splice(int fd_in, loff_t *off_in, int fd_out, loff_t *off_out, size_t len, unsigned int flags);</code></td>
+<td>此系统调用用于在两个文件描述符之间移动数据，无需通过用户空间缓冲区。它通过内核缓冲区进行数据传输，提供了非常高效的零拷贝 I&#x2F;O。成功返回传输的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>276</code></td>
+<td><code>tee</code></td>
+<td><code>ssize_t tee(int fd_in, int fd_out, size_t len, unsigned int flags);</code></td>
+<td>此系统调用用于在两个文件描述符之间复制数据，无需通过用户空间缓冲区。它从 <code>fd_in</code> 复制 <code>len</code> 字节数据到 <code>fd_out</code>，同时保持 <code>fd_in</code> 上的数据不变。成功返回复制的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>277</code></td>
+<td><code>sync_file_range</code></td>
+<td><code>int sync_file_range(int fd, off64_t offset, off64_t nbytes, unsigned int flags);</code></td>
+<td>此系统调用用于将文件的一部分数据（在指定范围内）同步到磁盘。它提供了比 <code>fsync</code> 更细粒度的控制，可以只同步文件的部分区域。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>278</code></td>
+<td><code>vmsplice</code></td>
+<td><code>ssize_t vmsplice(int fd, const struct iovec *iov, unsigned long nr_segs, unsigned int flags);</code></td>
+<td>此系统调用用于将用户空间缓冲区中的数据移动到内核缓冲区，并将其链接到文件描述符。它允许高效地将多个不连续的内存区域传输到文件或套接字。成功返回传输的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>279</code></td>
+<td><code>move_pages</code></td>
+<td><code>long move_pages(int pid, unsigned long nr_pages, const void **pages, const int *nodes, int *status, int flags);</code></td>
+<td>此系统调用用于将指定进程的内存页面移动到指定的 NUMA 节点。这可以用于优化 NUMA 架构上的内存访问。成功返回移动的页面数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>280</code></td>
+<td><code>utimensat</code></td>
+<td><code>int utimensat(int dirfd, const char *pathname, const struct timespec times[2], int flags);</code></td>
+<td>此系统调用是 <code>utimes</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点，并且支持纳秒精度。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>281</code></td>
+<td><code>epoll_pwait</code></td>
+<td><code>int epoll_pwait(int epfd, struct epoll_event *events, int maxevents, int timeout, const sigset_t *sigmask);</code></td>
+<td>此系统调用是 <code>epoll_wait</code> 的一个版本，它允许原子性地改变信号掩码并等待事件。这对于在多线程环境中安全地处理信号非常有用。返回值为就绪事件的数量，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>282</code></td>
+<td><code>signalfd</code></td>
+<td><code>int signalfd(int fd, const sigset_t *mask, int flags);</code></td>
+<td>此系统调用用于创建一个新的文件描述符，用于接收信号。当指定信号发送到进程时，信号信息将以 <code>signalfd_siginfo</code> 结构体的形式写入此文件描述符。返回值为文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>283</code></td>
+<td><code>timerfd_create</code></td>
+<td><code>int timerfd_create(int clockid, int flags);</code></td>
+<td>此系统调用用于创建一个新的文件描述符，该描述符可用于接收计时器到期事件。<code>clockid</code> 指定时钟类型，<code>flags</code> 提供选项。返回值为文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>284</code></td>
+<td><code>eventfd</code></td>
+<td><code>int eventfd(unsigned int initval, int flags);</code></td>
+<td>此系统调用用于创建一个新的文件描述符，作为事件通知机制。它可以用于线程或进程间的同步。返回值为文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>285</code></td>
+<td><code>fallocate</code></td>
+<td><code>int fallocate(int fd, int mode, off_t offset, off_t len);</code></td>
+<td>此系统调用用于预先分配一个文件的磁盘空间。它确保文件有足够的空间，而无需实际写入数据。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>286</code></td>
+<td><code>timerfd_settime</code></td>
+<td><code>int timerfd_settime(int fd, int flags, const struct itimerspec *new_value, struct itimerspec *old_value);</code></td>
+<td>此系统调用用于设置或修改 <code>timerfd</code> 文件描述符的计时器。<code>new_value</code> 指定新的到期时间和间隔。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>287</code></td>
+<td><code>timerfd_gettime</code></td>
+<td><code>int timerfd_gettime(int fd, struct itimerspec *curr_value);</code></td>
+<td>此系统调用用于获取 <code>timerfd</code> 文件描述符的计时器当前值。<code>curr_value</code> 结构体用于存储剩余时间和间隔。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>288</code></td>
+<td><code>accept4</code></td>
+<td><code>int accept4(int sockfd, struct sockaddr *addr, socklen_t *addrlen, int flags);</code></td>
+<td>此系统调用是 <code>accept</code> 的一个版本，它允许在接受连接时指定额外的标志，如 <code>SOCK_NONBLOCK</code> 或 <code>SOCK_CLOEXEC</code>。成功返回新的文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>289</code></td>
+<td><code>signalfd4</code></td>
+<td><code>int signalfd4(int fd, const sigset_t *mask, int flags);</code></td>
+<td>此系统调用是 <code>signalfd</code> 的一个版本，它接受一个额外的标志参数，例如 <code>SFD_CLOEXEC</code>。</td>
+</tr>
+<tr>
+<td><code>290</code></td>
+<td><code>eventfd2</code></td>
+<td><code>int eventfd2(unsigned int initval, int flags);</code></td>
+<td>此系统调用是 <code>eventfd</code> 的一个版本，它接受一个额外的标志参数，例如 <code>EFD_CLOEXEC</code>。</td>
+</tr>
+<tr>
+<td><code>291</code></td>
+<td><code>epoll_create1</code></td>
+<td><code>int epoll_create1(int flags);</code></td>
+<td>此系统调用是 <code>epoll_create</code> 的一个版本，它允许指定额外的标志，如 <code>EPOLL_CLOEXEC</code>。返回一个 epoll 实例的文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>292</code></td>
+<td><code>dup3</code></td>
+<td><code>int dup3(int oldfd, int newfd, int flags);</code></td>
+<td>此系统调用是 <code>dup2</code> 的一个版本，它允许指定额外的标志，如 <code>O_CLOEXEC</code>。成功返回 <code>newfd</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>293</code></td>
+<td><code>pipe2</code></td>
+<td><code>int pipe2(int pipefd[2], int flags);</code></td>
+<td>此系统调用是 <code>pipe</code> 的一个版本，它允许指定额外的标志，如 <code>O_CLOEXEC</code> 或 <code>O_NONBLOCK</code>。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>294</code></td>
+<td><code>inotify_init1</code></td>
+<td><code>int inotify_init1(int flags);</code></td>
+<td>此系统调用是 <code>inotify_init</code> 的一个版本，它允许指定额外的标志，如 <code>IN_CLOEXEC</code> 或 <code>IN_NONBLOCK</code>。返回一个 <code>inotify</code> 实例的文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>295</code></td>
+<td><code>preadv</code></td>
+<td><code>ssize_t preadv(int fd, const struct iovec *iov, int iovcnt, off_t offset);</code></td>
+<td>此系统调用是 <code>readv</code> 的一个版本，它允许在指定偏移量 <code>offset</code> 处读取数据，而无需改变文件描述符的当前位置。返回值为读取的总字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>296</code></td>
+<td><code>pwritev</code></td>
+<td><code>ssize_t pwritev(int fd, const struct iovec *iov, int iovcnt, off_t offset);</code></td>
+<td>此系统调用是 <code>writev</code> 的一个版本，它允许在指定偏移量 <code>offset</code> 处写入数据，而无需改变文件描述符的当前位置。返回值为写入的总字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>297</code></td>
+<td><code>rt_tgsigqueueinfo</code></td>
+<td><code>int rt_tgsigqueueinfo(int tgid, int tid, int sig, siginfo_t *uinfo);</code></td>
+<td>此系统调用是 <code>rt_sigqueueinfo</code> 的一个版本，它接受线程组 ID <code>tgid</code>，从而确保信号发送到正确的线程组。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>298</code></td>
+<td><code>perf_event_open</code></td>
+<td><code>int perf_event_open(struct perf_event_attr *attr, pid_t pid, int cpu, int group_fd, unsigned long flags);</code></td>
+<td>此系统调用用于创建和打开一个性能监控事件。它用于分析 CPU 性能计数器。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>299</code></td>
+<td><code>recvmmsg</code></td>
+<td><code>int recvmmsg(int sockfd, struct mmsghdr *msgvec, unsigned int vlen, unsigned int flags, struct timespec *timeout);</code></td>
+<td>此系统调用用于从套接字接收多条消息。它比循环调用 <code>recvmsg</code> 更高效，可以一次性接收多条消息。返回值为接收的消息数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>300</code></td>
+<td><code>fanotify_init</code></td>
+<td><code>int fanotify_init(unsigned int flags, unsigned int event_f_flags);</code></td>
+<td>此系统调用用于初始化一个 <code>fanotify</code> 实例，并返回一个文件描述符。<code>fanotify</code> 实例用于监视文件系统的事件和访问权限。返回值为文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>301</code></td>
+<td><code>fanotify_mark</code></td>
+<td><code>int fanotify_mark(int fanotify_fd, unsigned int flags, uint64_t mask, int dfd, const char *pathname);</code></td>
+<td>此系统调用用于向 <code>fanotify</code> 实例添加、修改或删除一个监视。它指定要监视的文件或目录。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>302</code></td>
+<td><code>prlimit64</code></td>
+<td><code>int prlimit64(pid_t pid, int resource, const struct rlimit64 *new_limit, struct rlimit64 *old_limit);</code></td>
+<td>此系统调用用于获取或设置进程的资源限制。它是 <code>setrlimit</code> 的一个版本，支持 64 位限制。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>303</code></td>
+<td><code>name_to_handle_at</code></td>
+<td><code>int name_to_handle_at(int dirfd, const char *pathname, struct file_handle *handle, int *mount_id, int flags);</code></td>
+<td>此系统调用用于获取一个文件的文件句柄。文件句柄可以在文件被重命名或移动后仍然用于引用该文件。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>304</code></td>
+<td><code>open_by_handle_at</code></td>
+<td><code>int open_by_handle_at(int mount_fd, struct file_handle *handle, int flags);</code></td>
+<td>此系统调用用于通过文件句柄打开一个文件。这使得即使文件被重命名或移动，也可以打开它。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>305</code></td>
+<td><code>clock_adjtime</code></td>
+<td><code>int clock_adjtime(clockid_t clkid, struct timex *buf);</code></td>
+<td>此系统调用用于调整指定时钟的时间。它比 <code>adjtimex</code> 更通用，支持多种时钟。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>306</code></td>
+<td><code>syncfs</code></td>
+<td><code>int syncfs(int fd);</code></td>
+<td>此系统调用用于将指定文件描述符所属的文件系统的所有脏数据同步到磁盘。它比 <code>sync</code> 更细粒度，只同步一个文件系统。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>307</code></td>
+<td><code>sendmmsg</code></td>
+<td><code>int sendmmsg(int sockfd, struct mmsghdr *msgvec, unsigned int vlen, unsigned int flags);</code></td>
+<td>此系统调用用于向套接字发送多条消息。它比循环调用 <code>sendmsg</code> 更高效，可以一次性发送多条消息。成功返回发送的消息数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>308</code></td>
+<td><code>setns</code></td>
+<td><code>int setns(int fd, int nstype);</code></td>
+<td>此系统调用用于将调用进程移动到指定的命名空间。<code>fd</code> 是一个引用命名空间的文件描述符，<code>nstype</code> 指定命名空间的类型。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>309</code></td>
+<td><code>getcpu</code></td>
+<td><code>int getcpu(unsigned *cpu, unsigned *node, struct getcpu_cache *tcache);</code></td>
+<td>此系统调用用于获取调用线程当前正在运行的 CPU 编号和 NUMA 节点编号。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>310</code></td>
+<td><code>process_vm_readv</code></td>
+<td><code>ssize_t process_vm_readv(pid_t pid, const struct iovec *local_iov, unsigned long liovcnt, const struct iovec *remote_iov, unsigned long riovcnt, unsigned long flags);</code></td>
+<td>此系统调用用于从另一个进程的地址空间读取数据。它将目标进程的多个不连续内存区域的数据读取到调用进程的多个不连续内存区域。成功返回读取的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>311</code></td>
+<td><code>process_vm_writev</code></td>
+<td><code>ssize_t process_vm_writev(pid_t pid, const struct iovec *local_iov, unsigned long liovcnt, const struct iovec *remote_iov, unsigned long riovcnt, unsigned long flags);</code></td>
+<td>此系统调用用于向另一个进程的地址空间写入数据。它将调用进程的多个不连续内存区域的数据写入目标进程的多个不连续内存区域。成功返回写入的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>312</code></td>
+<td><code>kcmp</code></td>
+<td><code>int kcmp(pid_t pid1, pid_t pid2, int type, unsigned long idx1, unsigned long idx2);</code></td>
+<td>此系统调用用于比较两个进程的内核资源。<code>type</code> 指定要比较的资源类型，例如文件描述符表或虚拟内存空间。成功返回 <code>0</code> 或 <code>1</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>313</code></td>
+<td><code>finit_module</code></td>
+<td><code>int finit_module(int fd, const char *param_values, int flags);</code></td>
+<td>此系统调用用于从已打开的文件描述符加载一个内核模块。<code>fd</code> 是模块文件的描述符，<code>param_values</code> 是模块参数。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>314</code></td>
+<td><code>sched_setattr</code></td>
+<td><code>int sched_setattr(pid_t pid, const struct sched_attr *attr, unsigned int flags);</code></td>
+<td>此系统调用用于设置进程的调度策略和参数。它比 <code>sched_setscheduler</code> 更通用，支持更灵活的调度策略。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>315</code></td>
+<td><code>sched_getattr</code></td>
+<td><code>int sched_getattr(pid_t pid, struct sched_attr *attr, unsigned int size, unsigned int flags);</code></td>
+<td>此系统调用用于获取进程的调度策略和参数。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>316</code></td>
+<td><code>renameat2</code></td>
+<td><code>int renameat2(int olddirfd, const char *oldpath, int newdirfd, const char *newpath, unsigned int flags);</code></td>
+<td>此系统调用是 <code>renameat</code> 的一个版本，它提供了额外的标志，如 <code>RENAME_NOREPLACE</code>（如果目标文件存在则不替换）。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>317</code></td>
+<td><code>seccomp</code></td>
+<td><code>int seccomp(unsigned int operation, unsigned int flags, const char *args);</code></td>
+<td>此系统调用用于设置或获取安全计算模式（seccomp）状态。它限制了进程可以调用的系统调用，从而增强安全性。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>318</code></td>
+<td><code>getrandom</code></td>
+<td><code>ssize_t getrandom(void *buf, size_t buflen, unsigned int flags);</code></td>
+<td>此系统调用用于从内核的加密安全伪随机数生成器中获取随机字节。<code>buf</code> 用于存储随机数据，<code>buflen</code> 指定长度。成功返回获取的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>319</code></td>
+<td><code>memfd_create</code></td>
+<td><code>int memfd_create(const char *name, unsigned int flags);</code></td>
+<td>此系统调用用于创建一个内存文件，并返回一个文件描述符。该文件只存在于内存中，可以被其他进程访问。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>320</code></td>
+<td><code>kexec_file_load</code></td>
+<td><code>long kexec_file_load(int kernel_fd, int initrd_fd, unsigned long cmdline_len, const char *cmdline_ptr, unsigned long flags);</code></td>
+<td>此系统调用用于从文件描述符加载一个内核镜像，以便在不重启物理机器的情况下启动它。它比 <code>kexec_load</code> 更安全，因为它使用文件描述符来引用文件。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>321</code></td>
+<td><code>bpf</code></td>
+<td><code>int bpf(int cmd, union bpf_attr *attr, unsigned int size);</code></td>
+<td>此系统调用用于操作 BPF（Berkeley Packet Filter）程序和映射。它允许在内核中执行高效的、沙盒化的程序，用于网络过滤、跟踪等。成功返回取决于 <code>cmd</code> 的值，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>322</code></td>
+<td><code>execveat</code></td>
+<td><code>int execveat(int dirfd, const char *pathname, char *const argv[], char *const envp[], int flags);</code></td>
+<td>此系统调用是 <code>execve</code> 的一个版本，它接受一个目录文件描述符 <code>dirfd</code> 作为相对路径的起点，并支持额外的标志，如 <code>AT_EMPTY_PATH</code>。成功时永不返回，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>323</code></td>
+<td><code>userfaultfd</code></td>
+<td><code>int userfaultfd(int flags);</code></td>
+<td>此系统调用用于创建一个用户空间页面错误处理程序的文件描述符。它允许用户空间的应用程序处理由自身或另一个进程产生的页面错误。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>324</code></td>
+<td><code>membarrier</code></td>
+<td><code>int membarrier(int cmd, int flags);</code></td>
+<td>此系统调用用于在所有线程上提供一个内存屏障，以确保所有 CPU 的内存视图同步。这对于跨线程或跨进程的内存一致性至关重要。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>325</code></td>
+<td><code>mlock2</code></td>
+<td><code>int mlock2(const void *addr, size_t len, int flags);</code></td>
+<td>此系统调用是 <code>mlock</code> 的一个版本，它提供了额外的标志，如 <code>MLOCK_ONFAULT</code>，可以延迟锁定，直到访问到该页面。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>326</code></td>
+<td><code>copy_file_range</code></td>
+<td><code>ssize_t copy_file_range(int fd_in, loff_t *off_in, int fd_out, loff_t *off_out, size_t len, unsigned int flags);</code></td>
+<td>此系统调用用于在两个文件描述符之间复制数据，无需通过用户空间缓冲区。它通过内核进行零拷贝复制，提供了非常高效的文件复制。成功返回复制的字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>327</code></td>
+<td><code>preadv2</code></td>
+<td><code>ssize_t preadv2(int fd, const struct iovec *iov, unsigned long iovcnt, off_t offset, int flags);</code></td>
+<td>此系统调用是 <code>preadv</code> 的一个版本，它提供了额外的标志，如 <code>RWF_HIPRI</code>（高优先级）或 <code>RWF_APPEND</code>。成功返回读取的总字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>328</code></td>
+<td><code>pwritev2</code></td>
+<td><code>ssize_t pwritev2(int fd, const struct iovec *iov, unsigned long iovcnt, off_t offset, int flags);</code></td>
+<td>此系统调用是 <code>pwritev</code> 的一个版本，它提供了额外的标志，如 <code>RWF_HIPRI</code>。成功返回写入的总字节数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>329</code></td>
+<td><code>pkey_mprotect</code></td>
+<td><code>int pkey_mprotect(void *addr, size_t len, int prot, int pkey);</code></td>
+<td>此系统调用是 <code>mprotect</code> 的一个版本，它允许使用内存保护键（<code>pkey</code>）来控制内存访问。这提供了更细粒度的内存保护。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>330</code></td>
+<td><code>pkey_alloc</code></td>
+<td><code>int pkey_alloc(unsigned int flags, unsigned int access_rights);</code></td>
+<td>此系统调用用于分配一个未使用的内存保护键。<code>flags</code> 和 <code>access_rights</code> 指定键的属性。成功返回新的保护键，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>331</code></td>
+<td><code>pkey_free</code></td>
+<td><code>int pkey_free(int pkey);</code></td>
+<td>此系统调用用于释放一个内存保护键。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>332</code></td>
+<td><code>statx</code></td>
+<td><code>int statx(int dirfd, const char *pathname, int flags, unsigned int mask, struct statx *statxbuf);</code></td>
+<td>此系统调用是 <code>stat</code> 的一个新版本，它提供了更多的文件信息，并允许在单个调用中获取多种属性。<code>mask</code> 指定要获取的属性，<code>statxbuf</code> 结构体用于存储结果。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>333</code></td>
+<td><code>io_pgetevents</code></td>
+<td><code>int io_pgetevents(aio_context_t ctx_id, long min_nr, long nr, struct io_event *events, struct timespec *timeout, const sigset_t *sigmask);</code></td>
+<td>此系统调用是 <code>io_getevents</code> 的一个版本，它允许原子性地改变信号掩码并检索事件。这对于处理信号和异步 I&#x2F;O 事件非常有用。返回值为获取的事件数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>334</code></td>
+<td><code>rseq</code></td>
+<td><code>int rseq(struct rseq *rseq, uint32_t rseq_len, int flags, uint32_t sig);</code></td>
+<td>此系统调用用于注册或取消一个 <code>rseq</code>（可重启序列）结构。<code>rseq</code> 是一种用于实现高效用户空间原子操作的机制，特别是在 NUMA 系统上。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>335</code></td>
+<td><code>uretprobe</code></td>
+<td><code>int uretprobe(int type, int arg);</code></td>
+<td>此系统调用用于在用户空间的函数返回时设置探针。此调用已过时，推荐使用 <code>bpf</code>。</td>
+</tr>
+<tr>
+<td><code>424</code></td>
+<td><code>pidfd_send_signal</code></td>
+<td><code>int pidfd_send_signal(int pidfd, int sig, siginfo_t *info, unsigned int flags);</code></td>
+<td>此系统调用用于向由文件描述符 <code>pidfd</code> 指定的进程发送信号。<code>pidfd</code> 提供了比传统 PID 更健壮的进程引用方式。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>425</code></td>
+<td><code>io_uring_setup</code></td>
+<td><code>int io_uring_setup(unsigned int entries, struct io_uring_params *params);</code></td>
+<td>此系统调用用于创建和初始化一个 <code>io_uring</code> 实例。<code>entries</code> 指定队列中的条目数，<code>params</code> 提供了额外的参数。<code>io_uring</code> 是一种高性能异步 I&#x2F;O 接口。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>426</code></td>
+<td><code>io_uring_enter</code></td>
+<td><code>int io_uring_enter(int fd, unsigned int to_submit, unsigned int min_complete, unsigned int flags, sigset_t *sig);</code></td>
+<td>此系统调用用于提交 <code>io_uring</code> 实例中的请求，并等待已完成的请求。它允许应用程序将请求排队并异步地处理结果。成功返回提交的请求数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>427</code></td>
+<td><code>io_uring_register</code></td>
+<td><code>int io_uring_register(int fd, unsigned int opcode, const void *arg, unsigned int nr_args);</code></td>
+<td>此系统调用用于注册 <code>io_uring</code> 实例中的文件描述符或缓冲区，以提高性能。它允许内核对资源进行预处理，从而减少后续的开销。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>428</code></td>
+<td><code>open_tree</code></td>
+<td><code>int open_tree(int dirfd, const char *pathname, unsigned int flags);</code></td>
+<td>此系统调用用于获取一个文件或目录子树的句柄，并返回一个文件描述符。这使得在不使用 <code>chroot</code> 的情况下，可以对文件树进行操作。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>429</code></td>
+<td><code>move_mount</code></td>
+<td><code>int move_mount(int from_dirfd, const char *from_pathname, int to_dirfd, const char *to_pathname, unsigned int flags);</code></td>
+<td>此系统调用用于移动一个挂载点。它将一个挂载点从一个位置移动到另一个位置，而无需卸载和重新挂载。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>430</code></td>
+<td><code>fsopen</code></td>
+<td><code>int fsopen(const char *fsname, unsigned int flags);</code></td>
+<td>此系统调用用于创建一个新的文件系统实例。它返回一个用于配置该文件系统的文件描述符。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>431</code></td>
+<td><code>fsconfig</code></td>
+<td><code>int fsconfig(int fd, unsigned int cmd, const char *key, const void *value, int aux);</code></td>
+<td>此系统调用用于配置一个文件系统实例。<code>fd</code> 是文件系统实例的文件描述符，<code>cmd</code> 指定操作类型，如设置选项或提交配置。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>432</code></td>
+<td><code>fsmount</code></td>
+<td><code>int fsmount(int fs_fd, unsigned int flags, unsigned int ms_flags);</code></td>
+<td>此系统调用用于挂载一个已配置的文件系统实例。<code>fs_fd</code> 是文件系统实例的文件描述符，<code>flags</code> 提供挂载选项。成功返回挂载的文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>433</code></td>
+<td><code>fspick</code></td>
+<td><code>int fspick(int dirfd, const char *path, unsigned int flags);</code></td>
+<td>此系统调用用于从文件树中选择一个文件或目录，并返回一个文件描述符。这可以用于在不进行符号链接遍历的情况下获取文件句柄。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>434</code></td>
+<td><code>pidfd_open</code></td>
+<td><code>int pidfd_open(pid_t pid, unsigned int flags);</code></td>
+<td>此系统调用用于打开一个进程的文件描述符。<code>pid</code> 指定目标进程。<code>pidfd</code> 可以用于向该进程发送信号或执行其他操作，即使进程的 PID 发生变化。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>435</code></td>
+<td><code>clone3</code></td>
+<td><code>int clone3(struct clone_args *cl_args, size_t size);</code></td>
+<td>此系统调用是 <code>clone</code> 的一个新版本，它使用一个结构体来传递参数，从而提供了更好的可扩展性。它用于创建一个新的子进程或线程。成功返回子进程的 PID，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>436</code></td>
+<td><code>close_range</code></td>
+<td><code>int close_range(unsigned int first, unsigned int last, unsigned int flags);</code></td>
+<td>此系统调用用于关闭指定范围内的所有文件描述符。它比循环调用 <code>close</code> 更高效，并且是原子性的。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>437</code></td>
+<td><code>openat2</code></td>
+<td><code>int openat2(int dirfd, const char *pathname, struct open_how *how, size_t size);</code></td>
+<td>此系统调用是 <code>openat</code> 的一个新版本，它使用一个结构体来传递参数，从而提供了更灵活的打开选项，如对符号链接的更精细控制。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>438</code></td>
+<td><code>pidfd_getfd</code></td>
+<td><code>int pidfd_getfd(int pidfd, int fd, unsigned int flags);</code></td>
+<td>此系统调用用于从由 <code>pidfd</code> 指定的进程中获取一个文件描述符的副本。成功返回新的文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>439</code></td>
+<td><code>faccessat2</code></td>
+<td><code>int faccessat2(int dirfd, const char *pathname, int mode, int flags);</code></td>
+<td>此系统调用是 <code>faccessat</code> 的一个版本，它提供了额外的标志，如 <code>AT_EACCESS</code>，用于根据有效 UID&#x2F;GID 检查权限。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>440</code></td>
+<td><code>process_madvise</code></td>
+<td><code>int process_madvise(int pidfd, const struct iovec *iov, size_t iovcnt, int advice, unsigned int flags);</code></td>
+<td>此系统调用用于对另一个进程的内存区域提供建议。<code>pidfd</code> 引用目标进程，<code>iov</code> 描述内存区域，<code>advice</code> 提供建议。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>441</code></td>
+<td><code>epoll_pwait2</code></td>
+<td><code>int epoll_pwait2(int epfd, struct epoll_event *events, int maxevents, const struct timespec *timeout, const sigset_t *sigmask);</code></td>
+<td>此系统调用是 <code>epoll_pwait</code> 的一个版本，它使用 <code>timespec</code> 结构体来指定超时时间，从而支持更高的精度。返回值为就绪事件的数量，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>442</code></td>
+<td><code>mount_setattr</code></td>
+<td><code>int mount_setattr(int dirfd, const char *pathname, unsigned int flags, struct mount_attr *uattr, size_t size);</code></td>
+<td>此系统调用用于设置或修改一个挂载点的属性。它比 <code>mount</code> 更细粒度，可以单独修改挂载属性，如只读或不可执行。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>443</code></td>
+<td><code>quotactl_fd</code></td>
+<td><code>int quotactl_fd(unsigned int fd, unsigned int cmd, qid_t id, void *addr);</code></td>
+<td>此系统调用是 <code>quotactl</code> 的一个版本，它通过文件描述符来引用文件系统。这可以避免路径名解析的潜在问题。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>444</code></td>
+<td><code>landlock_create_ruleset</code></td>
+<td><code>int landlock_create_ruleset(struct landlock_ruleset_attr *attr, size_t size, unsigned int flags);</code></td>
+<td>此系统调用用于创建一个新的 <code>Landlock</code> 规则集。<code>Landlock</code> 是一种用于限制进程文件系统访问权限的安全机制。成功返回规则集的文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>445</code></td>
+<td><code>landlock_add_rule</code></td>
+<td><code>int landlock_add_rule(int ruleset_fd, enum landlock_rule_type type, const void *attr, unsigned int flags);</code></td>
+<td>此系统调用用于向一个 <code>Landlock</code> 规则集添加规则。<code>ruleset_fd</code> 是规则集的文件描述符，<code>type</code> 指定规则类型，<code>attr</code> 提供了规则的详细信息。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>446</code></td>
+<td><code>landlock_restrict_self</code></td>
+<td><code>int landlock_restrict_self(int ruleset_fd, unsigned int flags);</code></td>
+<td>此系统调用用于将一个 <code>Landlock</code> 规则集应用到调用进程。这会限制进程的文件系统访问权限，一旦应用，规则集就无法被修改。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>447</code></td>
+<td><code>memfd_secret</code></td>
+<td><code>int memfd_secret(unsigned int flags);</code></td>
+<td>此系统调用用于创建一个秘密的内存文件，它无法被其他进程访问，即使是具有高权限的进程。这对于存储敏感数据非常有用。成功返回文件描述符，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>448</code></td>
+<td><code>process_mrelease</code></td>
+<td><code>int process_mrelease(int pidfd, unsigned int flags);</code></td>
+<td>此系统调用用于释放指定进程的资源，但不会终止进程。<code>pidfd</code> 引用目标进程。这可以用于在不等待进程完全退出时回收资源。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>449</code></td>
+<td><code>futex_waitv</code></td>
+<td><code>int futex_waitv(struct futex_waitv *waitv, unsigned int nr_futexes, int flags);</code></td>
+<td>此系统调用是 <code>futex</code> 的一个版本，它允许在一个原子操作中等待多个 futex。这对于实现复杂的同步原语非常有用。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>450</code></td>
+<td><code>set_mempolicy_home_node</code></td>
+<td><code>int set_mempolicy_home_node(unsigned int start, unsigned int len, unsigned int node);</code></td>
+<td>此系统调用用于设置一个进程的“家”NUMA 节点，并将其内存页绑定到该节点。此调用已过时，推荐使用 <code>mbind</code>。</td>
+</tr>
+<tr>
+<td><code>451</code></td>
+<td><code>cachestat</code></td>
+<td><code>int cachestat(int fd, const char *path, const struct statx *stx, unsigned int flags, struct cachestat *result);</code></td>
+<td>此系统调用用于获取文件页面缓存的统计信息。<code>fd</code> 和 <code>path</code> 指定文件，<code>result</code> 结构体用于存储缓存命中、丢失等信息。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>452</code></td>
+<td><code>fchmodat2</code></td>
+<td><code>int fchmodat2(int dirfd, const char *pathname, mode_t mode, unsigned int flags);</code></td>
+<td>此系统调用是 <code>fchmodat</code> 的一个版本，它提供了额外的标志，如 <code>AT_SYMLINK_NOFOLLOW</code>。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>453</code></td>
+<td><code>map_shadow_stack</code></td>
+<td><code>unsigned long map_shadow_stack(unsigned long addr, unsigned long size, unsigned int flags);</code></td>
+<td>此系统调用用于为进程创建一个影子栈。影子栈是一种安全机制，用于保护函数返回地址不被缓冲区溢出等攻击篡改。成功返回影子栈的地址，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>454</code></td>
+<td><code>futex_wake</code></td>
+<td><code>int futex_wake(int *uaddr, int nr_wake);</code></td>
+<td>此系统调用是 <code>futex</code> 的一个版本，专门用于唤醒在指定 <code>uaddr</code> 上等待的线程。<code>nr_wake</code> 指定要唤醒的最大线程数。成功返回唤醒的线程数，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>455</code></td>
+<td><code>futex_wait</code></td>
+<td><code>int futex_wait(int *uaddr, int val);</code></td>
+<td>此系统调用是 <code>futex</code> 的一个版本，专门用于等待。它在 <code>uaddr</code> 上等待，直到其值不等于 <code>val</code>。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>456</code></td>
+<td><code>futex_requeue</code></td>
+<td><code>int futex_requeue(int *uaddr, int nr_wake, int *uaddr2, int nr_requeue);</code></td>
+<td>此系统调用是 <code>futex</code> 的一个版本，它允许在单个原子操作中唤醒一个 futex 上的线程，并将其余线程重新排队到另一个 futex 上。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>457</code></td>
+<td><code>statmount</code></td>
+<td><code>int statmount(const char *pathname, struct statmount *statbuf);</code></td>
+<td>此系统调用用于获取一个挂载点的状态信息。此调用已过时。</td>
+</tr>
+<tr>
+<td><code>458</code></td>
+<td><code>listmount</code></td>
+<td><code>int listmount(const char *pathname, void *buf, size_t bufsize);</code></td>
+<td>此系统调用用于列出一个挂载点下的所有子挂载点。此调用已过时。</td>
+</tr>
+<tr>
+<td><code>459</code></td>
+<td><code>lsm_get_self_attr</code></td>
+<td><code>int lsm_get_self_attr(const char *attr, void *value, size_t len);</code></td>
+<td>此系统调用用于获取当前进程的 Linux 安全模块（LSM）属性。<code>attr</code> 指定属性名称。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>460</code></td>
+<td><code>lsm_set_self_attr</code></td>
+<td><code>int lsm_set_self_attr(const char *attr, const void *value, size_t len, int flags);</code></td>
+<td>此系统调用用于设置当前进程的 Linux 安全模块（LSM）属性。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>461</code></td>
+<td><code>lsm_list_modules</code></td>
+<td><code>int lsm_list_modules(void *buf, size_t len);</code></td>
+<td>此系统调用用于列出所有已启用的 Linux 安全模块（LSM）。<code>buf</code> 用于存储模块名称列表。成功返回列表的大小，失败返回 <code>-1</code>。</td>
+</tr>
+<tr>
+<td><code>462</code></td>
+<td><code>mseal</code></td>
+<td><code>int mseal(void *addr, size_t len, unsigned int flags);</code></td>
+<td>此系统调用用于对一个内存映射区域进行密封。一旦密封，该区域的某些属性（如可写性）就无法再更改，从而增强安全性。成功返回 <code>0</code>，失败返回 <code>-1</code>。</td>
+</tr>
+</tbody></table>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>License</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">Older</div><a href="/2025/11/12/Hello-world%EF%BC%81/">Hello world！</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Redstone6835</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+</aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `Just`,
+      min: `minutes ago`,
+      hour: `hours ago`,
+      day: `days ago`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `Switched to Light Mode`,
+      dark: `Switched to Dark Mode`,
+      auto: `Switched to Auto Mode`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
