@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
   
-  <meta name="robots" content="noindex,follow">
+  
   <meta name="generator" content="Hexo 8.1.1">
   <meta http-equiv='x-dns-prefetch-control' content='on' />
   
@@ -17,20 +17,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
-  <title>Archives - Redstone6835's blog</title>
+  <title>sys_poll - Redstone6835's blog</title>
 
   
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Archives">
-<meta property="og:url" content="http://redstone6835.github.io/archives/2025/">
+    <meta name="description" content="sys_poll （即调用号为7的poll系统调用）是 Linux 中一个非常重要的系统调用，用于检测多个文件描述符，看它们是否准备好去进行某种类型的 I&#x2F;O 操作（比如是否可读、可写等）。它是一种实现 I&#x2F;O 多路复用的高效方法，允许一个程序同时等待多个文件描述符，而不需要为每个文件描述符创建一个单独的线程。  sys_poll  函数原型   1int poll(struc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sys_poll">
+<meta property="og:url" content="http://redstone6835.github.io/2025/11/12/sys-poll/">
 <meta property="og:site_name" content="Redstone6835&#39;s blog">
+<meta property="og:description" content="sys_poll （即调用号为7的poll系统调用）是 Linux 中一个非常重要的系统调用，用于检测多个文件描述符，看它们是否准备好去进行某种类型的 I&#x2F;O 操作（比如是否可读、可写等）。它是一种实现 I&#x2F;O 多路复用的高效方法，允许一个程序同时等待多个文件描述符，而不需要为每个文件描述符创建一个单独的线程。  sys_poll  函数原型   1int poll(struc">
 <meta property="og:locale">
+<meta property="article:published_time" content="2025-11-12T14:29:39.000Z">
+<meta property="article:modified_time" content="2025-11-12T14:35:12.204Z">
 <meta property="article:author" content="Redstone6835">
+<meta property="article:tag" content="Linux, Kernel">
 <meta name="twitter:card" content="summary">
   
   
   
-  
+  <meta name="keywords" content="Linux, Kernel">
 
   <!-- feed -->
   
@@ -42,7 +47,7 @@
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Website","@id":"http://redstone6835.github.io","author":{"@type":"Person","name":"Redstone6835","sameAs":[]},"name":"Redstone6835's blog","description":"","url":"http://redstone6835.github.io"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[]},"dateCreated":"2025-11-12T22:29:39+08:00","dateModified":"2025-11-12T22:35:12+08:00","datePublished":"2025-11-12T22:29:39+08:00","description":"","headline":"sys_poll","mainEntityOfPage":{"@type":"WebPage","@id":"http://redstone6835.github.io/2025/11/12/sys-poll/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[]},"url":"http://redstone6835.github.io/2025/11/12/sys-poll/","keywords":"Linux, Kernel","image":[]}</script>
   
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
@@ -51,7 +56,7 @@
 <!-- hexo injector head_end end --></head>
 <body>
 
-<div class="l_body index" id="start" layout="undefined" type="undefined" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
 
 
 <header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Redstone6835's blog</div></a></div></header>
@@ -63,17 +68,167 @@
 <div class="widgets">
 <div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="Search"></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div>
 
+
+
 <widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">Recent Update</span></div><div class="widget-body fs14"><a class="item title" href="/2025/11/12/sys-brk/"><span class="title">sys_brk</span></a><a class="item title" href="/2025/11/12/sys-mprotect/"><span class="title">sys_mprotect</span></a><a class="item title" href="/2025/11/12/sys-mmap-%E4%B8%8E-sys-munmap/"><span class="title">sys_mmap 与 sys_munmap</span></a><a class="item title" href="/2025/11/12/sys-lseek/"><span class="title">sys_lseek</span></a><a class="item title" href="/2025/11/12/sys-poll/"><span class="title">sys_poll</span></a><a class="item title" href="/2025/11/12/sys-stat-sys-fstat-%E4%BB%A5%E5%8F%8A-sys-lstat/"><span class="title">sys_stat, sys_fstat 以及 sys_lstat</span></a><a class="item title" href="/2025/11/12/sys-open-%E4%B8%8E-sys-close/"><span class="title">sys_open 与 sys_close</span></a><a class="item title" href="/2025/11/12/sys-write/"><span class="title">sys_write</span></a><a class="item title" href="/2025/11/12/sys-read/"><span class="title">sys_read</span></a><a class="item title" href="/2025/11/12/Linux-x86-64-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E8%A1%A8/"><span class="title">Linux x86_64 系统调用表</span></a></div></widget>
 </div>
 
 </div></aside><div class="l_main" id="main">
 
-<header class="header mobile-only"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Redstone6835's blog</div></a></div></header>
-
- 
 
 
-<div class="navbar top"><div class="navbar-blur"><div class="navbar-container"><nav class="post"><a href="/">Recent</a><a href="/tags/">Tags</a><a class="active" href="/archives/">Archives</a></nav></div></div></div><div class="post-list archives"><article class="" id="archive"><div class='archive-header h4'>2025</div><div class="archive-list"><a class='post fs14' href="/2025/11/12/sys-brk/"><time>11-12</time><span>sys_brk</span></a></div><div class="archive-list"><a class='post fs14' href="/2025/11/12/sys-mprotect/"><time>11-12</time><span>sys_mprotect</span></a></div><div class="archive-list"><a class='post fs14' href="/2025/11/12/sys-mmap-%E4%B8%8E-sys-munmap/"><time>11-12</time><span>sys_mmap 与 sys_munmap</span></a></div><div class="archive-list"><a class='post fs14' href="/2025/11/12/sys-lseek/"><time>11-12</time><span>sys_lseek</span></a></div><div class="archive-list"><a class='post fs14' href="/2025/11/12/sys-poll/"><time>11-12</time><span>sys_poll</span></a></div><div class="archive-list"><a class='post fs14' href="/2025/11/12/sys-stat-sys-fstat-%E4%BB%A5%E5%8F%8A-sys-lstat/"><time>11-12</time><span>sys_stat, sys_fstat 以及 sys_lstat</span></a></div><div class="archive-list"><a class='post fs14' href="/2025/11/12/sys-open-%E4%B8%8E-sys-close/"><time>11-12</time><span>sys_open 与 sys_close</span></a></div><div class="archive-list"><a class='post fs14' href="/2025/11/12/sys-write/"><time>11-12</time><span>sys_write</span></a></div><div class="archive-list"><a class='post fs14' href="/2025/11/12/sys-read/"><time>11-12</time><span>sys_read</span></a></div><div class="archive-list"><a class='post fs14' href="/2025/11/12/Linux-x86-64-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E8%A1%A8/"><time>11-12</time><span>Linux x86_64 系统调用表</span></a></div><div class="archive-list"><a class='post fs14' href="/2025/11/12/Hello-world%EF%BC%81/"><time>11-12</time><span>Hello world！</span></a></div></article></div>
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">Posted on: <time datetime="2025-11-12T14:29:39.000Z">2025-11-12</time></span><span class="sep updated"></span><span class="text updated">Updated on: <time datetime="2025-11-12T14:35:12.204Z">2025-11-12</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>sys_poll</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><p><code>sys_poll</code> （即调用号为<code>7</code>的poll系统调用）是 Linux 中一个非常重要的系统调用，用于检测多个文件描述符，看它们是否准备好去进行某种类型的 I&#x2F;O 操作（比如是否可读、可写等）。它是一种实现 I&#x2F;O 多路复用的高效方法，允许一个程序同时等待多个文件描述符，而不需要为每个文件描述符创建一个单独的线程。</p>
+<ul>
+<li><p><code>sys_poll</code></p>
+<ul>
+<li><p><strong>函数原型</strong></p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">poll</span><span class="params">(<span class="keyword">struct</span> pollfd *fds, <span class="type">nfds_t</span> nfds, <span class="type">int</span> timeout)</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>参数</strong></p>
+<ul>
+<li><p><code>fds</code>: 指向 <code>struct pollfd</code> 数组的指针，每个元素作为一个结构体描述一个文件描述符及其关心的事件。这个结构体本身被定义为：</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> &#123;</span></span><br><span class="line"><span class="type">int</span>   fd;       <span class="comment">// 要监控的文件描述符</span></span><br><span class="line">*<span class="type">short</span> events;   <span class="comment">//* 关注的事件位掩码</span></span><br><span class="line">*<span class="type">short</span> revents;  <span class="comment">//* 内核返回的事件位掩码（由系统调用填写）</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>  其中，<code>events</code> 常常使用宏来填写。这些表示事件的宏定义如下：</p>
+<table>
+<thead>
+<tr>
+<th>宏</th>
+<th>值 (16 进制)</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>POLLIN</code></td>
+<td><code>0x0001</code></td>
+<td>文件可读（包括普通数据或高优先级数据）</td>
+</tr>
+<tr>
+<td><code>POLLPRI</code></td>
+<td><code>0x0002</code></td>
+<td>高优先级数据可读（例如带外数据）</td>
+</tr>
+<tr>
+<td><code>POLLOUT</code></td>
+<td><code>0x0004</code></td>
+<td>文件可写</td>
+</tr>
+<tr>
+<td><code>POLLERR</code></td>
+<td><code>0x0008</code></td>
+<td>错误条件发生（系统设置）</td>
+</tr>
+<tr>
+<td><code>POLLHUP</code></td>
+<td><code>0x0010</code></td>
+<td>对端挂断或 FIFO 文件关闭</td>
+</tr>
+<tr>
+<td><code>POLLNVAL</code></td>
+<td><code>0x0020</code></td>
+<td>文件描述符无效</td>
+</tr>
+<tr>
+<td><code>POLLRDNORM</code></td>
+<td><code>0x0040</code></td>
+<td>普通数据可读（类似 <code>POLLIN</code>）</td>
+</tr>
+<tr>
+<td><code>POLLRDBAND</code></td>
+<td><code>0x0080</code></td>
+<td>带外&#x2F;优先级数据可读</td>
+</tr>
+<tr>
+<td><code>POLLWRNORM</code></td>
+<td><code>0x0100</code></td>
+<td>普通可写（类似 <code>POLLOUT</code>）</td>
+</tr>
+<tr>
+<td><code>POLLWRBAND</code></td>
+<td><code>0x0200</code></td>
+<td>带外&#x2F;优先级数据可写</td>
+</tr>
+<tr>
+<td><code>POLLMSG</code></td>
+<td><code>0x0400</code></td>
+<td>消息可用（主要用于消息队列，POSIX）</td>
+</tr>
+<tr>
+<td><code>POLLREMOVE</code></td>
+<td><code>0x1000</code></td>
+<td>监控对象被移除（内核使用）</td>
+</tr>
+<tr>
+<td><code>POLLONESHOT</code></td>
+<td><code>0x8000</code></td>
+<td>仅触发一次事件，之后自动清除（内核使用）</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><code>nfds</code>: 传入的数组中元素的数量</p>
+</li>
+<li><p><code>timeout</code>: 等待事件的超时时间（毫秒），-1 表示无限等待，0 表示立即返回</p>
+</li>
+</ul>
+</li>
+<li><p><strong>返回值</strong></p>
+<ul>
+<li>成功时返回发生事件的文件描述符数量（非负整数）</li>
+<li>失败时返回 <code>-errno</code>（如 <code>EINVAL</code>, <code>EFAULT</code>, <code>EBADF</code>）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>用例</strong></p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">	.equ POLLIN, 0x0001</span><br><span class="line">	</span><br><span class="line">	.section .data</span><br><span class="line">fds:</span><br><span class="line">	# 定义一个 pollfd 数组，监控文件描述符 0 (stdin) 是否可读</span><br><span class="line">	.long 0               # fd = 0 (stdin)</span><br><span class="line">	.short POLLIN         # events = POLLIN (可读事件)</span><br><span class="line">	.short 0x0000         # revents (内核填写，初始为 0)</span><br><span class="line"></span><br><span class="line">timeout:</span><br><span class="line">	.long 5000            # 等待 5000 毫秒（5 秒）</span><br><span class="line"></span><br><span class="line">	.section .text</span><br><span class="line">	.globl _start</span><br><span class="line"></span><br><span class="line">_start:</span><br><span class="line">	# 调用 sys_poll 监控 stdin 是否有可读事件</span><br><span class="line">	mov $7, %rax              # 系统调用号 (7 = sys_poll)</span><br><span class="line">	lea fds(%rip), %rdi       # struct pollfd *fds</span><br><span class="line">	mov $1, %rsi              # nfds = 1 (数组中只有一个元素)</span><br><span class="line">	lea timeout(%rip), %rdx   # timeout = 5000 ms</span><br><span class="line">	syscall                   # 执行系统调用</span><br><span class="line"></span><br><span class="line">	# 退出程序</span><br><span class="line">	mov $60, %rax             # 系统调用号 (60 = sys_exit)</span><br><span class="line">	xor %rdi, %rdi            # return 0</span><br><span class="line">	syscall</span><br></pre></td></tr></table></figure>
+<p>  <strong>分析</strong>：</p>
+<p>  上述代码演示了如何使用 <code>sys_poll</code> 监控标准输入（<code>stdin</code>，文件描述符 <code>0</code>）是否可读。</p>
+<p>  程序首先在 <code>.data</code> 段定义了一个 <code>struct pollfd</code> 数组 <code>fds</code>：</p>
+<ul>
+<li><code>fd</code> 字段设为 <code>0</code>，表示标准输入</li>
+<li><code>events</code> 字段设为 <code>POLLIN</code>，表示关注可读事件</li>
+<li><code>revents</code> 字段初始化为 <code>0</code>，系统调用返回时内核会写入实际发生的事件</li>
+</ul>
+<p>  <code>timeout</code> 字段被设为 <code>5000</code>，表示最多等待 5 秒。由于我们只定义了一个结构体，<code>fds</code> 仅仅是一个指向结构体的指针，而不指向一个数组，所以我们将数组长度<code>nfds</code> 设置为<code>1</code> 。这样一来，运行到第一个<code>syscall</code> 时，系统调用大致上可以等效为：</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">poll(&amp;fds, <span class="number">1</span>, <span class="number">5000</span>);</span><br></pre></td></tr></table></figure>
+<p>  程序最后调用 <code>sys_exit</code> 系统调用正常退出，返回值 <code>0</code> 表示成功。</p>
+<p>  通过这种方式，<code>sys_poll</code> 可以有效地在单线程中同时监控多个 I&#x2F;O 事件，常用于实现事件循环或非阻塞 I&#x2F;O。</p>
+</li>
+</ul>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>License</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">Newer</div><a href="/2025/11/12/sys-lseek/">sys_lseek</a></div><div class="item" id="next"><div class="note">Older</div><a href="/2025/11/12/sys-stat-sys-fstat-%E4%BB%A5%E5%8F%8A-sys-lstat/">sys_stat, sys_fstat 以及 sys_lstat</a></div></section></div>
+
+
+
+
+
+
 <footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Redstone6835</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
 </div></footer>
 <div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
