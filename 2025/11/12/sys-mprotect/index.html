@@ -1,5 +1,5 @@
 
-<!DOCTYPE html><html lang="zh">
+<!DOCTYPE html><html lang="zh_CN">
 
 <head>
   <meta charset="utf-8">
@@ -26,12 +26,14 @@
 <meta property="og:url" content="http://redstone6835.github.io/2025/11/12/sys-mprotect/">
 <meta property="og:site_name" content="RedstoneDist">
 <meta property="og:description" content="sys_mprotect（即调用号为10的mprotect系统调用）是Linux内核提供的一个核心功能，它允许程序动态地修改其虚拟地址空间中某个内存区域的访问权限。这在很多场景中都至关重要，如实现JIT编译器、沙箱机制，或者防止某些类型的缓冲区溢出攻击。通过调用sys_mprotect，程序可以将一段内存设置为只读，以保护重要数据不被意外修改；或者将一段内存设置为可执行，以允许动态生成的代码运行。">
-<meta property="og:locale">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://redstone6835.github.io/images/avatar.png">
 <meta property="article:published_time" content="2025-11-12T14:30:09.000Z">
 <meta property="article:modified_time" content="2025-11-12T14:39:02.865Z">
 <meta property="article:author" content="Redstone6835">
 <meta property="article:tag" content="Linux, Kernel">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://redstone6835.github.io/images/avatar.png">
   
   
   
@@ -44,10 +46,12 @@
 
 
   
+    <link rel="shortcut icon" href="/images/avatar.png">
+  
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[]},"dateCreated":"2025-11-12T22:30:09+08:00","dateModified":"2025-11-12T22:39:02+08:00","datePublished":"2025-11-12T22:30:09+08:00","description":"","headline":"sys_mprotect","mainEntityOfPage":{"@type":"WebPage","@id":"http://redstone6835.github.io/2025/11/12/sys-mprotect/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[]},"url":"http://redstone6835.github.io/2025/11/12/sys-mprotect/","keywords":"Linux, Kernel","image":[]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png"},"dateCreated":"2025-11-12T22:30:09+08:00","dateModified":"2025-11-12T22:39:02+08:00","datePublished":"2025-11-12T22:30:09+08:00","description":"","headline":"sys_mprotect","mainEntityOfPage":{"@type":"WebPage","@id":"http://redstone6835.github.io/2025/11/12/sys-mprotect/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png","logo":{"@type":"ImageObject","url":"/images/avatar.png"}},"url":"http://redstone6835.github.io/2025/11/12/sys-mprotect/","keywords":"Linux, Kernel","image":[]}</script>
   
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
@@ -59,7 +63,7 @@
 <div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
 
 
-<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">RedstoneDist</div><div class="sub normal cap">社会实践是检验真理的唯一标准。</div><div class="sub hover cap" style="opacity:0"> 哲学家们只是用不同的方式解释世界，而问题在于改变世界。</div></a></div></header>
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/images/avatar.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">RedstoneDist</div><div class="sub normal cap">社会实践是检验真理的唯一标准。</div><div class="sub hover cap" style="opacity:0"> 批判的武器不能够代替武器的批判。</div></a></div></header>
 
 <div class="nav-area">
 
