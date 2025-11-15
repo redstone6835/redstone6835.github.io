@@ -1,0 +1,1196 @@
+
+<!DOCTYPE html><html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>使用 Rust 语言编写基于 STM32 的智能车程序 - Redstone6835's blog</title>
+
+  
+    <meta name="description" content="使用 Rust 语言编写基于 STM32 的智能车程序这篇 Blog 将着重介绍如何使用 Rust 语言工具链配置 STM32 嵌入式开发环境，并将指导您使用 Rust 编写一个简易的、基于电磁传感器循迹的智能车程序。  💡  这里所使用的单片机芯片为 STM32F103RCT6。不同的芯片可能产生细微但不大的差别。   安装 Rust STM32 工具链这里默认已经安装好了rustup 与ca">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Rust 语言编写基于 STM32 的智能车程序">
+<meta property="og:url" content="http://redstone6835.github.io/2025/11/16/%E4%BD%BF%E7%94%A8-Rust-%E8%AF%AD%E8%A8%80%E7%BC%96%E5%86%99%E5%9F%BA%E4%BA%8E-STM32-%E7%9A%84%E6%99%BA%E8%83%BD%E8%BD%A6%E7%A8%8B%E5%BA%8F/">
+<meta property="og:site_name" content="Redstone6835&#39;s blog">
+<meta property="og:description" content="使用 Rust 语言编写基于 STM32 的智能车程序这篇 Blog 将着重介绍如何使用 Rust 语言工具链配置 STM32 嵌入式开发环境，并将指导您使用 Rust 编写一个简易的、基于电磁传感器循迹的智能车程序。  💡  这里所使用的单片机芯片为 STM32F103RCT6。不同的芯片可能产生细微但不大的差别。   安装 Rust STM32 工具链这里默认已经安装好了rustup 与ca">
+<meta property="og:locale">
+<meta property="article:published_time" content="2025-11-15T17:47:49.000Z">
+<meta property="article:modified_time" content="2025-11-15T17:48:38.004Z">
+<meta property="article:author" content="Redstone6835">
+<meta property="article:tag" content="Rust">
+<meta name="twitter:card" content="summary">
+  
+  
+  
+  <meta name="keywords" content="Rust">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[]},"dateCreated":"2025-11-16T01:47:49+08:00","dateModified":"2025-11-16T01:48:38+08:00","datePublished":"2025-11-16T01:47:49+08:00","description":"","headline":"使用 Rust 语言编写基于 STM32 的智能车程序","mainEntityOfPage":{"@type":"WebPage","@id":"http://redstone6835.github.io/2025/11/16/%E4%BD%BF%E7%94%A8-Rust-%E8%AF%AD%E8%A8%80%E7%BC%96%E5%86%99%E5%9F%BA%E4%BA%8E-STM32-%E7%9A%84%E6%99%BA%E8%83%BD%E8%BD%A6%E7%A8%8B%E5%BA%8F/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[]},"url":"http://redstone6835.github.io/2025/11/16/%E4%BD%BF%E7%94%A8-Rust-%E8%AF%AD%E8%A8%80%E7%BC%96%E5%86%99%E5%9F%BA%E4%BA%8E-STM32-%E7%9A%84%E6%99%BA%E8%83%BD%E8%BD%A6%E7%A8%8B%E5%BA%8F/","keywords":"Rust","image":[]}</script>
+  
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Redstone6835's blog</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="Search"></form><div id="search-result"></div><div class="search-no-result">No Results!</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">Recent Update</span></div><div class="widget-body fs14"><a class="item title" href="/2025/11/16/%E4%BD%BF%E7%94%A8-Rust-%E8%AF%AD%E8%A8%80%E7%BC%96%E5%86%99%E5%9F%BA%E4%BA%8E-STM32-%E7%9A%84%E6%99%BA%E8%83%BD%E8%BD%A6%E7%A8%8B%E5%BA%8F/"><span class="title">使用 Rust 语言编写基于 STM32 的智能车程序</span></a><a class="item title" href="/2025/11/12/sys-brk/"><span class="title">sys_brk</span></a><a class="item title" href="/2025/11/12/sys-mprotect/"><span class="title">sys_mprotect</span></a><a class="item title" href="/2025/11/12/sys-mmap-%E4%B8%8E-sys-munmap/"><span class="title">sys_mmap 与 sys_munmap</span></a><a class="item title" href="/2025/11/12/sys-lseek/"><span class="title">sys_lseek</span></a><a class="item title" href="/2025/11/12/sys-poll/"><span class="title">sys_poll</span></a><a class="item title" href="/2025/11/12/sys-stat-sys-fstat-%E4%BB%A5%E5%8F%8A-sys-lstat/"><span class="title">sys_stat, sys_fstat 以及 sys_lstat</span></a><a class="item title" href="/2025/11/12/sys-open-%E4%B8%8E-sys-close/"><span class="title">sys_open 与 sys_close</span></a><a class="item title" href="/2025/11/12/sys-write/"><span class="title">sys_write</span></a><a class="item title" href="/2025/11/12/sys-read/"><span class="title">sys_read</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">Posted on: <time datetime="2025-11-15T17:47:49.000Z">2025-11-16</time></span><span class="sep updated"></span><span class="text updated">Updated on: <time datetime="2025-11-15T17:48:38.004Z">2025-11-16</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>使用 Rust 语言编写基于 STM32 的智能车程序</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="使用-Rust-语言编写基于-STM32-的智能车程序"><a href="#使用-Rust-语言编写基于-STM32-的智能车程序" class="headerlink" title="使用 Rust 语言编写基于 STM32 的智能车程序"></a>使用 Rust 语言编写基于 STM32 的智能车程序</h1><p>这篇 Blog 将着重介绍如何使用 Rust 语言工具链配置 STM32 嵌入式开发环境，并将指导您使用 Rust 编写一个简易的、基于电磁传感器循迹的智能车程序。</p>
+<aside>
+💡
+
+<p>这里所使用的单片机芯片为 <code>STM32F103RCT6</code>。不同的芯片可能产生细微但不大的差别。</p>
+</aside>
+
+<h2 id="安装-Rust-STM32-工具链"><a href="#安装-Rust-STM32-工具链" class="headerlink" title="安装 Rust STM32 工具链"></a>安装 Rust STM32 工具链</h2><p>这里默认已经安装好了<code>rustup</code> 与<code>cargo</code> 等工具，以及 <code>openocd</code>这一调试工具。</p>
+<p>输入命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意：不同 STM32 芯片对应的目标可能不同。</span></span><br><span class="line"><span class="comment"># rustup target add thumbv7em-none-eabihf   # STM32F4xx / F7xx / L7xx / ...</span></span><br><span class="line">rustup target add thumbv7m-none-eabi        <span class="comment"># STM32F1xx / L1xx</span></span><br></pre></td></tr></table></figure>
+
+<aside>
+💡
+
+<p>这里附上一张 MCU 与不同 Rust 构建目标的参考表。</p>
+<table>
+<thead>
+<tr>
+<th>MCU 系列</th>
+<th>Rust target</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>STM32F0/L0/G0</code></strong></td>
+<td><code>thumbv6m-none-eabi</code></td>
+</tr>
+<tr>
+<td><strong><code>STM32F1/L1</code></strong></td>
+<td><code>thumbv7m-none-eabi</code></td>
+</tr>
+<tr>
+<td><strong><code>STM32F2/F3/F4/F7/L4/H7</code></strong></td>
+<td><code>thumbv7em-none-eabi</code> 或 <code>thumbv7em-none-eabihf</code>（硬浮点）</td>
+</tr>
+</tbody></table>
+</aside>
+
+<p>为了使得 Rust 可以正常完成交叉编译，我们仍然需要安装交叉编译工具链。</p>
+<p>输入命令（这里以 Debian 为例）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install gcc-arm-none-eabi gdb-multiarch</span><br></pre></td></tr></table></figure>
+
+<p>为了使得我们可以自动化烧录、运行、调试这一全过程，我们还需要安装 <code>probe-rs</code> 工具。</p>
+<p>运行命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cargo install probe-rs</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用简易模板方式创建-STM32-工程"><a href="#使用简易模板方式创建-STM32-工程" class="headerlink" title="使用简易模板方式创建 STM32 工程"></a>使用简易模板方式创建 STM32 工程</h2><h3 id="克隆模板仓库"><a href="#克隆模板仓库" class="headerlink" title="克隆模板仓库"></a>克隆模板仓库</h3><p>这里有一个 Rust 的仓库模板，尤其适用于基于 VSCode 的开发。</p>
+<p>输入命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/redstone6835/example-rust-stm32</span><br></pre></td></tr></table></figure>
+
+<p>以下为叙述方便，将软件仓库根目录视为<code>/</code> 目录。</p>
+<p>这里使用 VSCode 可以直接打开这个文件夹。在打开文件夹之前，请安装 <code>rust-analyzer</code> 与<code>Dependi</code>插件以确保更加完美的 Coding 体验。</p>
+<aside>
+💡
+
+<p>如果您使用的是其他编辑器，理论上可以在配置好 Rust 开发环境之后直接以打开任何一个 Rust 工程的形式打开本模板。</p>
+<p>注意：本项目默认使用 <code>openocd</code> 进行烧录、调试。使用其他方法烧录可能产生其他问题。</p>
+<p>具体细节请参考项目中的 <code>/.vscode/launch.json</code> 与 <code>/.vscode/tasks.json</code>。</p>
+</aside>
+
+<h3 id="修改有关配置文件"><a href="#修改有关配置文件" class="headerlink" title="修改有关配置文件"></a>修改有关配置文件</h3><p>打开 <code>/Cargo.toml</code> ：</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;example-rust-stm32&quot;</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">&quot;2024&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">cortex-m</span> = <span class="string">&quot;0.7&quot;</span></span><br><span class="line"><span class="attr">cortex-m-rt</span> = <span class="string">&quot;0.7&quot;</span></span><br><span class="line"><span class="attr">embedded-hal</span> = <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line"><span class="attr">panic-halt</span> = <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">stm32f1xx-hal</span> = &#123; version = <span class="string">&quot;0.11.0&quot;</span>, features = [<span class="string">&quot;stm32f103&quot;</span>, <span class="string">&quot;medium&quot;</span>] &#125;</span><br><span class="line"></span><br><span class="line"><span class="section">[profile.dev]</span></span><br><span class="line"><span class="attr">opt-level</span> = <span class="number">0</span></span><br><span class="line"><span class="attr">debug</span> = <span class="literal">true</span></span><br><span class="line"><span class="attr">lto</span> = <span class="literal">false</span></span><br><span class="line"><span class="attr">codegen-units</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">strip</span> = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="section">[profile.release]</span></span><br><span class="line"><span class="attr">opt-level</span> = <span class="string">&quot;z&quot;</span></span><br><span class="line"><span class="attr">lto</span> = <span class="literal">true</span></span><br><span class="line"><span class="attr">codegen-units</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">strip</span> = <span class="literal">true</span></span><br><span class="line"><span class="attr">debug</span> = <span class="literal">false</span></span><br><span class="line"><span class="attr">panic</span> = <span class="string">&quot;abort&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>将 <code>package</code> 中的 <code>name</code> 项修改为本工程项目的名称。</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[package]</span></span><br><span class="line"><span class="attr">name</span> = <span class="string">&quot;car&quot;</span></span><br><span class="line"><span class="attr">version</span> = <span class="string">&quot;0.1.0&quot;</span></span><br><span class="line"><span class="attr">edition</span> = <span class="string">&quot;2024&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[dependencies]</span></span><br><span class="line"><span class="attr">cortex-m</span> = <span class="string">&quot;0.7&quot;</span></span><br><span class="line"><span class="attr">cortex-m-rt</span> = <span class="string">&quot;0.7&quot;</span></span><br><span class="line"><span class="attr">embedded-hal</span> = <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line"><span class="attr">panic-halt</span> = <span class="string">&quot;1.0.0&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">stm32f1xx-hal</span> = &#123; version = <span class="string">&quot;0.11.0&quot;</span>, features = [<span class="string">&quot;stm32f103&quot;</span>, <span class="string">&quot;medium&quot;</span>] &#125;</span><br><span class="line"></span><br><span class="line"><span class="section">[profile.dev]</span></span><br><span class="line"><span class="attr">opt-level</span> = <span class="number">0</span></span><br><span class="line"><span class="attr">debug</span> = <span class="literal">true</span></span><br><span class="line"><span class="attr">lto</span> = <span class="literal">false</span></span><br><span class="line"><span class="attr">codegen-units</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">strip</span> = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="section">[profile.release]</span></span><br><span class="line"><span class="attr">opt-level</span> = <span class="string">&quot;z&quot;</span></span><br><span class="line"><span class="attr">lto</span> = <span class="literal">true</span></span><br><span class="line"><span class="attr">codegen-units</span> = <span class="number">1</span></span><br><span class="line"><span class="attr">strip</span> = <span class="literal">true</span></span><br><span class="line"><span class="attr">debug</span> = <span class="literal">false</span></span><br><span class="line"><span class="attr">panic</span> = <span class="string">&quot;abort&quot;</span></span><br></pre></td></tr></table></figure>
+
+<aside>
+💡
+
+<p>注意：在本次修改项目名称之后，请同步修改项目根目录文件夹的名称，以确保 VSCode 可以正常找到可执行文件并执行相关操作，并便于管理各个不同项目。</p>
+</aside>
+
+<h3 id="修改链接脚本与-MCU-型号"><a href="#修改链接脚本与-MCU-型号" class="headerlink" title="修改链接脚本与 MCU 型号"></a>修改链接脚本与 MCU 型号</h3><aside>
+💡
+
+<p>注意：这里需要提前获知您所正在开发的 MCU 的实际情况（如 Flash 大小，RAM 大小等参数），如果您并不知晓，请查阅 STM32 官方提供的相关数据手册获知情况，否则很可能导致烧录失败甚至程序无法正常通过编译的后果。</p>
+</aside>
+
+<p>打开 <code>/memory.x</code> ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/* memory.x */</span><br><span class="line">MEMORY</span><br><span class="line">&#123;</span><br><span class="line">  FLASH : ORIGIN = 0x08000000, LENGTH = 512K</span><br><span class="line">  RAM   : ORIGIN = 0x20000000, LENGTH = 64K</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">_stack_start = ORIGIN(RAM) + LENGTH(RAM);</span><br></pre></td></tr></table></figure>
+
+<p>将这里的 FLASH 与 RAM 的 LENGTH 段改为相应 MCU 的参数，如 <code>STM32F103RCT6</code> :</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/* memory.x */</span><br><span class="line">MEMORY</span><br><span class="line">&#123;</span><br><span class="line">  FLASH : ORIGIN = 0x08000000, LENGTH = 256K</span><br><span class="line">  RAM   : ORIGIN = 0x20000000, LENGTH = 48K</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">_stack_start = ORIGIN(RAM) + LENGTH(RAM);</span><br></pre></td></tr></table></figure>
+
+<p>我们在这里使用了 <code>xpack</code> 方式进行辅助编译。修改链接脚本之后，仍然需要修改 <code>xpack</code> 的相应配置。打开 <code>/xpack/src/main.rs</code> ，<code>40 - 43</code> 行处：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 输出占用率</span></span><br><span class="line"><span class="comment">// STM32F103ZET6: Flash 512KB, RAM 64KB</span></span><br><span class="line"><span class="keyword">const</span> FLASH_TOTAL: <span class="type">f64</span> = <span class="number">512.0</span> * <span class="number">1024.0</span>;</span><br><span class="line"><span class="keyword">const</span> RAM_TOTAL: <span class="type">f64</span> = <span class="number">64.0</span> * <span class="number">1024.0</span>;</span><br></pre></td></tr></table></figure>
+
+<p>将这里的 Flash 和 RAM 字段同步进行修改：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 输出占用率</span></span><br><span class="line"><span class="comment">// STM32F103ZET6: Flash 256KB, RAM 48KB</span></span><br><span class="line"><span class="keyword">const</span> FLASH_TOTAL: <span class="type">f64</span> = <span class="number">256.0</span> * <span class="number">1024.0</span>;</span><br><span class="line"><span class="keyword">const</span> RAM_TOTAL: <span class="type">f64</span> = <span class="number">48.0</span> * <span class="number">1024.0</span>;</span><br></pre></td></tr></table></figure>
+
+<aside>
+💡
+
+<p><strong>可选：修改运行配置</strong></p>
+<p>打开 <code>/.cargo/config.toml</code> ：</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[build]</span></span><br><span class="line"><span class="attr">target</span> = <span class="string">&quot;thumbv7m-none-eabi&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[target.thumbv7m-none-eabi]</span></span><br><span class="line"><span class="attr">runner</span> = <span class="string">&quot;probe-rs run --chip STM32F103ZE&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">rustflags</span> = [</span><br><span class="line">  <span class="string">&quot;-C&quot;</span>, <span class="string">&quot;link-arg=-Tlink.x&quot;</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>将<code>runner</code> 字段的 <code>chip</code> 参数改为具体的 MCU 型号。</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[build]</span></span><br><span class="line"><span class="attr">target</span> = <span class="string">&quot;thumbv7m-none-eabi&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="section">[target.thumbv7m-none-eabi]</span></span><br><span class="line"><span class="attr">runner</span> = <span class="string">&quot;probe-rs run --chip STM32F103RC&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">rustflags</span> = [</span><br><span class="line">  <span class="string">&quot;-C&quot;</span>, <span class="string">&quot;link-arg=-Tlink.x&quot;</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+</aside>
+
+<h2 id="Start-coding"><a href="#Start-coding" class="headerlink" title="Start coding !!!"></a>Start coding !!!</h2><p>完成上述配置之后，可以开始正式开发智能车项目了。我们首先研究一下 MCU 各引脚的用法。</p>
+<h3 id="引脚定义"><a href="#引脚定义" class="headerlink" title="引脚定义"></a>引脚定义</h3><table>
+<thead>
+<tr>
+<th>引脚</th>
+<th>复用外设&#x2F;功能</th>
+<th>程序中的用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>PA4</strong></td>
+<td>ADC1_CH4</td>
+<td>右侧电感 ADC 采样</td>
+</tr>
+<tr>
+<td><strong>PC5</strong></td>
+<td>ADC1_CH15</td>
+<td>左侧电感 ADC 采样</td>
+</tr>
+<tr>
+<td><strong>PA8</strong></td>
+<td>GPIO</td>
+<td>拨码开关 1</td>
+</tr>
+<tr>
+<td><strong>PC9</strong></td>
+<td>GPIO</td>
+<td>拨码开关 2</td>
+</tr>
+<tr>
+<td><strong>PC8</strong></td>
+<td>GPIO</td>
+<td>拨码开关 3</td>
+</tr>
+<tr>
+<td><strong>PC7</strong></td>
+<td>GPIO</td>
+<td>拨码开关 4</td>
+</tr>
+<tr>
+<td><strong>PA11</strong></td>
+<td>GPIO</td>
+<td>LED1</td>
+</tr>
+<tr>
+<td><strong>PA15</strong></td>
+<td>GPIO</td>
+<td>LED2</td>
+</tr>
+<tr>
+<td><strong>PC12</strong></td>
+<td>GPIO</td>
+<td>LED3</td>
+</tr>
+<tr>
+<td><strong>PB3</strong></td>
+<td>GPIO</td>
+<td>LED4</td>
+</tr>
+<tr>
+<td><strong>PA12</strong></td>
+<td>GPIO</td>
+<td>总使能开关（Enable）输入</td>
+</tr>
+<tr>
+<td><strong>PC13</strong></td>
+<td>GPIO</td>
+<td>使能输出至驱动板</td>
+</tr>
+<tr>
+<td><strong>PB0</strong></td>
+<td>TIM3_CH3</td>
+<td>舵机 PWM 输出</td>
+</tr>
+<tr>
+<td><strong>PB8</strong></td>
+<td>GPIO</td>
+<td>左轮控制推挽输出</td>
+</tr>
+<tr>
+<td><strong>PB9</strong></td>
+<td>GPIO</td>
+<td>右轮控制推挽输出</td>
+</tr>
+<tr>
+<td><strong>PB6</strong></td>
+<td>TIM4_CH1</td>
+<td>左轮 PWM 输出</td>
+</tr>
+<tr>
+<td><strong>PB7</strong></td>
+<td>TIM4_CH2</td>
+<td>右轮 PWM 输出</td>
+</tr>
+<tr>
+<td><strong>PA9</strong></td>
+<td>USART1_TX</td>
+<td>调试用串口</td>
+</tr>
+<tr>
+<td><strong>PA10</strong></td>
+<td>USART1_RX</td>
+<td>调试用串口</td>
+</tr>
+</tbody></table>
+<h3 id="模板原生代码及相关句柄的意义"><a href="#模板原生代码及相关句柄的意义" class="headerlink" title="模板原生代码及相关句柄的意义"></a>模板原生代码及相关句柄的意义</h3><p>打开 <code>/src/main.rs</code> ：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#![no_std]</span></span><br><span class="line"><span class="meta">#![no_main]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> cortex_m_rt::entry;</span><br><span class="line"><span class="keyword">use</span> panic_halt <span class="keyword">as</span> _;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> stm32f1xx_hal::&#123;pac, prelude::*&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[entry]</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() <span class="punctuation">-&gt;</span> ! &#123;</span><br><span class="line">    <span class="comment">// 获取外设访问接口</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">dp</span> = pac::Peripherals::<span class="title function_ invoke__">take</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">cp</span> = cortex_m::Peripherals::<span class="title function_ invoke__">take</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="comment">// 配置时钟</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">rcc</span> = dp.RCC.<span class="title function_ invoke__">constrain</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">delay</span> = cp.SYST.<span class="title function_ invoke__">delay</span>(&amp;rcc.clocks);</span><br><span class="line">    <span class="comment">// GPIOB 时钟开启</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">gpiob</span> = dp.GPIOB.<span class="title function_ invoke__">split</span>(&amp;<span class="keyword">mut</span> rcc);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// PB5 连接板载 LED</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">led</span> = gpiob.pb5.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpiob.crl);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">loop</span> &#123;</span><br><span class="line">        led.<span class="title function_ invoke__">toggle</span>(); <span class="comment">// 翻转电平</span></span><br><span class="line">        delay.<span class="title function_ invoke__">delay_ms</span>(<span class="number">1000_u32</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里程序定义了 PB5 引脚的复用（推挽输出），并用 PB5 来控制一个 LED 的闪烁，每次状态持续 1s 之后翻转电平状态。</p>
+<aside>
+💡
+
+<p><strong>相应句柄的意义</strong></p>
+<table>
+<thead>
+<tr>
+<th>句柄</th>
+<th>抽象层</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>dp</code></td>
+<td>PAC</td>
+<td>拿到所有硬件寄存器的所有权（外设级）</td>
+</tr>
+<tr>
+<td><code>cp</code></td>
+<td>核心 PAC</td>
+<td>拿到 Cortex-M 内核外设（SysTick、NVIC）</td>
+</tr>
+<tr>
+<td><code>rcc</code></td>
+<td>HAL</td>
+<td>将不安全的 RCC 变成易用的时钟配置对象</td>
+</tr>
+<tr>
+<td><code>delay</code></td>
+<td>HAL</td>
+<td>使用 SysTick 生成延时功能</td>
+</tr>
+</tbody></table>
+</aside>
+
+<aside>
+💡
+
+<p>下文中，若未明确指定，默认将提及 Rust 代码视作 <code>/src/main.rs</code> 的一部分。</p>
+</aside>
+
+<h3 id="配置-GPIO-复用并禁用-JTAG"><a href="#配置-GPIO-复用并禁用-JTAG" class="headerlink" title="配置 GPIO 复用并禁用 JTAG"></a>配置 GPIO 复用并禁用 JTAG</h3><p>然而我们的程序规模相较于简单的 LED 闪烁程序要大多了，一个 GPIOB 通道完全无法满足，我们需要开辟更多通道：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">gpioa</span> = dp.GPIOA.<span class="title function_ invoke__">split</span>(&amp;<span class="keyword">mut</span> rcc);</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">gpiob</span> = dp.GPIOB.<span class="title function_ invoke__">split</span>(&amp;<span class="keyword">mut</span> rcc);</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">gpioc</span> = dp.GPIOC.<span class="title function_ invoke__">split</span>(&amp;<span class="keyword">mut</span> rcc);</span><br></pre></td></tr></table></figure>
+
+<p>这里传入<code>rcc</code> 作为参数，避免了如同在 C 语言的 STM32 开发中仍然需要单独启用 GPIO 时钟，大幅提高了代码可读性。</p>
+<p>同时，我们注意到，PA15 与 PB3 两个引脚默认被复用为了 JTAG 调试，我们无法直接将其复用为推挽输出，需要禁用 JTAG 调试，释放这两个引脚，才能够将其物理引脚正常复用。这里还需要引入一个新的抽象层：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">afio</span> = dp.AFIO.<span class="title function_ invoke__">constrain</span>(&amp;<span class="keyword">mut</span> rcc);</span><br></pre></td></tr></table></figure>
+
+<aside>
+💡
+
+<p><code>afio</code> 句柄提供了重映射、JTAG 配置等安全 API。</p>
+</aside>
+
+<p>这里就可以将两个我们所需要的 JTAG 引脚正常释放，并获得相应句柄：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> (pa15_released, pb3_released, _) = afio.mapr.<span class="title function_ invoke__">disable_jtag</span>(gpioa.pa15, gpiob.pb3, gpiob.pb4);</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置基本输入输出"><a href="#配置基本输入输出" class="headerlink" title="配置基本输入输出"></a>配置基本输入输出</h3><p>根据主板的设计，拨码开关各个开关与使能开关当处于低电平时视为打开，处于高电平时视为关闭，因此我们将这几个引脚配置为上拉输入。四个 LED 灯与使能输出可以使用推挽输出进行控制。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">switch1</span> = gpioa.pa8.<span class="title function_ invoke__">into_pull_up_input</span>(&amp;<span class="keyword">mut</span> gpioa.crh);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">switch2</span> = gpioc.pc9.<span class="title function_ invoke__">into_pull_up_input</span>(&amp;<span class="keyword">mut</span> gpioc.crh);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">switch3</span> = gpioc.pc8.<span class="title function_ invoke__">into_pull_up_input</span>(&amp;<span class="keyword">mut</span> gpioc.crh);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">switch4</span> = gpioc.pc7.<span class="title function_ invoke__">into_pull_up_input</span>(&amp;<span class="keyword">mut</span> gpioc.crl);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">led1_pa11</span> = gpioa.pa11.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpioa.crh);</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">led2_pa15</span> = pa15_released.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpioa.crh);</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">led3_pc12</span> = gpioc.pc12.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpioc.crh);</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">led4_pb3</span> = pb3_released.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpiob.crl);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> <span class="variable">enable_switch_pa12</span> = gpioa.pa12.<span class="title function_ invoke__">into_pull_up_input</span>(&amp;<span class="keyword">mut</span> gpioa.crh);</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">enable_out_pc13</span> = gpioc.pc13.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpioc.crh);</span><br></pre></td></tr></table></figure>
+
+<p>这里 <code>&amp;mut gpioa.crh</code> 等类似字段可根据引脚所在频道与编号是否为高八位或低八位获知。如 <code>pa8</code> 位于 <code>gpioa</code> 通道的高八位（<code>8 - 15</code>位视为高八位，<code>0 - 7</code>位视为低八位），则传入 <code>&amp;mut gpioa.crh</code> ，若位于低八位（如 <code>pc7</code>），则传入 <code>&amp;mut gpioc.crl</code> 。</p>
+<aside>
+💡
+
+<p>注意：这里 <code>pa15</code> 与<code>pb3</code> 句柄的获取需要通过之前获取的 <code>pa15_released</code> 与<code>pb3_released</code> 句柄进行实现。如<code>pb3</code>，若使用 <code>gpioa.pb3</code> 等原生句柄，由于其类型为<code>Pin&lt;&#39;B&#39;, 3, Debugger&gt;</code> ，而非我们所预期的 <code>Pin&lt;&#39;B&#39;, 3, Input&lt;Floating&gt;&gt;</code> ，其不具有 <code>into_push_pull_output</code> 方法，无法成功获取 <code>led4_pb3</code> 句柄。而 <code>pb3_released</code> 句柄的类型为<code>Pin&lt;&#39;B&#39;, 3&gt;</code> ，是通过 JTAG 的释放所获取的新句柄，具有该方法，因此可以成功获取<code>led4_pb3</code>句柄。</p>
+</aside>
+
+<h3 id="配置-ADC-频道句柄"><a href="#配置-ADC-频道句柄" class="headerlink" title="配置 ADC 频道句柄"></a>配置 ADC 频道句柄</h3><p>为了获取 PA4 和 PC5 输入进来的传感器信息，我们需要提前配置 ADC1 通道的句柄，并将 PA4 和 PC5 配置为模拟信号输入。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">adc1</span> = adc::Adc::<span class="title function_ invoke__">new</span>(dp.ADC1, &amp;<span class="keyword">mut</span> rcc);</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">adc1_ch4_pa4</span> = gpioa.pa4.<span class="title function_ invoke__">into_analog</span>(&amp;<span class="keyword">mut</span> gpioa.crl);</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">adc1_ch15_pc5</span> = gpioc.pc5.<span class="title function_ invoke__">into_analog</span>(&amp;<span class="keyword">mut</span> gpioc.crl);</span><br></pre></td></tr></table></figure>
+
+<p>我们可以使用<code>adc1.read(&amp;mut adc1_ch4_pa4).unwrap()</code> 的方式读取 ADC 采集获取的值，并由这个值推理得到转向策略。</p>
+<h3 id="配置舵机-PWM-输出"><a href="#配置舵机-PWM-输出" class="headerlink" title="配置舵机 PWM 输出"></a>配置舵机 PWM 输出</h3><p>在这里，我们首先定义某一 PWM 中值，使得舵机接受到该占空比的 PWM 波时，舵机角度能够刚好朝向正前方。但是为了适应 C 语言的某个例程，这里使用的是认为占空比最大值为 9999 时的占空比设置，我们暂且称其为等效占空比。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">steer_pwm_duty_center</span>: <span class="type">u16</span> = <span class="number">750</span> - <span class="number">5</span>; <span class="comment">// 舵机 PWM 中值</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">steer_pwm_duty_max</span> = steer_pwm_duty_center + <span class="number">60</span>; <span class="comment">// 舵机 PWM 最大值</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">steer_pwm_duty_min</span> = steer_pwm_duty_center - <span class="number">60</span>; <span class="comment">// 舵机 PWM 最小值</span></span><br></pre></td></tr></table></figure>
+
+<p>同时，我们需要将 PB0 配置为复用推挽输出，并配置相应 PWM 频道。这里是 TIM3。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将 PB0 配置为 TIM3_CH3 复用推挽输出</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">tim3_ch3</span> = gpiob.pb0.<span class="title function_ invoke__">into_alternate_push_pull</span>(&amp;<span class="keyword">mut</span> gpiob.crl);</span><br><span class="line"><span class="comment">// 配置 TIM3 为 PWM 输出，频率 1kHz</span></span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">steer_pwm</span> = </span><br><span class="line">dp.TIM3.pwm_hz::&lt;Tim3NoRemap, _, _&gt;(</span><br><span class="line">    tim3_ch3,</span><br><span class="line">    &amp;<span class="keyword">mut</span> afio.mapr,</span><br><span class="line">    <span class="number">1</span>.<span class="title function_ invoke__">kHz</span>(),</span><br><span class="line">    &amp;<span class="keyword">mut</span> rcc</span><br><span class="line">);</span><br><span class="line"><span class="comment">// 设置占空比为 舵机 PWM 中值</span></span><br><span class="line">steer_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C3, (steer_pwm_duty_center / <span class="number">9999</span>) * steer_pwm.<span class="title function_ invoke__">get_max_duty</span>());</span><br><span class="line"><span class="comment">// 使能舵机 PWM 输出</span></span><br><span class="line">steer_pwm.<span class="title function_ invoke__">enable</span>(Channel::C3);</span><br></pre></td></tr></table></figure>
+
+<p>这里，我们指定 TIM3 频道的频率为 1kHz，并通过等效占空比将占空比设置为真正的中值。</p>
+<h3 id="配置左右轮控制流输出"><a href="#配置左右轮控制流输出" class="headerlink" title="配置左右轮控制流输出"></a>配置左右轮控制流输出</h3><p>因为左右轮的速度控制是 PWM 控制的，因此我们完全可以使用同样的一种方式来配置相应的句柄。而不同的是，左右轮的转向控制是通过给高电平或低电平实现的，因此我们还需要配置两个推挽输出的引脚进行转向的控制。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">left_wheel_pb8</span> = gpiob.pb8.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpiob.crh);</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">right_wheel_pb9</span> = gpiob.pb9.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpiob.crh);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">tim4_ch1</span> = gpiob.pb6.<span class="title function_ invoke__">into_alternate_push_pull</span>(&amp;<span class="keyword">mut</span> gpiob.crl);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">tim4_ch2</span> = gpiob.pb7.<span class="title function_ invoke__">into_alternate_push_pull</span>(&amp;<span class="keyword">mut</span> gpiob.crl);</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">wheels_pwm</span> = </span><br><span class="line">dp.TIM4.pwm_hz::&lt;Tim4NoRemap, _, _&gt;(</span><br><span class="line">    (tim4_ch1, tim4_ch2),</span><br><span class="line">    &amp;<span class="keyword">mut</span> afio.mapr,</span><br><span class="line">    <span class="number">1</span>.<span class="title function_ invoke__">kHz</span>(),</span><br><span class="line">    &amp;<span class="keyword">mut</span> rcc</span><br><span class="line">);</span><br><span class="line">wheels_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C2, <span class="number">0</span>);</span><br><span class="line">wheels_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C1, <span class="number">0</span>);</span><br><span class="line">wheels_pwm.<span class="title function_ invoke__">enable</span>(Channel::C2);</span><br><span class="line">wheels_pwm.<span class="title function_ invoke__">enable</span>(Channel::C1);</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置调试信息输出"><a href="#配置调试信息输出" class="headerlink" title="配置调试信息输出"></a>配置调试信息输出</h3><p>在比赛的过程中，我们常常需要需要获知一个点处具体的传感器输出，从而对车本身进行硬件方面的调试。为了准确获知软件方面的传感器值，我们通常使用串口来直接读取。这里配置了 USART1 串口，实时发送这些信息，以便我们进行调试。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">usart1_tx</span> = gpioa.pa9.<span class="title function_ invoke__">into_alternate_push_pull</span>(&amp;<span class="keyword">mut</span> gpioa.crh);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">usart1_rx</span> = gpioa.pa10;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">serial</span> = dp.USART1</span><br><span class="line">    .<span class="title function_ invoke__">serial</span>(</span><br><span class="line">        (usart1_tx, usart1_rx),</span><br><span class="line">        Config::<span class="title function_ invoke__">default</span>().<span class="title function_ invoke__">baudrate</span>(<span class="number">115200</span>.<span class="title function_ invoke__">bps</span>()),</span><br><span class="line">        &amp;<span class="keyword">mut</span> rcc</span><br><span class="line">    );</span><br></pre></td></tr></table></figure>
+
+<aside>
+💡
+
+<p>这里使用了 <code>VOFA+</code> 的 <code>JustFloat</code> 协议进行发送。<code>VOFA+</code> 是一个强大的上位机软件。</p>
+</aside>
+
+<h2 id="进入主循环"><a href="#进入主循环" class="headerlink" title="进入主循环"></a>进入主循环</h2><p>Rust STM32 程序的主循环通常使用 <code>loop</code> 死循环，形如：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">loop</span> &#123;</span><br><span class="line">    <span class="comment">// 代码...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="处理传感器输出时遇到的困难"><a href="#处理传感器输出时遇到的困难" class="headerlink" title="处理传感器输出时遇到的困难"></a>处理传感器输出时遇到的困难</h3><p>我们可以使用这样的代码读取传感器的输出，并进行相关的运算：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">adc_value_right</span> = adc1.<span class="title function_ invoke__">read</span>(&amp;<span class="keyword">mut</span> adc1_ch4_pa4).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line"><span class="keyword">let</span> <span class="variable">adc_value_left</span> = adc1.<span class="title function_ invoke__">read</span>(&amp;<span class="keyword">mut</span> adc1_ch15_pc5).<span class="title function_ invoke__">unwrap</span>();</span><br></pre></td></tr></table></figure>
+
+<p>但是，在实际的操作中，我们发现：这样直接读取出来的 ADC 值存在着高达 100 的噪声。为了消除噪声带来的影响，我们必须对数据进行分析，尽可能降低误差。</p>
+<h3 id="一种基于正态分布拟合的滤波算法-gauss-filter"><a href="#一种基于正态分布拟合的滤波算法-gauss-filter" class="headerlink" title="一种基于正态分布拟合的滤波算法 gauss_filter"></a>一种基于正态分布拟合的滤波算法 <code>gauss_filter</code></h3><p>我们首先考虑实现快速排序算法，对某一目标数组进行排序。</p>
+<p>创建并打开<code>/src/utils.rs</code> ：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#[inline(always)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">quicksort</span>(arr: &amp;<span class="keyword">mut</span> [<span class="type">i32</span>]) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">len</span> = arr.<span class="title function_ invoke__">len</span>();</span><br><span class="line">    <span class="keyword">if</span> len &lt;= <span class="number">1</span> &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;    </span><br><span class="line">    <span class="keyword">let</span> <span class="variable">pivot</span> = arr[len - <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">i</span> = <span class="number">0</span>;    </span><br><span class="line">    <span class="keyword">for</span> <span class="variable">j</span> <span class="keyword">in</span> <span class="number">0</span>..len - <span class="number">1</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> arr[j] &lt;= pivot &#123;</span><br><span class="line">            arr.<span class="title function_ invoke__">swap</span>(i, j);</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    arr.<span class="title function_ invoke__">swap</span>(i, len - <span class="number">1</span>);   </span><br><span class="line">    <span class="keyword">if</span> i &gt; <span class="number">0</span> &#123;</span><br><span class="line">        <span class="title function_ invoke__">quicksort</span>(&amp;<span class="keyword">mut</span> arr[<span class="number">0</span>..i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> i + <span class="number">1</span> &lt; len &#123;</span><br><span class="line">        <span class="title function_ invoke__">quicksort</span>(&amp;<span class="keyword">mut</span> arr[i+<span class="number">1</span>..]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>关于快速排序算法的原理，这里不过多赘述。</p>
+<p>我们考虑使用一组测得的数据进行正态分布曲线的拟合，将<code>e</code>的指数视为各个数据的权重，计算出加权均值，以该值作为真实值的预估。</p>
+<p>为了能够进行正态分布曲线的拟合，我们必须引入一个数学函数库。在嵌入式平台，<code>libm</code> 是一个不错的选择。打开<code>/Cargo.toml</code> ，在<code>dependencies</code> 中写入：</p>
+<figure class="highlight toml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">libm</span> = <span class="string">&quot;0.2.15”</span></span><br></pre></td></tr></table></figure>
+
+<p>创建并打开 <code>/src/gauss.rs</code> ：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> crate::utils::quicksort;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">gauss_filter</span>(x: &amp;[<span class="type">i32</span>], n: <span class="type">usize</span>) <span class="punctuation">-&gt;</span> <span class="type">f64</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">1</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> x[<span class="number">0</span>] <span class="keyword">as</span> <span class="type">f64</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 创建一个临时数组来存储排序后的数据</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sorted</span> = [<span class="number">0i32</span>; <span class="number">64</span>]; <span class="comment">// 假设最大长度为64，根据实际需求调整</span></span><br><span class="line">    <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">        sorted[i] = x[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title function_ invoke__">quicksort</span>(&amp;<span class="keyword">mut</span> sorted[<span class="number">0</span>..n]);</span><br><span class="line">    <span class="comment">// --- 初始估计 ---</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sum</span>: <span class="type">f64</span> = <span class="number">0.0</span>;</span><br><span class="line">    <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">        sum += sorted[i] <span class="keyword">as</span> <span class="type">f64</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">mu</span> = sum / (n <span class="keyword">as</span> <span class="type">f64</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">var</span>: <span class="type">f64</span> = <span class="number">0.0</span>;</span><br><span class="line">    <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">diff</span> = sorted[i] <span class="keyword">as</span> <span class="type">f64</span> - mu;</span><br><span class="line">        var += diff * diff;</span><br><span class="line">    &#125;</span><br><span class="line">    var /= (n - <span class="number">1</span>) <span class="keyword">as</span> <span class="type">f64</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sigma</span>: <span class="type">f64</span> = libm::<span class="title function_ invoke__">sqrt</span>(var);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> sigma &lt; <span class="number">1e-6</span> &#123;</span><br><span class="line">        sigma = <span class="number">1e-6</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- 迭代更新 ---</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">max_iter</span> = <span class="number">30</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">tol</span> = <span class="number">1e-6</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> <span class="variable">_iter</span> <span class="keyword">in</span> <span class="number">0</span>..max_iter &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sum_w</span>: <span class="type">f64</span> = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sum_wx</span>: <span class="type">f64</span> = <span class="number">0.0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">diff</span>: <span class="type">f64</span> = (sorted[i] <span class="keyword">as</span> <span class="type">f64</span> - mu) / sigma;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">exponent</span>: <span class="type">f64</span> = -<span class="number">0.5</span> * diff * diff;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">weight</span> = libm::<span class="title function_ invoke__">exp</span>(exponent);</span><br><span class="line">            <span class="keyword">if</span> weight &lt; <span class="number">1e-10</span> &#123;</span><br><span class="line">                weight = <span class="number">1e-10</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            sum_w += weight;</span><br><span class="line">            sum_wx += weight * sorted[i] <span class="keyword">as</span> <span class="type">f64</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="variable">new_mu</span> = sum_wx / sum_w;</span><br><span class="line">        <span class="keyword">if</span> libm::<span class="title function_ invoke__">fabs</span>(new_mu - mu) &lt; tol &#123;</span><br><span class="line">            mu = new_mu;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mu = new_mu;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 更新 sigma</span></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sum_var</span> = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sum_var_w</span> = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">diff</span> = sorted[i] <span class="keyword">as</span> <span class="type">f64</span> - mu;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">exponent</span> = -<span class="number">0.5</span> * (diff / sigma) * (diff / sigma);</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">weight</span> = libm::<span class="title function_ invoke__">exp</span>(exponent);</span><br><span class="line">            <span class="keyword">if</span> weight &lt; <span class="number">1e-10</span> &#123;</span><br><span class="line">                weight = <span class="number">1e-10</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            sum_var += weight * diff * diff;</span><br><span class="line">            sum_var_w += weight;</span><br><span class="line">        &#125;</span><br><span class="line">        sigma = libm::<span class="title function_ invoke__">sqrt</span>(sum_var / sum_var_w);</span><br><span class="line">        <span class="keyword">if</span> sigma &lt; <span class="number">1e-6</span> &#123;</span><br><span class="line">            sigma = <span class="number">1e-6</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> mu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>理论上认为，我们只要有了一组<strong>及时</strong>测得的 ADC 值数据，通过该滤波算法，可以获取一个相较于直接计算均值更加接近真实值的估计值。</p>
+<h3 id="处理传感器数据并控制转向"><a href="#处理传感器数据并控制转向" class="headerlink" title="处理传感器数据并控制转向"></a>处理传感器数据并控制转向</h3><p>为了持续化存储每次传感器读取的数据，在整个主循环前面，我们加入：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">adc_value_right_buffer</span> = [<span class="number">0_i32</span>; <span class="number">33</span>];</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">adc_value_left_buffer</span> = [<span class="number">0_i32</span>; <span class="number">33</span>];</span><br></pre></td></tr></table></figure>
+
+<p>作为传感器值的缓冲区。为了能够真正做到<strong>及时</strong>读取数据，我们在主循环中再加入一个循环，使得在主循环的一次循环之下，我们便可以获知最新的数据。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> (<span class="number">1</span>..<span class="number">33</span>).<span class="title function_ invoke__">rev</span>() &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">adc_value_right</span> = adc1.<span class="title function_ invoke__">read</span>(&amp;<span class="keyword">mut</span> adc1_ch4_pa4).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">adc_value_left</span> = adc1.<span class="title function_ invoke__">read</span>(&amp;<span class="keyword">mut</span> adc1_ch15_pc5).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    adc_value_right_buffer[i] = adc_value_right;</span><br><span class="line">    adc_value_left_buffer[i] = adc_value_left;</span><br><span class="line">    <span class="title function_ invoke__">send_adc</span>(&amp;<span class="keyword">mut</span> serial, adc_value_right <span class="keyword">as</span> <span class="type">f64</span>, adc_value_left <span class="keyword">as</span> <span class="type">f64</span>);</span><br><span class="line">    delay.<span class="title function_ invoke__">delay_us</span>(<span class="number">33_u32</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 计算高斯滤波后的值</span></span><br><span class="line"><span class="keyword">let</span> <span class="variable">filtered_right</span> = gauss::<span class="title function_ invoke__">gauss_filter</span>(&amp;adc_value_right_buffer, <span class="number">16</span>);</span><br><span class="line"><span class="keyword">let</span> <span class="variable">filtered_left</span> = gauss::<span class="title function_ invoke__">gauss_filter</span>(&amp;adc_value_left_buffer, <span class="number">16</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这里的 <code>send_adc</code> 函数，我们在<code>/src/utils.rs</code> 中给出了定义：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">send_adc</span>&lt;W&gt;(serial : &amp;<span class="keyword">mut</span> W, adc_right : <span class="type">f64</span>, adc_left : <span class="type">f64</span>)</span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">    W: _embedded_hal_serial_Write&lt;<span class="type">u8</span>&gt; + core::fmt::Write</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">tail</span> : [<span class="type">u8</span>; <span class="number">4</span>]  = [<span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x80</span>, <span class="number">0x7f</span>];</span><br><span class="line">    <span class="keyword">for</span> <span class="variable">byte</span> <span class="keyword">in</span> adc_left.<span class="title function_ invoke__">to_le_bytes</span>().<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">        serial.<span class="title function_ invoke__">write</span>(*byte).<span class="title function_ invoke__">ok</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> <span class="variable">byte</span> <span class="keyword">in</span> adc_right.<span class="title function_ invoke__">to_le_bytes</span>().<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">        serial.<span class="title function_ invoke__">write</span>(*byte).<span class="title function_ invoke__">ok</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> <span class="variable">byte</span> <span class="keyword">in</span> tail.<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">        serial.<span class="title function_ invoke__">write</span>(*byte).<span class="title function_ invoke__">ok</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>用于向调试串口发送每一次读取的 ADC 值数据，以便调试。</p>
+<p>通过实际测试，我们发现：电感距离赛道中心越近，ADC 值越大，反之越小。因此，我们可以用左右 ADC 值的差值来近似描述小车相对于赛道的偏转程度，再利用这个 ADC 值对舵机的相对中值取一个特殊的偏差，从而实现小车的整体转向。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">diff</span> = (filtered_right - filtered_left) <span class="keyword">as</span> <span class="type">i32</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">steer_pwm_diff</span> = <span class="title function_ invoke__">data_limit</span>(diff <span class="keyword">as</span> <span class="type">f64</span> * <span class="number">0.3</span>, steer_pwm_duty_min <span class="keyword">as</span> <span class="type">f64</span>, steer_pwm_duty_max <span class="keyword">as</span> <span class="type">f64</span>) <span class="keyword">as</span> <span class="type">u16</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">steer_pwm_duty</span> = steer_pwm_duty_center - steer_pwm_diff; </span><br><span class="line"><span class="comment">// 设置舵机 PWM 占空比</span></span><br><span class="line">steer_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C3, (steer_pwm_duty / <span class="number">9999</span>) * steer_pwm.<span class="title function_ invoke__">get_max_duty</span>());</span><br></pre></td></tr></table></figure>
+
+<p>其中，<code>data_limit</code> 函数用于将一个值限定于某两个值之间。其在<code>/src/utils.rs</code> 中定义为：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">data_limit</span>(x: <span class="type">f64</span>, min: <span class="type">f64</span>, max: <span class="type">f64</span>) <span class="punctuation">-&gt;</span> <span class="type">f64</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> x &lt; min &#123;</span><br><span class="line">        min</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> x &gt; max &#123;</span><br><span class="line">        max</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        x</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="控制左右轮的转速"><a href="#控制左右轮的转速" class="headerlink" title="控制左右轮的转速"></a>控制左右轮的转速</h3><p>在我们的基本设计中，使能开关用于控制左右轮是否转动。我们试图建立一个新的“相对转速”，使得左右轮的速度能够以一种直观的数字被描述出来，为正时则正转，反之则反转，且这个数字与输出的 PWM 值可以一一对应。我们令相对转速的绝对值的最大值为 4800，表示最大转速；0 则表示停转。当使能开关打到了高电平时，我们认为小车开机，轮子应当转起来；反之小车关机，轮子停转。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">wheel_speed_left</span> = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">wheel_speed_right</span> = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// 根据使能开关状态控制输出</span></span><br><span class="line"><span class="keyword">if</span> enable_switch_pa12.<span class="title function_ invoke__">is_high</span>() &#123;</span><br><span class="line">    wheel_speed_left = <span class="number">800</span>;</span><br><span class="line">    wheel_speed_right = <span class="number">800</span>;</span><br><span class="line">    enable_out_pc13.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    enable_out_pc13.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>且我们发现，两轮的电机转向是由一个“开关状态”来控制的，当输入低电平时为正转，反之为反转，且反转时的相对转速的绝对值与正转时的互补（即和为4800）。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="variable">wheel_left_pwm</span>;</span><br><span class="line"><span class="keyword">let</span> <span class="variable">wheel_right_pwm</span>;</span><br><span class="line"><span class="keyword">if</span> wheel_speed_left &gt;= <span class="number">0</span> &#123;</span><br><span class="line">    wheel_left_pwm = wheel_speed_left <span class="keyword">as</span> <span class="type">u16</span>;</span><br><span class="line">    left_wheel_pb8.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    wheel_left_pwm = (<span class="number">4800</span> + wheel_speed_left) <span class="keyword">as</span> <span class="type">u16</span>;</span><br><span class="line">    left_wheel_pb8.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> wheel_speed_right &gt;= <span class="number">0</span> &#123;</span><br><span class="line">    wheel_right_pwm = wheel_speed_right <span class="keyword">as</span> <span class="type">u16</span>;</span><br><span class="line">    right_wheel_pb9.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    wheel_right_pwm = (<span class="number">4800</span> + wheel_speed_right) <span class="keyword">as</span> <span class="type">u16</span>;</span><br><span class="line">    right_wheel_pb9.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 设置左右轮 PWM 占空比</span></span><br><span class="line">wheels_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C2, (wheel_left_pwm / <span class="number">4800</span>) * wheels_pwm.<span class="title function_ invoke__">get_max_duty</span>());</span><br><span class="line">wheels_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C1, (wheel_right_pwm / <span class="number">4800</span>) * wheels_pwm.<span class="title function_ invoke__">get_max_duty</span>());</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用拨码开关控制板载-LED"><a href="#使用拨码开关控制板载-LED" class="headerlink" title="使用拨码开关控制板载 LED"></a>使用拨码开关控制板载 LED</h3><p>我们可以直接读取拨码开关的电平值，从而决定 LED 的电平值。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过拨码开关调整板子上 LED 灯的亮灭</span></span><br><span class="line"><span class="keyword">if</span> switch1.<span class="title function_ invoke__">is_low</span>() &#123;</span><br><span class="line">    led1_pa11.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    led1_pa11.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> switch2.<span class="title function_ invoke__">is_low</span>() &#123;</span><br><span class="line">    led2_pa15.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    led2_pa15.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> switch3.<span class="title function_ invoke__">is_low</span>() &#123;</span><br><span class="line">    led3_pc12.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    led3_pc12.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> switch4.<span class="title function_ invoke__">is_low</span>() &#123;</span><br><span class="line">    led4_pb3.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    led4_pb3.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="大功告成！"><a href="#大功告成！" class="headerlink" title="大功告成！"></a>大功告成！</h2><p>整个工程的完整代码如下：</p>
+<p><code>/src/main.rs</code> </p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#![no_std]</span></span><br><span class="line"><span class="meta">#![no_main]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">mod</span> gauss;</span><br><span class="line"><span class="keyword">mod</span> utils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> cortex_m_rt::entry;</span><br><span class="line"><span class="keyword">use</span> panic_halt <span class="keyword">as</span> _;</span><br><span class="line"><span class="keyword">use</span> stm32f1xx_hal::&#123;adc, pac::&#123;<span class="keyword">self</span>&#125;, prelude::*, serial::Config, timer::&#123;Channel, Tim3NoRemap, Tim4NoRemap&#125;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> crate::utils::&#123;data_limit, send_adc&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[entry]</span></span><br><span class="line"><span class="keyword">fn</span> <span class="title function_">main</span>() <span class="punctuation">-&gt;</span> ! &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">steer_pwm_duty_center</span>: <span class="type">u16</span> = <span class="number">750</span> - <span class="number">5</span>; <span class="comment">// 舵机 PWM 中值</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">steer_pwm_duty_max</span> = steer_pwm_duty_center + <span class="number">60</span>; <span class="comment">// 舵机 PWM 最大值</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">steer_pwm_duty_min</span> = steer_pwm_duty_center - <span class="number">60</span>; <span class="comment">// 舵机 PWM 最小值</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 拿到硬件外设抽象层句柄</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">dp</span> = pac::Peripherals::<span class="title function_ invoke__">take</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">cp</span> = cortex_m::Peripherals::<span class="title function_ invoke__">take</span>().<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">    <span class="comment">// 拿到RCC时钟句柄</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">rcc</span> = dp.RCC.<span class="title function_ invoke__">constrain</span>();</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">afio</span> = dp.AFIO.<span class="title function_ invoke__">constrain</span>(&amp;<span class="keyword">mut</span> rcc);</span><br><span class="line">    <span class="comment">// 拿到延时定时器句柄</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">delay</span> = cp.SYST.<span class="title function_ invoke__">delay</span>(&amp;rcc.clocks);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// GPIO 开启</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">gpioa</span> = dp.GPIOA.<span class="title function_ invoke__">split</span>(&amp;<span class="keyword">mut</span> rcc);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">gpiob</span> = dp.GPIOB.<span class="title function_ invoke__">split</span>(&amp;<span class="keyword">mut</span> rcc);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">gpioc</span> = dp.GPIOC.<span class="title function_ invoke__">split</span>(&amp;<span class="keyword">mut</span> rcc);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Release PB3 from JTAG to use it as GPIO</span></span><br><span class="line">    <span class="keyword">let</span> (pa15_released, pb3_released, _) =</span><br><span class="line">        afio.mapr.<span class="title function_ invoke__">disable_jtag</span>(gpioa.pa15, gpiob.pb3, gpiob.pb4);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">adc1</span> = adc::Adc::<span class="title function_ invoke__">new</span>(dp.ADC1, &amp;<span class="keyword">mut</span> rcc);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">adc1_ch4_pa4</span> = gpioa.pa4.<span class="title function_ invoke__">into_analog</span>(&amp;<span class="keyword">mut</span> gpioa.crl);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">adc1_ch15_pc5</span> = gpioc.pc5.<span class="title function_ invoke__">into_analog</span>(&amp;<span class="keyword">mut</span> gpioc.crl);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置四个拨码开关为推挽输入</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">switch1</span> = gpioa.pa8.<span class="title function_ invoke__">into_pull_up_input</span>(&amp;<span class="keyword">mut</span> gpioa.crh);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">switch2</span> = gpioc.pc9.<span class="title function_ invoke__">into_pull_up_input</span>(&amp;<span class="keyword">mut</span> gpioc.crh);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">switch3</span> = gpioc.pc8.<span class="title function_ invoke__">into_pull_up_input</span>(&amp;<span class="keyword">mut</span> gpioc.crh);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">switch4</span> = gpioc.pc7.<span class="title function_ invoke__">into_pull_up_input</span>(&amp;<span class="keyword">mut</span> gpioc.crl);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">led1_pa11</span> = gpioa.pa11.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpioa.crh);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">led2_pa15</span> = pa15_released.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpioa.crh);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">led3_pc12</span> = gpioc.pc12.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpioc.crh);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">led4_pb3</span> = pb3_released.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpiob.crl);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置使能开关为推挽输入</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">enable_switch_pa12</span> = gpioa.pa12.<span class="title function_ invoke__">into_pull_up_input</span>(&amp;<span class="keyword">mut</span> gpioa.crh);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">enable_out_pc13</span> = gpioc.pc13.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpioc.crh);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将 PB0 配置为 TIM3_CH3 复用推挽输出</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">tim3_ch3</span> = gpiob.pb0.<span class="title function_ invoke__">into_alternate_push_pull</span>(&amp;<span class="keyword">mut</span> gpiob.crl);</span><br><span class="line">    <span class="comment">// 配置 TIM3 为 PWM 输出，频率 1kHz</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">steer_pwm</span> = </span><br><span class="line">    dp.TIM3.pwm_hz::&lt;Tim3NoRemap, _, _&gt;(</span><br><span class="line">        tim3_ch3,</span><br><span class="line">        &amp;<span class="keyword">mut</span> afio.mapr,</span><br><span class="line">        <span class="number">1</span>.<span class="title function_ invoke__">kHz</span>(),</span><br><span class="line">        &amp;<span class="keyword">mut</span> rcc</span><br><span class="line">    );</span><br><span class="line">    <span class="comment">// 设置占空比为 舵机 PWM 中值</span></span><br><span class="line">    steer_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C3, (steer_pwm_duty_center / <span class="number">9999</span>) * steer_pwm.<span class="title function_ invoke__">get_max_duty</span>());</span><br><span class="line">    <span class="comment">// 使能舵机 PWM 输出</span></span><br><span class="line">    steer_pwm.<span class="title function_ invoke__">enable</span>(Channel::C3);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置左右轮控制流输出</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">left_wheel_pb8</span> = gpiob.pb8.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpiob.crh);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">right_wheel_pb9</span> = gpiob.pb9.<span class="title function_ invoke__">into_push_pull_output</span>(&amp;<span class="keyword">mut</span> gpiob.crh);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">tim4_ch1</span> = gpiob.pb6.<span class="title function_ invoke__">into_alternate_push_pull</span>(&amp;<span class="keyword">mut</span> gpiob.crl);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">tim4_ch2</span> = gpiob.pb7.<span class="title function_ invoke__">into_alternate_push_pull</span>(&amp;<span class="keyword">mut</span> gpiob.crl);</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">wheels_pwm</span> = </span><br><span class="line">    dp.TIM4.pwm_hz::&lt;Tim4NoRemap, _, _&gt;(</span><br><span class="line">        (tim4_ch1, tim4_ch2),</span><br><span class="line">        &amp;<span class="keyword">mut</span> afio.mapr,</span><br><span class="line">        <span class="number">1</span>.<span class="title function_ invoke__">kHz</span>(),</span><br><span class="line">        &amp;<span class="keyword">mut</span> rcc</span><br><span class="line">    );</span><br><span class="line">    wheels_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C2, <span class="number">0</span>);</span><br><span class="line">    wheels_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C1, <span class="number">0</span>);</span><br><span class="line">    wheels_pwm.<span class="title function_ invoke__">enable</span>(Channel::C2);</span><br><span class="line">    wheels_pwm.<span class="title function_ invoke__">enable</span>(Channel::C1);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 配置 USART 串口通过 JustFloat 协议输出 ADC 值信息</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">usart1_tx</span> = gpioa.pa9.<span class="title function_ invoke__">into_alternate_push_pull</span>(&amp;<span class="keyword">mut</span> gpioa.crh);</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">usart1_rx</span> = gpioa.pa10;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">serial</span> = dp.USART1</span><br><span class="line">        .<span class="title function_ invoke__">serial</span>(</span><br><span class="line">            (usart1_tx, usart1_rx),</span><br><span class="line">            Config::<span class="title function_ invoke__">default</span>().<span class="title function_ invoke__">baudrate</span>(<span class="number">115200</span>.<span class="title function_ invoke__">bps</span>()),</span><br><span class="line">            &amp;<span class="keyword">mut</span> rcc</span><br><span class="line">        );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">adc_value_right_buffer</span> = [<span class="number">0_i32</span>; <span class="number">33</span>];</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">adc_value_left_buffer</span> = [<span class="number">0_i32</span>; <span class="number">33</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">loop</span> &#123;</span><br><span class="line">        <span class="comment">// 读取 ADC 值入缓冲区</span></span><br><span class="line">        <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> (<span class="number">1</span>..<span class="number">33</span>).<span class="title function_ invoke__">rev</span>() &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">adc_value_right</span> = adc1.<span class="title function_ invoke__">read</span>(&amp;<span class="keyword">mut</span> adc1_ch4_pa4).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">adc_value_left</span> = adc1.<span class="title function_ invoke__">read</span>(&amp;<span class="keyword">mut</span> adc1_ch15_pc5).<span class="title function_ invoke__">unwrap</span>();</span><br><span class="line">            adc_value_right_buffer[i] = adc_value_right;</span><br><span class="line">            adc_value_left_buffer[i] = adc_value_left;</span><br><span class="line">            <span class="title function_ invoke__">send_adc</span>(&amp;<span class="keyword">mut</span> serial, adc_value_right <span class="keyword">as</span> <span class="type">f64</span>, adc_value_left <span class="keyword">as</span> <span class="type">f64</span>);</span><br><span class="line">            delay.<span class="title function_ invoke__">delay_us</span>(<span class="number">33_u32</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 计算高斯滤波后的值</span></span><br><span class="line">        <span class="keyword">let</span> <span class="variable">filtered_right</span> = gauss::<span class="title function_ invoke__">gauss_filter</span>(&amp;adc_value_right_buffer, <span class="number">16</span>);</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">filtered_left</span> = gauss::<span class="title function_ invoke__">gauss_filter</span>(&amp;adc_value_left_buffer, <span class="number">16</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="variable">diff</span> = (filtered_right - filtered_left) <span class="keyword">as</span> <span class="type">i32</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">steer_pwm_diff</span> = </span><br><span class="line">        <span class="title function_ invoke__">data_limit</span>(diff <span class="keyword">as</span> <span class="type">f64</span> * <span class="number">0.3</span>, steer_pwm_duty_min <span class="keyword">as</span> <span class="type">f64</span>, steer_pwm_duty_max <span class="keyword">as</span> <span class="type">f64</span>) <span class="keyword">as</span> <span class="type">u16</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">steer_pwm_duty</span> = steer_pwm_duty_center - steer_pwm_diff; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// 设置舵机 PWM 占空比</span></span><br><span class="line">        steer_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C3, (steer_pwm_duty / <span class="number">9999</span>) * steer_pwm.<span class="title function_ invoke__">get_max_duty</span>());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">wheel_speed_left</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">wheel_speed_right</span> = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 根据使能开关状态控制输出</span></span><br><span class="line">        <span class="keyword">if</span> enable_switch_pa12.<span class="title function_ invoke__">is_high</span>() &#123;</span><br><span class="line">            wheel_speed_left = <span class="number">800</span>;</span><br><span class="line">            wheel_speed_right = <span class="number">800</span>;</span><br><span class="line">            enable_out_pc13.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            enable_out_pc13.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="variable">wheel_left_pwm</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">wheel_right_pwm</span>;</span><br><span class="line">        <span class="keyword">if</span> wheel_speed_left &gt;= <span class="number">0</span> &#123;</span><br><span class="line">            wheel_left_pwm = wheel_speed_left <span class="keyword">as</span> <span class="type">u16</span>;</span><br><span class="line">            left_wheel_pb8.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            wheel_left_pwm = (<span class="number">4800</span> + wheel_speed_left) <span class="keyword">as</span> <span class="type">u16</span>;</span><br><span class="line">            left_wheel_pb8.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> wheel_speed_right &gt;= <span class="number">0</span> &#123;</span><br><span class="line">            wheel_right_pwm = wheel_speed_right <span class="keyword">as</span> <span class="type">u16</span>;</span><br><span class="line">            right_wheel_pb9.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            wheel_right_pwm = (<span class="number">4800</span> + wheel_speed_right) <span class="keyword">as</span> <span class="type">u16</span>;</span><br><span class="line">            right_wheel_pb9.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 设置左右轮 PWM 占空比</span></span><br><span class="line">        wheels_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C2, (wheel_left_pwm / <span class="number">4800</span>) * wheels_pwm.<span class="title function_ invoke__">get_max_duty</span>());</span><br><span class="line">        wheels_pwm.<span class="title function_ invoke__">set_duty</span>(Channel::C1, (wheel_right_pwm / <span class="number">4800</span>) * wheels_pwm.<span class="title function_ invoke__">get_max_duty</span>());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 通过拨码开关调整板子上 LED 灯的亮灭</span></span><br><span class="line">        <span class="keyword">if</span> switch1.<span class="title function_ invoke__">is_low</span>() &#123;</span><br><span class="line">            led1_pa11.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            led1_pa11.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> switch2.<span class="title function_ invoke__">is_low</span>() &#123;</span><br><span class="line">            led2_pa15.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            led2_pa15.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> switch3.<span class="title function_ invoke__">is_low</span>() &#123;</span><br><span class="line">            led3_pc12.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            led3_pc12.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> switch4.<span class="title function_ invoke__">is_low</span>() &#123;</span><br><span class="line">            led4_pb3.<span class="title function_ invoke__">set_high</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            led4_pb3.<span class="title function_ invoke__">set_low</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>/src/utils.rs</code> </p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> cortex_m::prelude::_embedded_hal_serial_Write;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">data_limit</span>(x: <span class="type">f64</span>, min: <span class="type">f64</span>, max: <span class="type">f64</span>) <span class="punctuation">-&gt;</span> <span class="type">f64</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> x &lt; min &#123;</span><br><span class="line">        min</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> x &gt; max &#123;</span><br><span class="line">        max</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        x</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#[inline(always)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">quicksort</span>(arr: &amp;<span class="keyword">mut</span> [<span class="type">i32</span>]) &#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">len</span> = arr.<span class="title function_ invoke__">len</span>();</span><br><span class="line">    <span class="keyword">if</span> len &lt;= <span class="number">1</span> &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">let</span> <span class="variable">pivot</span> = arr[len - <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">i</span> = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> <span class="variable">j</span> <span class="keyword">in</span> <span class="number">0</span>..len - <span class="number">1</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> arr[j] &lt;= pivot &#123;</span><br><span class="line">            arr.<span class="title function_ invoke__">swap</span>(i, j);</span><br><span class="line">            i += <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    arr.<span class="title function_ invoke__">swap</span>(i, len - <span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> i &gt; <span class="number">0</span> &#123;</span><br><span class="line">        <span class="title function_ invoke__">quicksort</span>(&amp;<span class="keyword">mut</span> arr[<span class="number">0</span>..i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> i + <span class="number">1</span> &lt; len &#123;</span><br><span class="line">        <span class="title function_ invoke__">quicksort</span>(&amp;<span class="keyword">mut</span> arr[i+<span class="number">1</span>..]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">send_adc</span>&lt;W&gt;(serial : &amp;<span class="keyword">mut</span> W, adc_right : <span class="type">f64</span>, adc_left : <span class="type">f64</span>)</span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">    W: _embedded_hal_serial_Write&lt;<span class="type">u8</span>&gt; + core::fmt::Write</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">tail</span> : [<span class="type">u8</span>; <span class="number">4</span>]  = [<span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x80</span>, <span class="number">0x7f</span>];</span><br><span class="line">    <span class="keyword">for</span> <span class="variable">byte</span> <span class="keyword">in</span> adc_left.<span class="title function_ invoke__">to_le_bytes</span>().<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">        serial.<span class="title function_ invoke__">write</span>(*byte).<span class="title function_ invoke__">ok</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> <span class="variable">byte</span> <span class="keyword">in</span> adc_right.<span class="title function_ invoke__">to_le_bytes</span>().<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">        serial.<span class="title function_ invoke__">write</span>(*byte).<span class="title function_ invoke__">ok</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> <span class="variable">byte</span> <span class="keyword">in</span> tail.<span class="title function_ invoke__">iter</span>() &#123;</span><br><span class="line">        serial.<span class="title function_ invoke__">write</span>(*byte).<span class="title function_ invoke__">ok</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>/src/gauss.rs</code> </p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">use</span> crate::utils::quicksort;</span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="keyword">fn</span> <span class="title function_">gauss_filter</span>(x: &amp;[<span class="type">i32</span>], n: <span class="type">usize</span>) <span class="punctuation">-&gt;</span> <span class="type">f64</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">0</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">1</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> x[<span class="number">0</span>] <span class="keyword">as</span> <span class="type">f64</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 创建一个临时数组来存储排序后的数据</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sorted</span> = [<span class="number">0i32</span>; <span class="number">64</span>]; <span class="comment">// 假设最大长度为64，根据实际需求调整</span></span><br><span class="line">    <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">        sorted[i] = x[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title function_ invoke__">quicksort</span>(&amp;<span class="keyword">mut</span> sorted[<span class="number">0</span>..n]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- 初始估计 ---</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sum</span>: <span class="type">f64</span> = <span class="number">0.0</span>;</span><br><span class="line">    <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">        sum += sorted[i] <span class="keyword">as</span> <span class="type">f64</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">mu</span> = sum / (n <span class="keyword">as</span> <span class="type">f64</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">var</span>: <span class="type">f64</span> = <span class="number">0.0</span>;</span><br><span class="line">    <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="variable">diff</span> = sorted[i] <span class="keyword">as</span> <span class="type">f64</span> - mu;</span><br><span class="line">        var += diff * diff;</span><br><span class="line">    &#125;</span><br><span class="line">    var /= (n - <span class="number">1</span>) <span class="keyword">as</span> <span class="type">f64</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sigma</span>: <span class="type">f64</span> = libm::<span class="title function_ invoke__">sqrt</span>(var);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> sigma &lt; <span class="number">1e-6</span> &#123;</span><br><span class="line">        sigma = <span class="number">1e-6</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// --- 迭代更新 ---</span></span><br><span class="line">    <span class="keyword">let</span> <span class="variable">max_iter</span> = <span class="number">30</span>;</span><br><span class="line">    <span class="keyword">let</span> <span class="variable">tol</span> = <span class="number">1e-6</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> <span class="variable">_iter</span> <span class="keyword">in</span> <span class="number">0</span>..max_iter &#123;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sum_w</span>: <span class="type">f64</span> = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sum_wx</span>: <span class="type">f64</span> = <span class="number">0.0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">diff</span>: <span class="type">f64</span> = (sorted[i] <span class="keyword">as</span> <span class="type">f64</span> - mu) / sigma;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">exponent</span>: <span class="type">f64</span> = -<span class="number">0.5</span> * diff * diff;</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">weight</span> = libm::<span class="title function_ invoke__">exp</span>(exponent);</span><br><span class="line">            <span class="keyword">if</span> weight &lt; <span class="number">1e-10</span> &#123;</span><br><span class="line">                weight = <span class="number">1e-10</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            sum_w += weight;</span><br><span class="line">            sum_wx += weight * sorted[i] <span class="keyword">as</span> <span class="type">f64</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="variable">new_mu</span> = sum_wx / sum_w;</span><br><span class="line">        <span class="keyword">if</span> libm::<span class="title function_ invoke__">fabs</span>(new_mu - mu) &lt; tol &#123;</span><br><span class="line">            mu = new_mu;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mu = new_mu;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 更新 sigma</span></span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sum_var</span> = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">sum_var_w</span> = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">for</span> <span class="variable">i</span> <span class="keyword">in</span> <span class="number">0</span>..n &#123;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">diff</span> = sorted[i] <span class="keyword">as</span> <span class="type">f64</span> - mu;</span><br><span class="line">            <span class="keyword">let</span> <span class="variable">exponent</span> = -<span class="number">0.5</span> * (diff / sigma) * (diff / sigma);</span><br><span class="line">            <span class="keyword">let</span> <span class="keyword">mut </span><span class="variable">weight</span> = libm::<span class="title function_ invoke__">exp</span>(exponent);</span><br><span class="line">            <span class="keyword">if</span> weight &lt; <span class="number">1e-10</span> &#123;</span><br><span class="line">                weight = <span class="number">1e-10</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            sum_var += weight * diff * diff;</span><br><span class="line">            sum_var_w += weight;</span><br><span class="line">        &#125;</span><br><span class="line">        sigma = libm::<span class="title function_ invoke__">sqrt</span>(sum_var / sum_var_w);</span><br><span class="line">        <span class="keyword">if</span> sigma &lt; <span class="number">1e-6</span> &#123;</span><br><span class="line">            sigma = <span class="number">1e-6</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> mu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由这个工程，我们可以看出：使用 Rust 开发的单片机程序，在源代码方面，大大提升了代码的可读性。Rust 的 HAL 库的抽象程度远高于 C 的 HAL 库，因此，在开发的过程中，使用 Rust 无疑是极其方便的。且 Rust 的各个嵌入式库日趋成熟，树莓派 Pico 已经将 Rust 列为了和 C&#x2F;C++， MicroPython 等同级的语言。在嵌入式方面，Rust 的发展无疑是如日中天的。但是，在配置方面，Rust 的配置仍然相对较为麻烦，没有类似于 CubeMX 的工具，在这方面，Rust 仍然是具有很大的突破空间的。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>[1] <a target="_blank" rel="noopener" href="https://github.com/stm32-rs/stm32f1xx-hal/tree/master/examples">stm32f1xx-hal&#x2F;examples</a> Rust 嵌入式官方例程；</p>
+<p>[2] <a target="_blank" rel="noopener" href="https://doc.rust-lang.net.cn/stable/embedded-book/intro/index.html">doc.rust-lang.net&#x2F;stable&#x2F;embedded-book</a> 嵌入式 Rust Book</p>
+<p>[3] <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/416497709">zhuanlan.zhihu.com</a> Rust 嵌入式开发 STM32 &amp; RISC-V</p>
+<p>[4] <a target="_blank" rel="noopener" href="https://kaisery.github.io/trpl-zh-cn/">kaisery.github.io</a> Rust 程序设计语言 - 简体中文版</p>
+<p>[5] ChatGPT、Gemini、GitHub Copilot 等 AI 工具😋</p>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>License</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">Older</div><a href="/2025/11/12/sys-brk/">sys_brk</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Redstone6835</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">On This Page</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Rust-%E8%AF%AD%E8%A8%80%E7%BC%96%E5%86%99%E5%9F%BA%E4%BA%8E-STM32-%E7%9A%84%E6%99%BA%E8%83%BD%E8%BD%A6%E7%A8%8B%E5%BA%8F"><span class="toc-text">使用 Rust 语言编写基于 STM32 的智能车程序</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Rust-STM32-%E5%B7%A5%E5%85%B7%E9%93%BE"><span class="toc-text">安装 Rust STM32 工具链</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E7%AE%80%E6%98%93%E6%A8%A1%E6%9D%BF%E6%96%B9%E5%BC%8F%E5%88%9B%E5%BB%BA-STM32-%E5%B7%A5%E7%A8%8B"><span class="toc-text">使用简易模板方式创建 STM32 工程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%8B%E9%9A%86%E6%A8%A1%E6%9D%BF%E4%BB%93%E5%BA%93"><span class="toc-text">克隆模板仓库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%9C%89%E5%85%B3%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">修改有关配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%93%BE%E6%8E%A5%E8%84%9A%E6%9C%AC%E4%B8%8E-MCU-%E5%9E%8B%E5%8F%B7"><span class="toc-text">修改链接脚本与 MCU 型号</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Start-coding"><span class="toc-text">Start coding !!!</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E8%84%9A%E5%AE%9A%E4%B9%89"><span class="toc-text">引脚定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF%E5%8E%9F%E7%94%9F%E4%BB%A3%E7%A0%81%E5%8F%8A%E7%9B%B8%E5%85%B3%E5%8F%A5%E6%9F%84%E7%9A%84%E6%84%8F%E4%B9%89"><span class="toc-text">模板原生代码及相关句柄的意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-GPIO-%E5%A4%8D%E7%94%A8%E5%B9%B6%E7%A6%81%E7%94%A8-JTAG"><span class="toc-text">配置 GPIO 复用并禁用 JTAG</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%9F%BA%E6%9C%AC%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA"><span class="toc-text">配置基本输入输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-ADC-%E9%A2%91%E9%81%93%E5%8F%A5%E6%9F%84"><span class="toc-text">配置 ADC 频道句柄</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E8%88%B5%E6%9C%BA-PWM-%E8%BE%93%E5%87%BA"><span class="toc-text">配置舵机 PWM 输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%B7%A6%E5%8F%B3%E8%BD%AE%E6%8E%A7%E5%88%B6%E6%B5%81%E8%BE%93%E5%87%BA"><span class="toc-text">配置左右轮控制流输出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E8%B0%83%E8%AF%95%E4%BF%A1%E6%81%AF%E8%BE%93%E5%87%BA"><span class="toc-text">配置调试信息输出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%9B%E5%85%A5%E4%B8%BB%E5%BE%AA%E7%8E%AF"><span class="toc-text">进入主循环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E4%BC%A0%E6%84%9F%E5%99%A8%E8%BE%93%E5%87%BA%E6%97%B6%E9%81%87%E5%88%B0%E7%9A%84%E5%9B%B0%E9%9A%BE"><span class="toc-text">处理传感器输出时遇到的困难</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E7%A7%8D%E5%9F%BA%E4%BA%8E%E6%AD%A3%E6%80%81%E5%88%86%E5%B8%83%E6%8B%9F%E5%90%88%E7%9A%84%E6%BB%A4%E6%B3%A2%E7%AE%97%E6%B3%95-gauss-filter"><span class="toc-text">一种基于正态分布拟合的滤波算法 gauss_filter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E4%BC%A0%E6%84%9F%E5%99%A8%E6%95%B0%E6%8D%AE%E5%B9%B6%E6%8E%A7%E5%88%B6%E8%BD%AC%E5%90%91"><span class="toc-text">处理传感器数据并控制转向</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E5%B7%A6%E5%8F%B3%E8%BD%AE%E7%9A%84%E8%BD%AC%E9%80%9F"><span class="toc-text">控制左右轮的转速</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%8B%A8%E7%A0%81%E5%BC%80%E5%85%B3%E6%8E%A7%E5%88%B6%E6%9D%BF%E8%BD%BD-LED"><span class="toc-text">使用拨码开关控制板载 LED</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%8A%9F%E5%91%8A%E6%88%90%EF%BC%81"><span class="toc-text">大功告成！</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-text">参考资料</span></a></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>Scroll to Top</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `Just`,
+      min: `minutes ago`,
+      hour: `hours ago`,
+      day: `days ago`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `Switched to Light Mode`,
+      dark: `Switched to Dark Mode`,
+      auto: `Switched to Auto Mode`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
