@@ -17,14 +17,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
-  <title>使用 Rust 语言编写基于 STM32 的智能车程序 - Redstone6835's blog</title>
+  <title>使用 Rust 语言编写基于 STM32 的智能车程序 - RedstoneHorizon</title>
 
   
     <meta name="description" content="使用 Rust 语言编写基于 STM32 的智能车程序这篇 Blog 将着重介绍如何使用 Rust 语言工具链配置 STM32 嵌入式开发环境，并将指导您使用 Rust 编写一个简易的、基于电磁传感器循迹的智能车程序。  💡  这里所使用的单片机芯片为 STM32F103RCT6。不同的芯片可能产生细微但不大的差别。   安装 Rust STM32 工具链这里默认已经安装好了rustup 与ca">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用 Rust 语言编写基于 STM32 的智能车程序">
 <meta property="og:url" content="http://redstone6835.github.io/2025/11/16/%E4%BD%BF%E7%94%A8-Rust-%E8%AF%AD%E8%A8%80%E7%BC%96%E5%86%99%E5%9F%BA%E4%BA%8E-STM32-%E7%9A%84%E6%99%BA%E8%83%BD%E8%BD%A6%E7%A8%8B%E5%BA%8F/">
-<meta property="og:site_name" content="Redstone6835&#39;s blog">
+<meta property="og:site_name" content="RedstoneHorizon">
 <meta property="og:description" content="使用 Rust 语言编写基于 STM32 的智能车程序这篇 Blog 将着重介绍如何使用 Rust 语言工具链配置 STM32 嵌入式开发环境，并将指导您使用 Rust 编写一个简易的、基于电磁传感器循迹的智能车程序。  💡  这里所使用的单片机芯片为 STM32F103RCT6。不同的芯片可能产生细微但不大的差别。   安装 Rust STM32 工具链这里默认已经安装好了rustup 与ca">
 <meta property="og:locale">
 <meta property="article:published_time" content="2025-11-15T17:47:49.000Z">
@@ -59,7 +59,7 @@
 <div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
 
 
-<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Redstone6835's blog</div><div class="sub cap">社会实践是检验真理的唯一标准。</div></a></div></header>
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="undefined" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">RedstoneHorizon</div><div class="sub cap">社会实践是检验真理的唯一标准。</div></a></div></header>
 
 <div class="nav-area">
 
