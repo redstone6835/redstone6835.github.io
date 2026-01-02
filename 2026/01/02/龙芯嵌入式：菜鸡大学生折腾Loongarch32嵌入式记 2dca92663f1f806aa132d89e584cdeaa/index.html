@@ -1,0 +1,951 @@
+
+<!DOCTYPE html><html lang="zh_CN">
+
+<head>
+  <meta name="google-site-verification" content="jOwYQIJL2TnkqFQyf7J-PnguwkL7_878-y8-TMRITIU" />
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>RedstoneDist</title>
+
+  
+    <meta name="description" content="龙芯嵌入式：菜鸡大学生折腾Loongarch32嵌入式记 工欲善其事，必先利其器。这篇Blog将着重介绍如何从零开始构建一个loongarch32-unknown-elfsf目标的工具链，并利用其构建一个龙芯1C102单片机的点灯程序。  💡 下文若未特殊指定，默认 Host 主机架构为x86_64-linux-gnu。  在目前（2026年1月2日），GCC 官方仍然没有合并 Loongarc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RedstoneDist">
+<meta property="og:url" content="https://redstone6835.github.io/2026/01/02/%E9%BE%99%E8%8A%AF%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%9A%E8%8F%9C%E9%B8%A1%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%8A%98%E8%85%BELoongarch32%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%AE%B0%202dca92663f1f806aa132d89e584cdeaa/">
+<meta property="og:site_name" content="RedstoneDist">
+<meta property="og:description" content="龙芯嵌入式：菜鸡大学生折腾Loongarch32嵌入式记 工欲善其事，必先利其器。这篇Blog将着重介绍如何从零开始构建一个loongarch32-unknown-elfsf目标的工具链，并利用其构建一个龙芯1C102单片机的点灯程序。  💡 下文若未特殊指定，默认 Host 主机架构为x86_64-linux-gnu。  在目前（2026年1月2日），GCC 官方仍然没有合并 Loongarc">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://redstone6835.github.io/images/avatar.png">
+<meta property="article:published_time" content="2026-01-02T10:11:33.154Z">
+<meta property="article:modified_time" content="2026-01-02T10:11:33.154Z">
+<meta property="article:author" content="Redstone6835">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://redstone6835.github.io/images/avatar.png">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+    <link rel="alternate" href="/atom.xml" title="RedstoneDist" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+    <link rel="shortcut icon" href="/images/avatar.png">
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png"},"dateCreated":"2026-01-02T18:11:33+08:00","dateModified":"2026-01-02T18:11:33+08:00","datePublished":"2026-01-02T18:11:33+08:00","description":"","headline":"","mainEntityOfPage":{"@type":"WebPage","@id":"https://redstone6835.github.io/2026/01/02/%E9%BE%99%E8%8A%AF%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%9A%E8%8F%9C%E9%B8%A1%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%8A%98%E8%85%BELoongarch32%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%AE%B0%202dca92663f1f806aa132d89e584cdeaa/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png","logo":{"@type":"ImageObject","url":"/images/avatar.png"}},"url":"https://redstone6835.github.io/2026/01/02/%E9%BE%99%E8%8A%AF%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%9A%E8%8F%9C%E9%B8%A1%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%8A%98%E8%85%BELoongarch32%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%AE%B0%202dca92663f1f806aa132d89e584cdeaa/","image":[]}</script>
+  
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/images/avatar.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">RedstoneDist</div><div class="sub normal cap">社会实践是检验真理的唯一标准。</div><div class="sub hover cap" style="opacity:0"> 批判的武器不能替代武器的批判。</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/01/02/home-redstone-Documents-%E9%BE%99%E8%8A%AF%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%9A%E8%8F%9C%E9%B8%A1%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%8A%98%E8%85%BELoongarch32%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%AE%B0-2dca92663f1f806aa132d89e584cdeaa-md/"><span class="title">/home/redstone/Documents/龙芯嵌入式：菜鸡大学生折腾Loongarch32嵌入式记</span></a><a class="item title" href="/2025/11/18/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%EF%BC%9A%E7%AC%AC%E4%B9%9D%E7%AB%A0/"><span class="title">深入浅出：第九章</span></a><a class="item title" href="/2025/11/12/sys-write/"><span class="title">sys_write</span></a><a class="item title" href="/2025/11/12/sys-stat-sys-fstat-%E4%BB%A5%E5%8F%8A-sys-lstat/"><span class="title">sys_stat, sys_fstat 以及 sys_lstat</span></a><a class="item title" href="/2025/11/12/sys-read/"><span class="title">sys_read</span></a><a class="item title" href="/2025/11/12/sys-poll/"><span class="title">sys_poll</span></a><a class="item title" href="/2025/11/12/sys-open-%E4%B8%8E-sys-close/"><span class="title">sys_open 与 sys_close</span></a><a class="item title" href="/2025/11/12/sys-mprotect/"><span class="title">sys_mprotect</span></a><a class="item title" href="/2025/11/12/sys-mmap-%E4%B8%8E-sys-munmap/"><span class="title">sys_mmap 与 sys_munmap</span></a><a class="item title" href="/2025/11/12/sys-lseek/"><span class="title">sys_lseek</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-01-02T10:11:33.154Z">2026-01-02</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-01-02T10:11:33.154Z">2026-01-02</time></span></div></div></div>
+    
+  </div>
+  </div><article class="md-text content"><h1>龙芯嵌入式：菜鸡大学生折腾Loongarch32嵌入式记</h1>
+<p>工欲善其事，必先利其器。这篇Blog将着重介绍如何从零开始构建一个<code>loongarch32-unknown-elfsf</code>目标的工具链，并利用其构建一个龙芯1C102单片机的点灯程序。</p>
+<blockquote>
+<p>💡 下文若未特殊指定，默认 Host 主机架构为<code>x86_64-linux-gnu</code>。</p>
+</blockquote>
+<p>在目前（2026年1月2日），GCC 官方仍然没有合并 Loongarch32 平台目标的分支，因此，我们只能找到 GCC 16.0 的源代码，并 patch 上 Loongarch32 平台的补丁。对于 binutils 和 libc，我们则可以很轻松地找到官方或第三方支持 Loongarch32 平台的分支，对于 picolibc 来说，官方甚至就已经支持了该平台。</p>
+<p>笔者找到的 gcc 源代码主要来自三个途径：第一是龙芯官方发布的源代码包，第二是 gcc 官方的不稳定分支，第三是龙芯开源社区提供的预编译的工具链以及 patch 过的 gcc 源代码。</p>
+<h1>龙芯官方工具链存在的“玄学”问题</h1>
+<p>我们首先就 LoongIDE 上的工具链进行研究。根据工具链的文件名来看，该工具链的编译目标为 <code>loongarch32-newlib-elf</code> ，甚至不是一个标准的三元组；且对于任何一个可开发的目标（龙芯 1C102, 1C103 等 MCU）来说，该类 MCU 皆是软浮点，并不具备 <code>FPU</code> 浮点寄存器，而 <code>loongarch32-newlib-elf</code> 目标却隐式指定该目标为双精度浮点，这可能并不是我们所想要的。</p>
+<p>为了验证该工具链的可用性以及获知编译该工具链时指定的编译选项，笔者开了一个 Windows 7 虚拟机。但经过笔者的测试，在龙芯官方演示该 IDE 所使用的 Windows 7 旗舰版环境之下，<code>loongarch32-newlib-elf-gcc.exe</code> 几乎无法运行，或者该程序编译时本身存在问题，使得运行时根本不会产生输出，且后期笔者进行了一些深度测试，可以确定的是该工具链根本不具备编译能力。</p>
+<p>后来，笔者又通过龙芯开发者社区获取到了某一较为流行的工具链。然而，根据该工具链的文件名与编译输出，我们却发现：该工具链的编译目标似乎并非是裸机，而是<code>loongarch32-linux-gnuf64</code> 。因此，根据社区上的信息以及笔者的测试，我们可以得到下面三个结论：</p>
+<ol>
+<li>龙芯单片机所需编译器的三元组并不唯一，且可能的匹配情况非常多；</li>
+<li>龙芯单片机本身的链接过程可能并不会涉及到 libc 的启动代码与 <code>_start</code> 段；</li>
+<li>在刷写程序时，是否为软浮点或硬浮点对程序本身并不会产生影响。</li>
+</ol>
+<p>因此，在指定编译工具链时，我们或许并不用考虑 ABI 浮点的情况，但为了程序未来可能会需要的稳定性，我们应当编译一个裸机的、软浮点的 ELF 工具链，对应的三元组应当为 <code>loongarch32-unknown-elfsf</code>。</p>
+<blockquote>
+<p>💡 <code>loongarch32-unknown-elf</code> 仍然为双精度浮点，为了采用软浮点，我们应当采用<code>loongarch32-unknown-elfsf</code> 。这不是一个标准三元组，但在 gcc 16.0 版本中，官方的 configure 脚本已经弃用了 ABI 的显式指定，因此，我们必须通过该三元组指定软浮点 ABI。</p>
+</blockquote>
+<p>且由于我们采取了交叉编译的方式，我们必须将编译分为四个阶段（ Stages ）:</p>
+<ul>
+<li>Stage 0. 编译 binutils，得到汇编器、链接器与其他重要工具；</li>
+<li>Stage 1. 编译一个初步可用的 GCC，用于编译libc；</li>
+<li>Stage 2. 使用 Stage1 获得的 GCC，编译 picolibc；</li>
+<li>Stage 3. 使用 Stage2 获得的 libc，重新编译 gcc，并链接 libc。</li>
+</ul>
+<h1>binutils 的编译（ Stage 0 ）</h1>
+<p>经过笔者的测试，官方分支的 binutils 的 configure 脚本根本无法识别 loongarch32 架构。我们使用社区上已经打好了 patch 的一个 binutils-gdb 分支：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/cloudspurs/binutils-gdb</span><br><span class="line"><span class="built_in">mkdir</span> binutils-build</span><br><span class="line"><span class="built_in">cd</span> binutils-build</span><br></pre></td></tr></table></figure>
+<p>运行 configure 脚本，配置 binutils 的编译选项：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">../binutils-gdb/configure --target=loongarch32-unknown-elfsf \</span><br><span class="line">                          --prefix=/opt/loongarch32-unknown-elfsf \                                                    </span><br><span class="line">                          --disable-multilib                                                                                                  </span><br></pre></td></tr></table></figure>
+<p>这里的  <code>—disable-multilib</code> 是为了禁用多架构选项。</p>
+<p>若脚本运行无误，我们直接开始编译：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make -j32</span><br><span class="line"><span class="built_in">sudo</span> make install</span><br></pre></td></tr></table></figure>
+<p>然后，我们在 <code>/opt/loongarch32-unknown-elfsf/bin</code> 中就可以找到 binutils 以及 gdb 的可执行文件了。同时，为了方便接下来的操作，我们还需要将该路径添加进 <code>PATH</code> 中。</p>
+<h1>GCC （仅 C 编译器）的编译（ Stage 1 ）</h1>
+<p>这里，我们使用第三方打上了  Loongarch32 patch 的 GCC 分支：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/cloudspurs/gcc</span><br><span class="line"><span class="built_in">mkdir</span> gcc-bootstrap</span><br><span class="line"><span class="built_in">cd</span> gcc-bootstrap</span><br></pre></td></tr></table></figure>
+<p>由于此时我们根本没有 libc，我们无法得到 C++ 的标准库 <code>libstdc++</code> ，因此在本阶段内我们只能编译一个最基本的 C 语言编译器，且该编译器几乎完全不可以用于链接，只会用到预处理、编译、汇编这三个步骤。因此，我们不需要保证生成的文件是可执行文件，只需要保证生成的文件对应的汇编指令是正常编译而来的，且静态库之间可以相互链接即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">../gcc/configure \                                                           </span><br><span class="line">  --target=loongarch32-unknown-elfsf \</span><br><span class="line">  --prefix=/opt/loongarch32-unknown-elfsf \</span><br><span class="line">  --enable-languages=c \</span><br><span class="line">  --without-headers \</span><br><span class="line">  --disable-shared \</span><br><span class="line">  --disable-threads \</span><br><span class="line">  --disable-libatomic \</span><br><span class="line">  --disable-libgomp \</span><br><span class="line">  --disable-libquadmath \</span><br><span class="line">  --disable-libssp \</span><br><span class="line">  --disable-libstdcxx \</span><br><span class="line">  --disable-multilib</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>我们这里启用了 <code>—without-headers</code> ，是为了防止编译器将我们 Host 平台的头文件当成了目标平台的头文件，从而导致我们不希望出现的链接错误。且我们禁用了大量 GCC 编译时可能会顺带着一起编译或链接的库，仍然是因为在 Stage 1，我们并不具备编译这些库的能力，因为我们甚至连 libc 都没有。在配置 GCC 编译选项时，我们仍然启用了 <code>—disable-multilib</code> ，禁用了其他架构的编译选项，从而保证我们编译出的文件更加具有专一性，在 Stage 2 编译 libc 时，把因为架构问题出错的可能性进一步降低。</p>
+<p>若脚本运行无误，我们直接开始编译：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make -j32</span><br><span class="line"><span class="built_in">sudo</span> make install</span><br></pre></td></tr></table></figure>
+<p>由于我们禁用了太多编译时可能会顺带着编译进去的库或其他支持，整个编译过程只会持续大约十分钟左右。接下来，我们便可以在 <code>/opt/loongarch32-unknown-elfsf/bin</code> 中找到 GCC。</p>
+<h1>Picolibc 的编译（ Stage 2 ）</h1>
+<p>经过了 Stage 1，我们获得了一个具有初步功能的 GCC，同时也具有了初步编译的能力。为了获得一个具有完整功能的 GCC，我们就必须编译一个 libc，使得 GCC 能够正常完成链接。由于我们的开发对象的 FLASH 体积较小，且开销有限，我们选择比 newlib 更为轻量的 Picolibc。且 Picolibc 官方已经将 Loongarch32 平台的支持合并进入主线，而 newlib 则仍然没有合并。因此，在这里，我们直接使用 Picolibc 的官方分发即可。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/picolibc/picolibc</span><br><span class="line"><span class="built_in">mkdir</span> picolibc-build</span><br><span class="line"><span class="built_in">cd</span> picolibc-build</span><br></pre></td></tr></table></figure>
+<p>为了编译 Picolibc，且由于 Picolibc 使用了 meson 构建系统，我们还需要配置交叉编译选项。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ../picolibc/cross.tmpl</span><br></pre></td></tr></table></figure>
+<p>将其修改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[binaries]</span><br><span class="line">c = <span class="string">&#x27;loongarch32-unknown-elfsf-gcc&#x27;</span></span><br><span class="line">ar = <span class="string">&#x27;loongarch32-unknown-elfsf-ar&#x27;</span></span><br><span class="line">strip = <span class="string">&#x27;loongarch32-unknown-elfsf-strip&#x27;</span></span><br><span class="line"></span><br><span class="line">[host_machine]</span><br><span class="line">system = <span class="string">&#x27;none&#x27;</span></span><br><span class="line">cpu_family = <span class="string">&#x27;loongarch32&#x27;</span></span><br><span class="line">cpu = <span class="string">&#x27;loongarch32&#x27;</span></span><br><span class="line">endian = <span class="string">&#x27;little&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>修改后开始配置编译选项并使用 ninja 进行编译：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">meson setup ../picolibc \</span><br><span class="line">  --cross-file ../picolibc/cross.tmpl \</span><br><span class="line">  --prefix=/opt/loongarch32-unknown-elfsf/loongarch32-unknown-elfsf \</span><br><span class="line">  -Dmultilib=<span class="literal">false</span></span><br><span class="line">ninja</span><br></pre></td></tr></table></figure>
+<p>但是最终出现了报错：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">FAILED: [code=1] picocrt/crt0-semihost.o.p/machine_loongarch_crt0.c.o </span><br><span class="line">loongarch32-unknown-elfsf-gcc -Ipicocrt/crt0-semihost.o.p -Ipicocrt -I../picolibc/picocrt -Inewlib/libc/machine/loongarch -I../picolibc/newlib/libc/machine/loongarch -Inewlib/libc/stdio -I../picolibc/newlib/libc/stdio -Inewlib/libc/locale -I../picolibc/newlib/libc/locale -I. -I../picolibc -Inewlib/libc/include -I../picolibc/newlib/libc/include -Isemihost/common -I../picolibc/semihost/common -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c18 -Os -g -ffunction-sections -D_LIBC -fno-builtin -ffreestanding -DMACHINE_qemu -DCRT0_EXIT -DCRT0_SEMIHOST -MD -MQ picocrt/crt0-semihost.o.p/machine_loongarch_crt0.c.o -MF picocrt/crt0-semihost.o.p/machine_loongarch_crt0.c.o.d -o picocrt/crt0-semihost.o.p/machine_loongarch_crt0.c.o -c ../picolibc/picocrt/machine/loongarch/crt0.c</span><br><span class="line">/tmp/cckjcHqE.s: Assembler messages:</span><br><span class="line">/tmp/cckjcHqE.s:282: 错误：CFI instruction used without previous .cfi_startproc</span><br><span class="line">/tmp/cckjcHqE.s:384: 错误：CFI instruction used without previous .cfi_startproc</span><br><span class="line">/tmp/cckjcHqE.s:387: 错误：CFI instruction used without previous .cfi_startproc</span><br><span class="line">[1055/1058] Linking static target newlib/libc.a</span><br><span class="line">ninja: build stopped: subcommand failed.</span><br></pre></td></tr></table></figure>
+<p>笔者推测，这极有可能是因为 Loongarch32 的各个编译系统仍然处于上游测试期，Picolibc 对 Loongarch32 平台的汇编支持并不是特别完善。但是我们也注意到，报错原因在于 CFI 表达式的使用方式出现了问题，而 CFI 表达式本身则是用于 Picolibc 的调试，且我们在编译的时候很可能并不会用到 Picolibc 的启动指令，而是我们自己写的 <code>_start</code> 段。如果去掉，影响可能不会特别大。因此，我们尝试直接修改 <code>../picolibc/picocrt/machine/loongarch/crt0.c</code> ，并去掉其中的所有 CFI 段。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ../picolibc/picocrt/machine/loongarch/crt0.c</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * SPDX-License-Identifier: BSD-3-Clause</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Copyright (c) 2024 Jiaxun Yang &lt;&lt;jiaxun.yang@flygoat.com&gt;</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * Redistribution and use in source and binary forms, with or without</span></span><br><span class="line"><span class="comment"> * modification, are permitted provided that the following conditions</span></span><br><span class="line"><span class="comment"> * are met:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 1. Redistributions of source code must retain the above copyright</span></span><br><span class="line"><span class="comment"> *    notice, this list of conditions and the following disclaimer.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 2. Redistributions in binary form must reproduce the above</span></span><br><span class="line"><span class="comment"> *    copyright notice, this list of conditions and the following</span></span><br><span class="line"><span class="comment"> *    disclaimer in the documentation and/or other materials provided</span></span><br><span class="line"><span class="comment"> *    with the distribution.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 3. Neither the name of the copyright holder nor the names of its</span></span><br><span class="line"><span class="comment"> *    contributors may be used to endorse or promote products derived</span></span><br><span class="line"><span class="comment"> *    from this software without specific prior written permission.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS</span></span><br><span class="line"><span class="comment"> * &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT</span></span><br><span class="line"><span class="comment"> * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS</span></span><br><span class="line"><span class="comment"> * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE</span></span><br><span class="line"><span class="comment"> * COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,</span></span><br><span class="line"><span class="comment"> * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES</span></span><br><span class="line"><span class="comment"> * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR</span></span><br><span class="line"><span class="comment"> * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)</span></span><br><span class="line"><span class="comment"> * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,</span></span><br><span class="line"><span class="comment"> * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)</span></span><br><span class="line"><span class="comment"> * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED</span></span><br><span class="line"><span class="comment"> * OF THE POSSIBILITY OF SUCH DAMAGE.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stddef.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;../../crt0.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> __used __section(<span class="string">&quot;.init&quot;</span>) _cstart(<span class="type">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">    __start();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CRT0_SEMIHOST</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NUM_REG 32</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> __loongarch_grlen == 32</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FMT  <span class="string">&quot;%08lx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SD   <span class="string">&quot;st.d&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ADDI <span class="string">&quot;addi.d&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> FMT  <span class="string">&quot;%016lx&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SD   <span class="string">&quot;st.d&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ADDI <span class="string">&quot;addi.w&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fault</span> &#123;</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> r[NUM_REG];</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> csr_era;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> csr_badvaddr;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> csr_crmd;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> csr_prmd;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> csr_euen;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> csr_ecfg;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> csr_estat;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="type">char</span> * <span class="type">const</span> names[NUM_REG] = &#123;</span><br><span class="line">    <span class="string">&quot;zero&quot;</span>, <span class="string">&quot;ra&quot;</span>, <span class="string">&quot;tp&quot;</span>, <span class="string">&quot;sp&quot;</span>, <span class="string">&quot;a0&quot;</span>, <span class="string">&quot;a1&quot;</span>, <span class="string">&quot;a2&quot;</span>, <span class="string">&quot;a3&quot;</span>, <span class="string">&quot;a4&quot;</span>, <span class="string">&quot;a5&quot;</span>, <span class="string">&quot;a6&quot;</span>,</span><br><span class="line">    <span class="string">&quot;a7&quot;</span>,   <span class="string">&quot;t0&quot;</span>, <span class="string">&quot;t1&quot;</span>, <span class="string">&quot;t2&quot;</span>, <span class="string">&quot;t3&quot;</span>, <span class="string">&quot;t4&quot;</span>, <span class="string">&quot;t5&quot;</span>, <span class="string">&quot;t6&quot;</span>, <span class="string">&quot;t7&quot;</span>, <span class="string">&quot;t8&quot;</span>, <span class="string">&quot;r21&quot;</span>,</span><br><span class="line">    <span class="string">&quot;fp&quot;</span>,   <span class="string">&quot;s0&quot;</span>, <span class="string">&quot;s1&quot;</span>, <span class="string">&quot;s2&quot;</span>, <span class="string">&quot;s3&quot;</span>, <span class="string">&quot;s4&quot;</span>, <span class="string">&quot;s5&quot;</span>, <span class="string">&quot;s6&quot;</span>, <span class="string">&quot;s7&quot;</span>, <span class="string">&quot;s8&quot;</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> __used __section(<span class="string">&quot;.init&quot;</span>) _ctrap(<span class="keyword">struct</span> fault *fault)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> r;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;LoongArch fault\n&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (r = <span class="number">0</span>; r &lt; NUM_REG; r++)</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;\tx%d %-5.5s%s 0x&quot;</span> FMT <span class="string">&quot;\n&quot;</span>, r, names[r], r &lt; <span class="number">10</span> ? <span class="string">&quot; &quot;</span> : <span class="string">&quot;&quot;</span>, fault-&gt;r[r]);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\tera: 0x%lx\n&quot;</span>, fault-&gt;csr_era);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\tbadvaddr: 0x%lx\n&quot;</span>, fault-&gt;csr_badvaddr);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\tcrmd: 0x%lx\n&quot;</span>, fault-&gt;csr_crmd);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\tprmd: 0x%lx\n&quot;</span>, fault-&gt;csr_prmd);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\teuen: 0x%lx\n&quot;</span>, fault-&gt;csr_euen);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\tecfg: 0x%lx\n&quot;</span>, fault-&gt;csr_ecfg);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\testat: 0x%lx\n&quot;</span>, fault-&gt;csr_estat);</span><br><span class="line">    _exit(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _PASTE(r) #r</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> PASTE(r)  _PASTE(r)</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> __section(<span class="string">&quot;.init&quot;</span>) __used __attribute((aligned(<span class="number">0x40</span>))) _trap(<span class="type">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* Build a known-working C environment */</span></span><br><span class="line">    __asm__(<span class="string">&quot;csrwr          $sp, 0x30\n&quot;</span> <span class="comment">/* Save sp to ksave0 */</span></span><br><span class="line">            <span class="string">&quot;la.abs             $sp, __heap_end\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Make space for saved registers */</span></span><br><span class="line">    __asm__(ADDI <span class="string">&quot;          $sp, $sp, %0\n&quot;</span></span><br><span class="line">            ::<span class="string">&quot;i&quot;</span>(-<span class="keyword">sizeof</span>(<span class="keyword">struct</span> fault)));</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Save registers on stack */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SAVE_REG(num)                                                       \</span></span><br><span class="line"><span class="meta">    __asm__(SD <span class="string">&quot;     $r%0, $sp, %1&quot;</span> ::<span class="string">&quot;i&quot;</span>(num),                             \</span></span><br><span class="line"><span class="meta">            <span class="string">&quot;i&quot;</span>((num) * sizeof(unsigned long) + offsetof(struct fault, r)))</span></span><br><span class="line"></span><br><span class="line">    SAVE_REG(<span class="number">0</span>);</span><br><span class="line">    SAVE_REG(<span class="number">1</span>);</span><br><span class="line">    SAVE_REG(<span class="number">2</span>);</span><br><span class="line">    SAVE_REG(<span class="number">3</span>);</span><br><span class="line">    SAVE_REG(<span class="number">4</span>);</span><br><span class="line">    SAVE_REG(<span class="number">5</span>);</span><br><span class="line">    SAVE_REG(<span class="number">6</span>);</span><br><span class="line">    SAVE_REG(<span class="number">7</span>);</span><br><span class="line">    SAVE_REG(<span class="number">8</span>);</span><br><span class="line">    SAVE_REG(<span class="number">9</span>);</span><br><span class="line">    SAVE_REG(<span class="number">10</span>);</span><br><span class="line">    SAVE_REG(<span class="number">11</span>);</span><br><span class="line">    SAVE_REG(<span class="number">12</span>);</span><br><span class="line">    SAVE_REG(<span class="number">13</span>);</span><br><span class="line">    SAVE_REG(<span class="number">14</span>);</span><br><span class="line">    SAVE_REG(<span class="number">15</span>);</span><br><span class="line">    SAVE_REG(<span class="number">16</span>);</span><br><span class="line">    SAVE_REG(<span class="number">17</span>);</span><br><span class="line">    SAVE_REG(<span class="number">18</span>);</span><br><span class="line">    SAVE_REG(<span class="number">19</span>);</span><br><span class="line">    SAVE_REG(<span class="number">20</span>);</span><br><span class="line">    SAVE_REG(<span class="number">21</span>);</span><br><span class="line">    SAVE_REG(<span class="number">22</span>);</span><br><span class="line">    SAVE_REG(<span class="number">23</span>);</span><br><span class="line">    SAVE_REG(<span class="number">24</span>);</span><br><span class="line">    SAVE_REG(<span class="number">25</span>);</span><br><span class="line">    SAVE_REG(<span class="number">26</span>);</span><br><span class="line">    SAVE_REG(<span class="number">27</span>);</span><br><span class="line">    SAVE_REG(<span class="number">28</span>);</span><br><span class="line">    SAVE_REG(<span class="number">29</span>);</span><br><span class="line">    SAVE_REG(<span class="number">30</span>);</span><br><span class="line">    SAVE_REG(<span class="number">31</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SAVE_CSR(name, reg)                                              \</span></span><br><span class="line"><span class="meta">    __asm__(<span class="string">&quot;csrrd   $t0, &quot;</span> PASTE(reg));                                 \</span></span><br><span class="line"><span class="meta">    __asm__(SD <span class="string">&quot;      $t0, $sp, %0&quot;</span> ::<span class="string">&quot;i&quot;</span>(offsetof(struct fault, name)))</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Save the trapping frame&#x27;s stack pointer that was stashed in ksave0</span></span><br><span class="line"><span class="comment">     * and tell the unwinder where we can find the return address (csr_era).</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    __asm__(<span class="string">&quot;csrrd   $ra, 0x6\n&quot;</span> SD <span class="string">&quot;     $ra, $sp, %0\n&quot;</span></span><br><span class="line">            <span class="string">&quot;csrrd   $t0, 0x30\n&quot;</span> SD <span class="string">&quot;     $t0, $sp, %0\n&quot;</span></span><br><span class="line">            ::<span class="string">&quot;i&quot;</span>(offsetof(<span class="keyword">struct</span> fault, csr_era)),</span><br><span class="line">            <span class="string">&quot;i&quot;</span>(offsetof(<span class="keyword">struct</span> fault, r[<span class="number">3</span>])));</span><br><span class="line">    SAVE_CSR(csr_badvaddr, <span class="number">0x7</span>);</span><br><span class="line">    SAVE_CSR(csr_crmd, <span class="number">0x0</span>);</span><br><span class="line">    SAVE_CSR(csr_prmd, <span class="number">0x1</span>);</span><br><span class="line">    SAVE_CSR(csr_euen, <span class="number">0x2</span>);</span><br><span class="line">    SAVE_CSR(csr_ecfg, <span class="number">0x4</span>);</span><br><span class="line">    SAVE_CSR(csr_estat, <span class="number">0x5</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Pass pointer to saved registers in first parameter register</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    __asm__(<span class="string">&quot;move     $a0, $sp&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Enable FPU (just in case) */</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __loongarch_soft_float</span></span><br><span class="line">    __asm__(<span class="string">&quot;li.w           $t0, 0x1\n&quot;</span>    <span class="comment">/* FPEN */</span></span><br><span class="line">            <span class="string">&quot;csrxchg    $t0, $t0, 0x2\n&quot;</span>); <span class="comment">/* EUEN */</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    __asm__(<span class="string">&quot;la.pcrel       $t0, _ctrap\n&quot;</span></span><br><span class="line">            <span class="string">&quot;jirl               $ra, $t0, 0\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="type">void</span> __section(<span class="string">&quot;.text.init.enter&quot;</span>) __used _start(<span class="type">void</span>)</span><br><span class="line">&#123;</span><br><span class="line">    __asm__(<span class="string">&quot;la.abs         $sp, __stack\n&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __loongarch_soft_float</span></span><br><span class="line">    __asm__(<span class="string">&quot;li.w           $t0, 0x1\n&quot;</span>    <span class="comment">/* FPEN */</span></span><br><span class="line">            <span class="string">&quot;csrxchg    $t0, $t0, 0x2\n&quot;</span>); <span class="comment">/* EUEN */</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CRT0_SEMIHOST</span></span><br><span class="line">    __asm__(<span class="string">&quot;la.abs         $t0, _trap&quot;</span>);</span><br><span class="line">    __asm__(<span class="string">&quot;csrwr          $t0, 0xc&quot;</span>);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    __asm__(<span class="string">&quot;la.pcrel      $t0, _cstart\n&quot;</span></span><br><span class="line">            <span class="string">&quot;jirl          $ra, $t0, 0\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>再次运行：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ninja</span><br><span class="line">sudo ninja install</span><br></pre></td></tr></table></figure>
+<p>现在没有报错了，且我们的 libc 已经正确地安装到了目标位置上。</p>
+<h1>完整 GCC 的编译（ Stage 3 ）</h1>
+<p>现在，有了 libc，我们已经具备了编译 C++ 标准库乃至其他运行时库的能力。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> gcc-final</span><br><span class="line"><span class="built_in">cd</span> gcc-final</span><br></pre></td></tr></table></figure>
+<p>配置编译选项：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">../gcc/configure \</span><br><span class="line">    --target=loongarch32-unknown-elfsf \</span><br><span class="line">    --prefix=/opt/loongarch32-unknown-elfsf \</span><br><span class="line">    --enable-languages=c,c++ \</span><br><span class="line">    --with-newlib \</span><br><span class="line">    --with-sysroot=/opt/loongarch32-unknown-elfsf/loongarch32-unknown-elfsf \</span><br><span class="line">    --disable-shared \</span><br><span class="line">    --disable-threads \</span><br><span class="line">    --disable-multilib</span><br></pre></td></tr></table></figure>
+<p>在这里，我们仍然禁用了线程，因为它需要借助 glibc 以及 Linux 用户态，然而这在我们的开发对象上是几乎完全不可能实现的。且我们将 Picolibc 的安装位置设置为了 sysroot，这是为了告诉编译器需要在这个路径之下寻找链接库。我们直接开始编译并安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make -j32</span><br><span class="line"><span class="built_in">sudo</span> make install</span><br></pre></td></tr></table></figure>
+<p>在经历了大约二十分钟左右的编译之后，完整的 GCC 就被安装在了交叉编译工具链的路径上，至此，我们的交叉编译环境就算是搭建完成了。</p>
+<h1>总结</h1>
+<p>通过交叉编译工具链的构建过程中发现的种种社区现象，我们可以得出下列结论：</p>
+<ol>
+<li>龙芯嵌入式的开发在 x86_64 平台上的支持仍然较少，大多数软件仍然在 Loongarch64 平台上；</li>
+<li>龙芯嵌入式在软件方面并不存在一个官方统一的工具链或硬件抽象层（HAL），配置起来相当麻烦，但也给这个架构带来了相当大的可玩性；</li>
+<li>龙芯的软件平台虽然在适配 x86_64 架构这方面存在着强大的社区支持，但在 x86_64 架构上的反适配却支持明显不够。</li>
+</ol>
+<p>龙芯架构的 MCU 虽然有着可观的参数，但它所具备的软件支持却远远不足。笔者也因为该原因，在该平台上开发时必须手写一份 HAL，存在着极大的不便，但也使得笔者的能力得到了进一步提升。至于龙芯架构的开发方式，笔者决定于下一个 Blog 进行深入讲解。</p>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2026/01/02/home-redstone-Documents-%E9%BE%99%E8%8A%AF%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%9A%E8%8F%9C%E9%B8%A1%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%8A%98%E8%85%BELoongarch32%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%AE%B0-2dca92663f1f806aa132d89e584cdeaa-md/">/home/redstone/Documents/龙芯嵌入式：菜鸡大学生折腾Loongarch32嵌入式记</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2025/11/18/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%EF%BC%9A%E7%AC%AC%E4%B9%9D%E7%AB%A0/">深入浅出：第九章</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="redstone6835/giscus" data-repo-id="R_kgDOQWzSEQ" data-category="Announcements" data-category-id="DIC_kwDOQWzSEc4Cx2h1" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Redstone6835</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>
+本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">龙芯嵌入式：菜鸡大学生折腾Loongarch32嵌入式记</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">龙芯官方工具链存在的“玄学”问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">binutils 的编译（ Stage 0 ）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">GCC （仅 C 编译器）的编译（ Stage 1 ）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">Picolibc 的编译（ Stage 2 ）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">完整 GCC 的编译（ Stage 3 ）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-text">总结</span></a></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M8 10.5h8M8 14h5.5M17 3.338A9.95 9.95 0 0 0 12 2C6.477 2 2 6.477 2 12c0 1.6.376 3.112 1.043 4.453c.178.356.237.763.134 1.148l-.595 2.226a1.3 1.3 0 0 0 1.591 1.592l2.226-.596a1.63 1.63 0 0 1 1.149.133A9.96 9.96 0 0 0 12 22c5.523 0 10-4.477 10-10c0-1.821-.487-3.53-1.338-5"/></svg><span>参与讨论</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, false);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
