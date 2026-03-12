@@ -1,0 +1,1266 @@
+
+<!DOCTYPE html><html lang="zh_CN">
+
+<head>
+  <meta name="google-site-verification" content="jOwYQIJL2TnkqFQyf7J-PnguwkL7_878-y8-TMRITIU" />
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>数电（一） - RedstoneDist</title>
+
+  
+    <meta name="description" content="众所周知，现代计算机的 ALU（算术逻辑单元）整体是建立在逻辑电路理论的基础上的，因此，要搞清楚计算机的运算原理，就必须搞清楚逻辑电路原理。本文将从基本逻辑运算与抽象代数结构的角度出发，论证 ALU 的运算原理，并在必要位置给出严谨的数学证明。 第一章 基本逻辑门1.1 非门（NOT Gate）1.1.1 定义非门又称反相器，是最简单的逻辑门，仅具有一个输入端口和一个输出端口，其核心功能是实现逻辑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数电（一）">
+<meta property="og:url" content="https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/">
+<meta property="og:site_name" content="RedstoneDist">
+<meta property="og:description" content="众所周知，现代计算机的 ALU（算术逻辑单元）整体是建立在逻辑电路理论的基础上的，因此，要搞清楚计算机的运算原理，就必须搞清楚逻辑电路原理。本文将从基本逻辑运算与抽象代数结构的角度出发，论证 ALU 的运算原理，并在必要位置给出严谨的数学证明。 第一章 基本逻辑门1.1 非门（NOT Gate）1.1.1 定义非门又称反相器，是最简单的逻辑门，仅具有一个输入端口和一个输出端口，其核心功能是实现逻辑">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://redstone6835.github.io/images/avatar.png">
+<meta property="article:published_time" content="2026-03-12T16:03:56.000Z">
+<meta property="article:modified_time" content="2026-03-12T16:09:05.808Z">
+<meta property="article:author" content="Redstone6835">
+<meta property="article:tag" content="IC">
+<meta property="article:tag" content="Math">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://redstone6835.github.io/images/avatar.png">
+  
+  
+  
+  <meta name="keywords" content="IC,Math">
+
+  <!-- feed -->
+  
+    <link rel="alternate" href="/atom.xml" title="RedstoneDist" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+    <link rel="shortcut icon" href="/images/avatar.png">
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png"},"dateCreated":"2026-03-13T00:03:56+08:00","dateModified":"2026-03-13T00:09:05+08:00","datePublished":"2026-03-13T00:03:56+08:00","description":"","headline":"数电（一）","mainEntityOfPage":{"@type":"WebPage","@id":"https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png","logo":{"@type":"ImageObject","url":"/images/avatar.png"}},"url":"https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/","keywords":"IC, Math","image":[]}</script>
+  
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="/images/avatar.png" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">RedstoneDist</div><div class="sub normal cap">社会实践是检验真理的唯一标准。</div><div class="sub hover cap" style="opacity:0"> 批判的武器不能替代武器的批判。</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站內搜尋"></form><div id="search-result"></div><div class="search-no-result">沒有找到內容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/"><span class="title">数电（一）</span></a><a class="item title" href="/2026/01/02/home-red%E9%BE%99%E8%8A%AF%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%9A%E8%8F%9C%E9%B8%A1%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%8A%98%E8%85%BELoongarch32%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%AE%B0/"><span class="title">龙芯嵌入式：菜鸡大学生折腾Loongarch32嵌入式记</span></a><a class="item title" href="/2025/11/18/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%EF%BC%9A%E7%AC%AC%E4%B9%9D%E7%AB%A0/"><span class="title">深入浅出：第九章</span></a><a class="item title" href="/2025/11/12/sys-write/"><span class="title">sys_write</span></a><a class="item title" href="/2025/11/12/sys-stat-sys-fstat-%E4%BB%A5%E5%8F%8A-sys-lstat/"><span class="title">sys_stat, sys_fstat 以及 sys_lstat</span></a><a class="item title" href="/2025/11/12/sys-read/"><span class="title">sys_read</span></a><a class="item title" href="/2025/11/12/sys-poll/"><span class="title">sys_poll</span></a><a class="item title" href="/2025/11/12/sys-open-%E4%B8%8E-sys-close/"><span class="title">sys_open 与 sys_close</span></a><a class="item title" href="/2025/11/12/sys-mprotect/"><span class="title">sys_mprotect</span></a><a class="item title" href="/2025/11/12/sys-mmap-%E4%B8%8E-sys-munmap/"><span class="title">sys_mmap 与 sys_munmap</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">首頁</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">網誌</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">發布於：<time datetime="2026-03-12T16:03:56.000Z">2026-03-13</time></span><span class="sep updated"></span><span class="text updated">更新於：<time datetime="2026-03-12T16:09:05.808Z">2026-03-13</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>数电（一）</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><p>众所周知，现代计算机的 ALU（算术逻辑单元）整体是建立在逻辑电路理论的基础上的，因此，要搞清楚计算机的运算原理，就必须搞清楚逻辑电路原理。本文将从基本逻辑运算与抽象代数结构的角度出发，论证 ALU 的运算原理，并在必要位置给出严谨的数学证明。</p>
+<h2 id="第一章-基本逻辑门"><a href="#第一章-基本逻辑门" class="headerlink" title="第一章 基本逻辑门"></a>第一章 基本逻辑门</h2><h3 id="1-1-非门（NOT-Gate）"><a href="#1-1-非门（NOT-Gate）" class="headerlink" title="1.1 非门（NOT Gate）"></a>1.1 非门（NOT Gate）</h3><h4 id="1-1-1-定义"><a href="#1-1-1-定义" class="headerlink" title="1.1.1 定义"></a>1.1.1 定义</h4><p>非门又称反相器，是最简单的逻辑门，仅具有一个输入端口和一个输出端口，其核心功能是实现逻辑非运算，即对输入信号进行反相：</p>
+<ul>
+<li>输入为 (0) 时输出为 (1)</li>
+<li>输入为 (1) 时输出为 (0)</li>
+</ul>
+<p>在逻辑上，这等价于对命题取否定。</p>
+<h4 id="1-1-2-真值表"><a href="#1-1-2-真值表" class="headerlink" title="1.1.2 真值表"></a>1.1.2 真值表</h4><table>
+<thead>
+<tr>
+<th>输入 (A)</th>
+<th>输出 (Y)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>其中</p>
+<p>$$<br>Y&#x3D;\neg A<br>$$</p>
+<h4 id="1-1-3-运算表达式"><a href="#1-1-3-运算表达式" class="headerlink" title="1.1.3 运算表达式"></a>1.1.3 运算表达式</h4><p>$$<br>Y&#x3D;\neg A \tag{1.1}<br>$$</p>
+<p>也可表示为</p>
+<p>$$<br>Y&#x3D;\overline{A} \tag{1.2}<br>$$</p>
+<h4 id="1-1-4-实现"><a href="#1-1-4-实现" class="headerlink" title="1.1.4 实现"></a>1.1.4 实现</h4><p>非门可通过晶体管（二极管、MOS管）实现，核心原理是利用晶体管的导通与截止状态对应逻辑0和1：当输入为高电平（1）时，晶体管导通，输出低电平（0）；当输入为低电平（0）时，晶体管截止，输出高电平（1）。实际应用中，常用CMOS反相器，具有功耗低、抗干扰能力强的特点。</p>
+<h3 id="1-2-与门（AND-Gate）"><a href="#1-2-与门（AND-Gate）" class="headerlink" title="1.2 与门（AND Gate）"></a>1.2 与门（AND Gate）</h3><h4 id="1-2-1-定义"><a href="#1-2-1-定义" class="headerlink" title="1.2.1 定义"></a>1.2.1 定义</h4><p>与门具有两个及以上输入端口和一个输出端口，核心功能是实现“逻辑与”运算，仅当所有输入信号均为1（真）时，输出才为1（真）；只要有一个输入为0（假），输出即为0（假），遵循“同时为真才为真”的逻辑。</p>
+<h4 id="1-2-2-真值表"><a href="#1-2-2-真值表" class="headerlink" title="1.2.2 真值表"></a>1.2.2 真值表</h4><table>
+<thead>
+<tr>
+<th>(A)</th>
+<th>(B)</th>
+<th>(Y)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>对应表达式：</p>
+<p>$$<br>Y&#x3D;A\land B<br>$$</p>
+<h4 id="1-2-3-运算表达式"><a href="#1-2-3-运算表达式" class="headerlink" title="1.2.3 运算表达式"></a>1.2.3 运算表达式</h4><p>$$<br>Y&#x3D;A\land B \tag{1.3}<br>$$</p>
+<p>也可写为</p>
+<p>$$<br>Y&#x3D;AB \tag{1.4}<br>$$</p>
+<h4 id="1-2-4-实现"><a href="#1-2-4-实现" class="headerlink" title="1.2.4 实现"></a>1.2.4 实现</h4><p>与门可通过二极管串联实现：两个二极管的阳极连接在一起作为输出端，阴极分别作为输入端口，电源通过电阻连接到输出端。当所有输入均为高电平（1）时，二极管均截止，输出高电平（1）；只要有一个输入为低电平（0），对应二极管导通，输出被拉低为低电平（0）。实际应用中，常用CMOS与门，通过MOS管的串联与并联组合实现与逻辑。</p>
+<h3 id="1-3-或门（OR-Gate）"><a href="#1-3-或门（OR-Gate）" class="headerlink" title="1.3 或门（OR Gate）"></a>1.3 或门（OR Gate）</h3><h4 id="1-3-1-定义"><a href="#1-3-1-定义" class="headerlink" title="1.3.1 定义"></a>1.3.1 定义</h4><p>或门具有两个及以上输入端口和一个输出端口，核心功能是实现“逻辑或”运算，只要有一个输入信号为1（真），输出即为1（真）；仅当所有输入均为0（假）时，输出才为0（假），遵循“有一个为真即为真”的逻辑。</p>
+<h4 id="1-3-2-真值表"><a href="#1-3-2-真值表" class="headerlink" title="1.3.2 真值表"></a>1.3.2 真值表</h4><table>
+<thead>
+<tr>
+<th>(A)</th>
+<th>(B)</th>
+<th>(Y)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<h4 id="1-3-3-运算表达式"><a href="#1-3-3-运算表达式" class="headerlink" title="1.3.3 运算表达式"></a>1.3.3 运算表达式</h4><p>$$<br>Y&#x3D;A\lor B \tag{1.5}<br>$$</p>
+<h4 id="1-3-4-实现"><a href="#1-3-4-实现" class="headerlink" title="1.3.4 实现"></a>1.3.4 实现</h4><p>或门可通过二极管并联实现：两个二极管的阴极连接在一起作为输出端，阳极分别作为输入端口，电源通过电阻连接到输出端。当有一个输入为高电平（1）时，对应二极管导通，输出高电平（1）；当所有输入均为低电平（0）时，二极管均截止，输出低电平（0）。实际应用中，常用CMOS或门，与CMOS与门结构对称，通过MOS管的串联与并联组合实现或逻辑。</p>
+<h3 id="1-4-异或门（XOR-Gate）"><a href="#1-4-异或门（XOR-Gate）" class="headerlink" title="1.4 异或门（XOR Gate）"></a>1.4 异或门（XOR Gate）</h3><h4 id="1-4-1-定义"><a href="#1-4-1-定义" class="headerlink" title="1.4.1 定义"></a>1.4.1 定义</h4><p>异或门（Exclusive OR）具有两个及以上输入端口和一个输出端口，核心功能是实现“逻辑异或”运算，当输入信号“不同”时（一个为0，一个为1），输出为1（真）；当输入信号“相同”时（均为0或均为1），输出为0（假）。异或运算在数电中应用极广。</p>
+<h4 id="1-4-2-真值表"><a href="#1-4-2-真值表" class="headerlink" title="1.4.2 真值表"></a>1.4.2 真值表</h4><table>
+<thead>
+<tr>
+<th>(A)</th>
+<th>(B)</th>
+<th>(Y)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h4 id="1-4-3-运算表达式"><a href="#1-4-3-运算表达式" class="headerlink" title="1.4.3 运算表达式"></a>1.4.3 运算表达式</h4><p>$$<br>Y&#x3D;A\oplus B \tag{1.6}<br>$$</p>
+<p>异或运算可以由基本逻辑门组合实现：</p>
+<p>$$<br>A\oplus B&#x3D;(A\land\neg B)\lor(\neg A\land B)<br>$$</p>
+<h4 id="1-4-4-实现"><a href="#1-4-4-实现" class="headerlink" title="1.4.4 实现"></a>1.4.4 实现</h4><p>异或门无法通过单一二极管实现，需由非门、与门、或门组合而成：根据$$A \oplus B &#x3D; (A \land \neg B) \lor (\neg A \land B)$$，先用两个非门分别对A、B进行反相，得到$$\neg A$$和$$\neg B$$；再用两个与门分别实现$$A \land \neg B$$和$$\neg A \land B$$；最后用一个或门将两个与门的输出相加，得到异或结果。实际应用中，常用CMOS异或门，通过MOS管直接组合实现，简化结构、降低功耗。</p>
+<h3 id="1-5-同或门（XNOR-Gate）"><a href="#1-5-同或门（XNOR-Gate）" class="headerlink" title="1.5 同或门（XNOR Gate）"></a>1.5 同或门（XNOR Gate）</h3><h4 id="1-5-1-定义"><a href="#1-5-1-定义" class="headerlink" title="1.5.1 定义"></a>1.5.1 定义</h4><p>同或门（Exclusive NOR）是异或门的反相，具有两个及以上输入端口和一个输出端口，核心功能是实现“逻辑同或”运算，当输入信号“相同”时（均为0或均为1），输出为1（真）；当输入信号“不同”时（一个为0，一个为1），输出为0（假），与异或运算互为非运算。</p>
+<h4 id="1-5-2-真值表"><a href="#1-5-2-真值表" class="headerlink" title="1.5.2 真值表"></a>1.5.2 真值表</h4><table>
+<thead>
+<tr>
+<th>(A)</th>
+<th>(B)</th>
+<th>(Y)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<h4 id="1-5-3-运算表达式"><a href="#1-5-3-运算表达式" class="headerlink" title="1.5.3 运算表达式"></a>1.5.3 运算表达式</h4><p>$$<br>Y&#x3D;A\odot B \tag{1.7}<br>$$</p>
+<p>其与异或关系为</p>
+<p>$$<br>A\odot B&#x3D;\neg(A\oplus B)<br>$$</p>
+<h2 id="第二章-逻辑运算的代数结构"><a href="#第二章-逻辑运算的代数结构" class="headerlink" title="第二章 逻辑运算的代数结构"></a>第二章 逻辑运算的代数结构</h2><p>逻辑变量取值集合为</p>
+<p> ${0,1}$ </p>
+<p>该系统可用<strong>布尔代数</strong>描述。</p>
+<p>此外，逻辑运算还可嵌入到有限域</p>
+<p> $\mathbb{F}_2$ </p>
+<p>的多项式结构中。</p>
+<p>注意：</p>
+<p>在  $\mathbb{F}_2$  中只有两种基本运算：</p>
+<ul>
+<li><p>加法  $+$ </p>
+</li>
+<li><p>乘法  $\cdot$</p>
+</li>
+</ul>
+<p>逻辑运算可通过如下映射关系，与有限域  $\mathbb{F}_2$  中的运算对应，实现逻辑运算的代数化表示：</p>
+<p> $A\land B \leftrightarrow AB$ （逻辑与运算对应有限域中的乘法运算）</p>
+<p> $A\oplus B \leftrightarrow A+B$ （逻辑异或运算对应有限域中的加法运算）</p>
+<p> $\neg A \leftrightarrow 1+A$ （逻辑非运算对应有限域中“1加变量”的运算）</p>
+<p>而逻辑或运算无法直接对应有限域的基本运算，需通过上述映射关系推导得出，其多项式表示为</p>
+<p> $A\lor B&#x3D;A+B+AB$ </p>
+<p>该表达式属于<strong>布尔环多项式表示</strong>，是逻辑或运算在有限域  $\mathbb{F}_2$  中的代数等价形式。</p>
+<h3 id="2-1-非运算性质"><a href="#2-1-非运算性质" class="headerlink" title="2.1 非运算性质"></a>2.1 非运算性质</h3><p>由逻辑非运算与有限域  $\mathbb{F}_2$  运算的映射关系，非运算可表示为</p>
+<p> $\neg A&#x3D;1+A \tag{2.1}$ </p>
+<h4 id="双重否定律"><a href="#双重否定律" class="headerlink" title="双重否定律"></a>双重否定律</h4><p>双重否定律表明，对逻辑变量A进行两次非运算，结果仍为A本身，其表达式为</p>
+<p> $\neg(\neg A)&#x3D;A \tag{2.2}$ </p>
+<p><strong>证</strong>：根据非运算的代数表达式（2.1），对 $\neg A$ 再次进行非运算，可将 $\neg A$ 整体代入公式（2.1），得到：</p>
+<p> $\neg(\neg A)&#x3D;1+(\neg A)&#x3D;1+(1+A)$ </p>
+<p>在有限域  $\mathbb{F}_2$  中，加法运算满足特殊性质：两个1相加的结果为0，即</p>
+<p> $1+1&#x3D;0$ </p>
+<p>利用加法结合律，将上式中的1+1优先计算，可得：</p>
+<p> $1+(1+A)&#x3D;(1+1)+A&#x3D;0+A$ </p>
+<p>又因为在有限域  $\mathbb{F}_2$  中，0为加法单位元，满足 $0+A&#x3D;A$ ，因此：</p>
+<p> $(1+1)+A&#x3D;0+A&#x3D;A$ </p>
+<p>即 $\neg(\neg A)&#x3D;A$ ，<strong>得证</strong>。</p>
+<h4 id="互补律"><a href="#互补律" class="headerlink" title="互补律"></a>互补律</h4><p>互补律反映了逻辑变量与其非运算结果之间的核心关系，即一个逻辑变量与其非变量的“或运算”结果恒为1（逻辑真），“与运算”结果恒为0（逻辑假），表达式为</p>
+<p> $A\lor\neg A&#x3D;1$ </p>
+<p> $A\land\neg A&#x3D;0 \tag{2.3}$ </p>
+<p><strong>证</strong>：结合非运算的代数表达式 $\neg A&#x3D;1+A$ 和逻辑运算的有限域映射关系，分别证明两个等式：</p>
+<ol>
+<li>证明 $A\lor\neg A&#x3D;1$ ：</li>
+</ol>
+<p>由逻辑或的布尔环多项式表示 $A\lor B&#x3D;A+B+AB$ ，令 $B&#x3D;\neg A&#x3D;1+A$ ，代入得：</p>
+<p> $A\lor\neg A&#x3D;A+(1+A)+A(1+A)$ </p>
+<p>展开右边多项式： $A+1+A+A\cdot1+A\cdot A&#x3D;1+(A+A)+A+A^2$ </p>
+<p>在有限域  $\mathbb{F}_2$  中， $A+A&#x3D;0$ （异或运算自反性），且 $A^2&#x3D;A$ （幂等性），代入化简：</p>
+<p> $1+0+A+A&#x3D;1+0&#x3D;1$ ，故 $A\lor\neg A&#x3D;1$ 。</p>
+<ol start="2">
+<li>证明 $A\land\neg A&#x3D;0$ ：</li>
+</ol>
+<p>由逻辑与的映射关系 $A\land\neg A&#x3D;A\cdot\neg A$ ，代入 $\neg A&#x3D;1+A$ ，得：</p>
+<p> $A\cdot(1+A)&#x3D;A\cdot1+A\cdot A&#x3D;A+A^2&#x3D;A+A&#x3D;0$ </p>
+<p>综上，互补律的两个等式均成立，<strong>得证</strong>。</p>
+<h3 id="2-2-与运算性质"><a href="#2-2-与运算性质" class="headerlink" title="2.2 与运算性质"></a>2.2 与运算性质</h3><p>逻辑与运算对应有限域  $\mathbb{F}_2$  中的乘法运算 $A\land B&#x3D;AB$ ，因此其性质可由有限域乘法的性质推导得出。</p>
+<h4 id="交换律"><a href="#交换律" class="headerlink" title="交换律"></a>交换律</h4><p>与运算的交换律表明，两个逻辑变量进行与运算时，交换变量顺序，结果不变，表达式为</p>
+<p> $A\land B&#x3D;B\land A \tag{2.4}$ </p>
+<p><strong>证</strong>：由与运算与有限域乘法的映射关系， $A\land B&#x3D;AB$ ， $B\land A&#x3D;BA$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，乘法运算满足交换律，即 $AB&#x3D;BA$ ，因此</p>
+<p> $A\land B&#x3D;AB&#x3D;BA&#x3D;B\land A$ ，<strong>得证</strong>。</p>
+<h4 id="结合律"><a href="#结合律" class="headerlink" title="结合律"></a>结合律</h4><p>与运算的结合律表明，三个及以上逻辑变量进行与运算时，改变运算顺序（添加括号），结果不变，表达式为</p>
+<p> $(A\land B)\land C&#x3D;A\land(B\land C) \tag{2.5}$ </p>
+<p><strong>证</strong>：根据映射关系， $(A\land B)\land C&#x3D;(AB)C$ ， $A\land(B\land C)&#x3D;A(BC)$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，乘法运算满足结合律，即 $(AB)C&#x3D;A(BC)$ ，因此</p>
+<p> $(A\land B)\land C&#x3D;(AB)C&#x3D;A(BC)&#x3D;A\land(B\land C)$ ，<strong>得证</strong>。</p>
+<h4 id="幂等律"><a href="#幂等律" class="headerlink" title="幂等律"></a>幂等律</h4><p>与运算的幂等律表明，一个逻辑变量与自身进行与运算，结果仍为该变量本身，表达式为</p>
+<p> $A\land A&#x3D;A \tag{2.6}$ </p>
+<p><strong>证</strong>：由映射关系， $A\land A&#x3D;A\cdot A&#x3D;A^2$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，对于任意逻辑变量A（取值为0或1），均满足 $A^2&#x3D;A$ （当A&#x3D;0时， $0^2&#x3D;0$ ；当A&#x3D;1时， $1^2&#x3D;1$ ），因此</p>
+<p> $A\land A&#x3D;A^2&#x3D;A$ ，<strong>得证</strong>。</p>
+<h4 id="单位元"><a href="#单位元" class="headerlink" title="单位元"></a>单位元</h4><p>与运算的单位元为1，即一个逻辑变量与1进行与运算，结果仍为该变量本身，表达式为</p>
+<p> $A\land1&#x3D;A$ </p>
+<p><strong>证</strong>：由映射关系， $A\land1&#x3D;A\cdot1$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，1是乘法单位元，满足 $A\cdot1&#x3D;A$ ，因此</p>
+<p> $A\land1&#x3D;A\cdot1&#x3D;A$ ，<strong>得证</strong>。</p>
+<h4 id="零元"><a href="#零元" class="headerlink" title="零元"></a>零元</h4><p>与运算的零元为0，即一个逻辑变量与0进行与运算，结果恒为0，表达式为</p>
+<p> $A\land0&#x3D;0$ </p>
+<p><strong>证</strong>：由映射关系， $A\land0&#x3D;A\cdot0$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，0是乘法零元，满足 $A\cdot0&#x3D;0$ ，因此</p>
+<p> $A\land0&#x3D;A\cdot0&#x3D;0$ ，<strong>得证</strong>。</p>
+<h4 id="吸收律"><a href="#吸收律" class="headerlink" title="吸收律"></a>吸收律</h4><p>与运算的吸收律表明，一个逻辑变量与该变量和另一个变量的或运算结果进行与运算，结果仍为该变量本身，表达式为</p>
+<p> $A\land(A\lor B)&#x3D;A$ </p>
+<p><strong>证</strong>：结合逻辑或的布尔环多项式表示 $A\lor B&#x3D;A+B+AB$ ，将其代入左边表达式：</p>
+<p> $A\land(A\lor B)&#x3D;A\cdot(A+B+AB)$ </p>
+<p>展开多项式，利用有限域乘法分配律：</p>
+<p> $A\cdot A + A\cdot B + A\cdot AB &#x3D; A^2 + AB + A^2B$ </p>
+<p>由幂等性 $A^2&#x3D;A$ ，代入化简：</p>
+<p> $A + AB + AB &#x3D; A + (AB + AB)$ </p>
+<p>在有限域  $\mathbb{F}_2$  中， $AB + AB&#x3D;0$ ，因此：</p>
+<p> $A + 0 &#x3D; A$ ，即 $A\land(A\lor B)&#x3D;A$ ，<strong>得证</strong>。</p>
+<h3 id="2-3-或运算性质"><a href="#2-3-或运算性质" class="headerlink" title="2.3 或运算性质"></a>2.3 或运算性质</h3><p>逻辑或运算无直接对应的有限域基本运算，需借助其布尔环多项式表示 $A\lor B&#x3D;A+B+AB$ ，结合有限域的运算性质，推导其各类性质。</p>
+<h4 id="交换律-1"><a href="#交换律-1" class="headerlink" title="交换律"></a>交换律</h4><p>或运算的交换律表明，两个逻辑变量进行或运算时，交换变量顺序，结果不变，表达式为</p>
+<p> $A\lor B&#x3D;B\lor A$ </p>
+<p><strong>证</strong>：根据或运算的多项式表示， $A\lor B&#x3D;A+B+AB$ ， $B\lor A&#x3D;B+A+BA$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，加法满足交换律（ $A+B&#x3D;B+A$ ），乘法满足交换律（ $AB&#x3D;BA$ ），因此：</p>
+<p> $A+B+AB&#x3D;B+A+BA$ ，即 $A\lor B&#x3D;B\lor A$ ，<strong>得证</strong>。</p>
+<h4 id="分配律"><a href="#分配律" class="headerlink" title="分配律"></a>分配律</h4><p>与运算对或运算的分配律表明，一个逻辑变量与另外两个变量的或运算结果进行与运算，等价于该变量分别与两个变量进行与运算后，再进行或运算，表达式为</p>
+<p> $A\land(B\lor C)&#x3D;(A\land B)\lor(A\land C)$ </p>
+<p><strong>证</strong>：分别对等式左右两边进行代数化简，验证其等价性。</p>
+<ol>
+<li>化简左边 $A\land(B\lor C)$ ：</li>
+</ol>
+<p>代入或运算多项式表示，结合与运算映射关系，得：</p>
+<p> $A\land(B\lor C)&#x3D;A\cdot(B+C+BC)&#x3D;AB+AC+ABC$ （分配律展开）</p>
+<ol start="2">
+<li>化简右边 $(A\land B)\lor(A\land C)$ ：</li>
+</ol>
+<p>先计算 $A\land B&#x3D;AB$ ， $A\land C&#x3D;AC$ ，再代入或运算多项式表示：</p>
+<p> $(A\land B)\lor(A\land C)&#x3D;AB+AC+(AB)(AC)&#x3D;AB+AC+A^2BC$ </p>
+<p>由幂等性 $A^2&#x3D;A$ ，化简得： $AB+AC+ABC$ </p>
+<p>左边化简结果与右边化简结果完全一致，因此 $A\land(B\lor C)&#x3D;(A\land B)\lor(A\land C)$ ，<strong>得证</strong>。</p>
+<h3 id="2-4-德摩根定律"><a href="#2-4-德摩根定律" class="headerlink" title="2.4 德摩根定律"></a>2.4 德摩根定律</h3><p>德摩根定律揭示了非运算与与、或运算之间的反向关系，可将与运算的非运算转化为非运算的或运算，或将或运算的非运算转化为非运算的与运算，表达式为</p>
+<p> $\neg(A\land B)&#x3D;\neg A\lor\neg B$ </p>
+<p> $\neg(A\lor B)&#x3D;\neg A\land\neg B$ </p>
+<p><strong>证</strong>：此处以第一个等式 $\neg(A\land B)&#x3D;\neg A\lor\neg B$ 为例，结合有限域运算和逻辑映射关系证明，第二个等式可同理推导。</p>
+<ol>
+<li>化简左边 $\neg(A\land B)$ ：</li>
+</ol>
+<p>由与运算映射关系 $A\land B&#x3D;AB$ ，结合非运算表达式 $\neg X&#x3D;1+X$ ，令 $X&#x3D;AB$ ，得：</p>
+<p> $\neg(AB)&#x3D;1+AB$ </p>
+<ol start="2">
+<li>化简右边 $\neg A\lor\neg B$ ：</li>
+</ol>
+<p>先由非运算表达式得出 $\neg A&#x3D;1+A$ ， $\neg B&#x3D;1+B$ ，再代入或运算多项式表示：</p>
+<p> $\neg A\lor\neg B&#x3D;(1+A)+(1+B)+(1+A)(1+B)$ </p>
+<p>展开右边多项式，利用有限域运算性质化简：</p>
+<p>第一步展开 $(1+A)(1+B)&#x3D;1\cdot1 + 1\cdot B + A\cdot1 + A\cdot B&#x3D;1+B+A+AB$ </p>
+<p>第二步代入原式并合并同类项：</p>
+<p> $1+A+1+B+1+A+B+AB&#x3D;(1+1+1)+(A+A)+(B+B)+AB$ </p>
+<p>在有限域  $\mathbb{F}_2$  中， $1+1&#x3D;0$ 、 $A+A&#x3D;0$ 、 $B+B&#x3D;0$ ，因此：</p>
+<p> $(0+1)+0+0+AB&#x3D;1+AB$ </p>
+<p>左边 $\neg(AB)&#x3D;1+AB$ 与右边化简结果一致，故 $\neg(A\land B)&#x3D;\neg A\lor\neg B$ ，<strong>得证</strong>。</p>
+<p>同理，可证明 $\neg(A\lor B)&#x3D;\neg A\land\neg B$ ，此处不再赘述。</p>
+<h3 id="2-5-异或运算性质"><a href="#2-5-异或运算性质" class="headerlink" title="2.5 异或运算性质"></a>2.5 异或运算性质</h3><p>由前文映射关系可知，逻辑异或运算直接对应有限域  $\mathbb{F}_2$  中的加法运算，即</p>
+<p> $A\oplus B&#x3D;A+B$ </p>
+<p>由于有限域  $\mathbb{F}_2$  中的加法运算满足阿贝尔群的所有条件（交换律、结合律、单位元存在、逆元存在），因此集合</p>
+<p> $({0,1},\oplus)$ </p>
+<p>构成阿贝尔群（交换群），其各项性质均可由有限域加法性质推导得出。</p>
+<h4 id="交换律-2"><a href="#交换律-2" class="headerlink" title="交换律"></a>交换律</h4><p>异或运算的交换律表明，两个逻辑变量进行异或运算时，交换变量顺序，结果不变，表达式为</p>
+<p> $A\oplus B&#x3D;B\oplus A$ </p>
+<p><strong>证</strong>：由异或与有限域加法的映射关系， $A\oplus B&#x3D;A+B$ ， $B\oplus A&#x3D;B+A$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，加法运算满足交换律，即 $A+B&#x3D;B+A$ ，因此</p>
+<p> $A\oplus B&#x3D;A+B&#x3D;B+A&#x3D;B\oplus A$ ，<strong>得证</strong>。</p>
+<h4 id="结合律-1"><a href="#结合律-1" class="headerlink" title="结合律"></a>结合律</h4><p>异或运算的结合律表明，三个及以上逻辑变量进行异或运算时，改变运算顺序（添加括号），结果不变，表达式为</p>
+<p> $(A\oplus B)\oplus C&#x3D;A\oplus(B\oplus C)$ </p>
+<p><strong>证</strong>：由映射关系， $(A\oplus B)\oplus C&#x3D;(A+B)+C$ ， $A\oplus(B\oplus C)&#x3D;A+(B+C)$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，加法运算满足结合律，即 $(A+B)+C&#x3D;A+(B+C)$ ，因此</p>
+<p> $(A\oplus B)\oplus C&#x3D;(A+B)+C&#x3D;A+(B+C)&#x3D;A\oplus(B\oplus C)$ ，<strong>得证</strong>。</p>
+<h4 id="单位元-1"><a href="#单位元-1" class="headerlink" title="单位元"></a>单位元</h4><p>异或运算的单位元为0，即一个逻辑变量与0进行异或运算，结果仍为该变量本身，表达式为</p>
+<p> $A\oplus0&#x3D;A$ </p>
+<p><strong>证</strong>：由映射关系， $A\oplus0&#x3D;A+0$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，0是加法单位元，满足 $A+0&#x3D;A$ ，因此</p>
+<p> $A\oplus0&#x3D;A+0&#x3D;A$ ，<strong>得证</strong>。</p>
+<h4 id="逆元"><a href="#逆元" class="headerlink" title="逆元"></a>逆元</h4><p>异或运算中，每个逻辑变量的逆元为其自身，即一个逻辑变量与自身进行异或运算，结果为加法单位元0，表达式为</p>
+<p> $A\oplus A&#x3D;0$ </p>
+<p><strong>证</strong>：由映射关系， $A\oplus A&#x3D;A+A$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，任意元素与自身相加的结果为0，即 $A+A&#x3D;0$ ，因此</p>
+<p> $A\oplus A&#x3D;A+A&#x3D;0$ ，<strong>得证</strong>。</p>
+<h4 id="反转性质"><a href="#反转性质" class="headerlink" title="反转性质"></a>反转性质</h4><p>异或运算的反转性质表明，一个逻辑变量与1进行异或运算，结果等价于该变量的非运算，表达式为</p>
+<p> $A\oplus1&#x3D;\neg A$ </p>
+<p><strong>证</strong>：由映射关系， $A\oplus1&#x3D;A+1$ 。</p>
+<p>由非运算的代数表达式（2.1）可知， $\neg A&#x3D;1+A$ ，而有限域加法满足交换律， $A+1&#x3D;1+A$ ，因此</p>
+<p> $A\oplus1&#x3D;A+1&#x3D;1+A&#x3D;\neg A$ ，<strong>得证</strong>。</p>
+<h4 id="奇偶校验性质"><a href="#奇偶校验性质" class="headerlink" title="奇偶校验性质"></a>奇偶校验性质</h4><p>多个逻辑变量的异或运算结果，等价于所有变量取值之和对2取模，其核心作用是实现奇偶校验，即</p>
+<p> $A_1\oplus A_2\oplus\cdots\oplus A_n$ </p>
+<p>等价于</p>
+<p> $\sum A_i \pmod2$ </p>
+<p>若参与运算的变量中，取值为1的个数为奇数，则异或结果为1；若为偶数，则结果为0。</p>
+<p><strong>证</strong>：采用数学归纳法证明，结合异或运算与有限域加法的等价性（ $A\oplus B&#x3D;A+B$ ）。</p>
+<ol>
+<li><p>当n&#x3D;1时， $A_1\oplus&#x3D;A_1$ ， $\sum A_i \pmod2&#x3D;A_1 \pmod2&#x3D;A_1$ ，等式成立；</p>
+</li>
+<li><p>假设当n&#x3D;k（k≥1）时，等式成立，即 $A_1\oplus A_2\oplus\cdots\oplus A_k &#x3D; (A_1+A_2+\cdots+A_k) \pmod2$ ；</p>
+</li>
+<li><p>当n&#x3D;k+1时， $A_1\oplus A_2\oplus\cdots\oplus A_k\oplus A_{k+1} &#x3D; (A_1\oplus\cdots\oplus A_k)\oplus A_{k+1}$ ，由归纳假设和映射关系：</p>
+</li>
+</ol>
+<p> $(A_1+\cdots+A_k) \pmod2 + A_{k+1} &#x3D; (A_1+\cdots+A_k+A_{k+1}) \pmod2$ </p>
+<p>因此，当n&#x3D;k+1时，等式仍成立。</p>
+<p>综上，对任意正整数n，等式均成立，<strong>得证</strong>。</p>
+<h3 id="2-6-同或运算性质"><a href="#2-6-同或运算性质" class="headerlink" title="2.6 同或运算性质"></a>2.6 同或运算性质</h3><p>同或运算定义为异或运算的非运算，即</p>
+<p> $A\odot B&#x3D;\neg(A\oplus B)$ </p>
+<p>结合异或运算与有限域加法的映射关系（ $A\oplus B&#x3D;A+B$ ）和非运算的代数表达式（ $\neg X&#x3D;1+X$ ），同或运算可进一步表示为</p>
+<p> $A\odot B&#x3D;1+A+B$ </p>
+<h4 id="交换律-3"><a href="#交换律-3" class="headerlink" title="交换律"></a>交换律</h4><p>同或运算的交换律表明，两个逻辑变量进行同或运算时，交换变量顺序，结果不变，表达式为</p>
+<p> $A\odot B&#x3D;B\odot A$ </p>
+<p><strong>证</strong>：根据同或运算的代数表达式 $A\odot B&#x3D;1+A+B$ ， $B\odot A&#x3D;1+B+A$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，加法满足交换律（ $A+B&#x3D;B+A$ ），因此：</p>
+<p> $1+A+B&#x3D;1+B+A$ ，即 $A\odot B&#x3D;B\odot A$ ，<strong>得证</strong>。</p>
+<h4 id="结合律-2"><a href="#结合律-2" class="headerlink" title="结合律"></a>结合律</h4><p>同或运算满足结合律。即：</p>
+<p>$$<br>(A \odot B) \odot C &#x3D; A \odot (B \odot C)<br>\tag{2.25}<br>$$</p>
+<p><strong>证</strong>：</p>
+<p><strong>左边：</strong></p>
+<p>$$<br>(A \odot B) \odot C<br>&#x3D; \overline{(A \odot B) \oplus C}<br>$$</p>
+<p>将括号内的 $A \odot B$ 展开：</p>
+<p>$$<br>&#x3D; \overline{\overline{(A \oplus B)} \oplus C}<br>$$</p>
+<p>利用异或与取反的性质：</p>
+<p>$$<br>\overline{X} \oplus Y &#x3D; \overline{X \oplus Y}<br>$$</p>
+<p>因此：</p>
+<p>$$\overline{\overline{(A \oplus B)} \oplus C}&#x3D;\overline{\overline{(A \oplus B \oplus C)}}$$</p>
+<p>于是得到：</p>
+<p>$$<br>(A \odot B) \odot C &#x3D; A \oplus B \oplus C<br>\tag{2.27}<br>$$</p>
+<p><strong>右边：</strong></p>
+<p>$$<br>A \odot (B \odot C)<br>&#x3D; \overline{A \oplus (B \odot C)}<br>$$</p>
+<p>将括号内的 $B \odot C$ 展开：</p>
+<p>$$<br>&#x3D; \overline{A \oplus \overline{(B \oplus C)}}<br>$$</p>
+<p>利用异或与取反的性质：</p>
+<p>$$<br>X \oplus \overline{Y} &#x3D; \overline{X \oplus Y}<br>$$</p>
+<p>于是：</p>
+<p>$$\overline{A \oplus \overline{(B \oplus C)}}&#x3D;\overline{\overline{(A \oplus B \oplus C)}}$$<br>因此：<br>$$<br>A \odot (B \odot C) &#x3D; A \oplus B \oplus C<br>\tag{2.28}<br>$$</p>
+<p>由于：<br>$$<br>(A \odot B) \odot C &#x3D; A \oplus B \oplus C<br>$$</p>
+<p>$$<br>A \odot (B \odot C) &#x3D; A \oplus B \oplus C<br>$$</p>
+<p>因此：</p>
+<p>$$<br>(A \odot B) \odot C &#x3D; A \odot (B \odot C)<br>$$</p>
+<p><strong>得证</strong>。</p>
+<h4 id="自反性质"><a href="#自反性质" class="headerlink" title="自反性质"></a>自反性质</h4><p>同或运算的自反性质表明，一个逻辑变量与自身进行同或运算，结果恒为1。</p>
+<p> $$A\odot A&#x3D;1$$</p>
+<p><strong>证</strong>：将 $B&#x3D;A$ 代入同或运算的代数表达式，得：</p>
+<p> $$A\odot A&#x3D;1+A+A$$ </p>
+<p>在有限域  $\mathbb{F}_2$  中， $A+A&#x3D;0$ ，因此：</p>
+<p> $1+0&#x3D;1$ ，即 $A\odot A&#x3D;1$ ，<strong>得证</strong>。</p>
+<p>(未完结)</p>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>授權條款</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">較早文章</div><a href="/2026/01/02/home-red%E9%BE%99%E8%8A%AF%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%9A%E8%8F%9C%E9%B8%A1%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%8A%98%E8%85%BELoongarch32%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%AE%B0/">龙芯嵌入式：菜鸡大学生折腾Loongarch32嵌入式记</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="redstone6835/giscus" data-repo-id="R_kgDOQWzSEQ" data-category="Announcements" data-category-id="DIC_kwDOQWzSEc4Cx2h1" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Redstone6835</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目錄</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E5%9F%BA%E6%9C%AC%E9%80%BB%E8%BE%91%E9%97%A8"><span class="toc-text">第一章 基本逻辑门</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E9%9D%9E%E9%97%A8%EF%BC%88NOT-Gate%EF%BC%89"><span class="toc-text">1.1 非门（NOT Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-1-%E5%AE%9A%E4%B9%89"><span class="toc-text">1.1.1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-2-%E7%9C%9F%E5%80%BC%E8%A1%A8"><span class="toc-text">1.1.2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-3-%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">1.1.3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-1-4-%E5%AE%9E%E7%8E%B0"><span class="toc-text">1.1.4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E4%B8%8E%E9%97%A8%EF%BC%88AND-Gate%EF%BC%89"><span class="toc-text">1.2 与门（AND Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-%E5%AE%9A%E4%B9%89"><span class="toc-text">1.2.1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-%E7%9C%9F%E5%80%BC%E8%A1%A8"><span class="toc-text">1.2.2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">1.2.3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-4-%E5%AE%9E%E7%8E%B0"><span class="toc-text">1.2.4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E6%88%96%E9%97%A8%EF%BC%88OR-Gate%EF%BC%89"><span class="toc-text">1.3 或门（OR Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1-%E5%AE%9A%E4%B9%89"><span class="toc-text">1.3.1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2-%E7%9C%9F%E5%80%BC%E8%A1%A8"><span class="toc-text">1.3.2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-3-%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">1.3.3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-4-%E5%AE%9E%E7%8E%B0"><span class="toc-text">1.3.4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E5%BC%82%E6%88%96%E9%97%A8%EF%BC%88XOR-Gate%EF%BC%89"><span class="toc-text">1.4 异或门（XOR Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-1-%E5%AE%9A%E4%B9%89"><span class="toc-text">1.4.1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-2-%E7%9C%9F%E5%80%BC%E8%A1%A8"><span class="toc-text">1.4.2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-3-%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">1.4.3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4-4-%E5%AE%9E%E7%8E%B0"><span class="toc-text">1.4.4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E5%90%8C%E6%88%96%E9%97%A8%EF%BC%88XNOR-Gate%EF%BC%89"><span class="toc-text">1.5 同或门（XNOR Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-1-%E5%AE%9A%E4%B9%89"><span class="toc-text">1.5.1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-2-%E7%9C%9F%E5%80%BC%E8%A1%A8"><span class="toc-text">1.5.2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5-3-%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">1.5.3 运算表达式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%9A%84%E4%BB%A3%E6%95%B0%E7%BB%93%E6%9E%84"><span class="toc-text">第二章 逻辑运算的代数结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E9%9D%9E%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2.1 非运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8C%E9%87%8D%E5%90%A6%E5%AE%9A%E5%BE%8B"><span class="toc-text">双重否定律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%92%E8%A1%A5%E5%BE%8B"><span class="toc-text">互补律</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E4%B8%8E%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2.2 与运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%93%E5%90%88%E5%BE%8B"><span class="toc-text">结合律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B9%82%E7%AD%89%E5%BE%8B"><span class="toc-text">幂等律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%95%E4%BD%8D%E5%85%83"><span class="toc-text">单位元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9B%B6%E5%85%83"><span class="toc-text">零元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%B8%E6%94%B6%E5%BE%8B"><span class="toc-text">吸收律</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E6%88%96%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2.3 或运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B-1"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E9%85%8D%E5%BE%8B"><span class="toc-text">分配律</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E5%BE%B7%E6%91%A9%E6%A0%B9%E5%AE%9A%E5%BE%8B"><span class="toc-text">2.4 德摩根定律</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2.5 异或运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B-2"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%93%E5%90%88%E5%BE%8B-1"><span class="toc-text">结合律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%95%E4%BD%8D%E5%85%83-1"><span class="toc-text">单位元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%86%E5%85%83"><span class="toc-text">逆元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E8%BD%AC%E6%80%A7%E8%B4%A8"><span class="toc-text">反转性质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A5%87%E5%81%B6%E6%A0%A1%E9%AA%8C%E6%80%A7%E8%B4%A8"><span class="toc-text">奇偶校验性质</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-%E5%90%8C%E6%88%96%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2.6 同或运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B-3"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%93%E5%90%88%E5%BE%8B-2"><span class="toc-text">结合律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%8F%8D%E6%80%A7%E8%B4%A8"><span class="toc-text">自反性质</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到頂部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M8 10.5h8M8 14h5.5M17 3.338A9.95 9.95 0 0 0 12 2C6.477 2 2 6.477 2 12c0 1.6.376 3.112 1.043 4.453c.178.356.237.763.134 1.148l-.595 2.226a1.3 1.3 0 0 0 1.591 1.592l2.226-.596a1.63 1.63 0 0 1 1.149.133A9.96 9.96 0 0 0 12 22c5.523 0 10-4.477 10-10c0-1.821-.487-3.53-1.338-5"/></svg><span>參與討論</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `剛剛`,
+      min: `分鐘前`,
+      hour: `小時前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切換到淺色模式`,
+      dark: `切換到深色模式`,
+      auto: `切換到跟隨系統配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, false);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
