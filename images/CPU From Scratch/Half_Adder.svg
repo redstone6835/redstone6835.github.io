@@ -1,0 +1,372 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    version="1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    style="font-size: 10pt; overflow: visible;"
+    viewBox="17.56366729736328 -352.7403259277344 240.39968872070312 111.33863830566406"
+>
+    <defs>
+        <symbol id="node_american-xor-port">
+            <g
+                fill="none"
+                stroke="currentStroke"
+                stroke-miterlimit="10"
+                stroke-width=".4"
+            >
+                <path
+                    stroke-width=".53134"
+                    d="M.26568 11.114h11.90093m-11.90093 21.1653h11.90093m46.30381-10.58263h-8.73081"
+                />
+                <g stroke-width="1.06267">
+                    <path
+                        d="M8.9965.53135c6.88696 4.25435 10.43779 17.17838 7.9311 28.867-1.34145 6.25527-4.2455 11.18405-7.9311 13.46081 29.10234.00282 29.10234-10.57986 40.7431-21.1625-11.64075-10.58264-11.64075-21.16531-40.7431-21.16531Z"
+                    />
+                    <path
+                        d="M6.0861 1.53136c6.33541 4.05364 9.60188 16.36782 7.29595 27.50496-1.23399 5.9601-3.90553 10.65633-7.29595 12.82566"
+                    />
+                </g>
+            </g>
+        </symbol>
+        <symbol id="node_american-and-port">
+            <g
+                fill="none"
+                stroke="currentStroke"
+                stroke-miterlimit="10"
+                stroke-width=".4"
+            >
+                <path
+                    stroke-width=".53134"
+                    d="M.26568 11.114h8.73082m-8.73082 21.1653h8.73082m49.47392-10.58263h-8.73081"
+                />
+                <path
+                    stroke-width="1.06267"
+                    d="M8.9965.53135v42.33064c22.50208 0 40.7431-9.4759 40.7431-21.16532s-18.24101-21.16532-40.7431-21.16532Z"
+                />
+            </g>
+        </symbol>
+        <symbol id="node_circ">
+            <g
+                stroke="currentStroke"
+                stroke-miterlimit="10"
+                stroke-width=".53134"
+            >
+                <path
+                    d="M4.49803 2.38186c0-1.16874-.94744-2.11617-2.11617-2.11617s-2.11617.94743-2.11617 2.11617.94743 2.11617 2.11617 2.11617 2.11617-.94744 2.11617-2.11617Zm-2.11617 0"
+                    fill="currentColor"
+                />
+            </g>
+        </symbol>
+        <path
+            id="MJX-34-TEX-I-1D434"
+            d="M208 74Q208 50 254 46Q272 46 272 35Q272 34 270 22Q267 8 264 4T251 0Q249 0 239 0T205 1T141 2Q70 2 50 0H42Q35 7 35 11Q37 38 48 46H62Q132 49 164 96Q170 102 345 401T523 704Q530 716 547 716H555H572Q578 707 578 706L606 383Q634 60 636 57Q641 46 701 46Q726 46 726 36Q726 34 723 22Q720 7 718 4T704 0Q701 0 690 0T651 1T578 2Q484 2 455 0H443Q437 6 437 9T439 27Q443 40 445 43L449 46H469Q523 49 533 63L521 213H283L249 155Q208 86 208 74ZM516 260Q516 271 504 416T490 562L463 519Q447 492 400 412L310 260L413 259Q516 259 516 260Z"
+        />
+        <path
+            id="MJX-35-TEX-I-1D435"
+            d="M231 637Q204 637 199 638T194 649Q194 676 205 682Q206 683 335 683Q594 683 608 681Q671 671 713 636T756 544Q756 480 698 429T565 360L555 357Q619 348 660 311T702 219Q702 146 630 78T453 1Q446 0 242 0Q42 0 39 2Q35 5 35 10Q35 17 37 24Q42 43 47 45Q51 46 62 46H68Q95 46 128 49Q142 52 147 61Q150 65 219 339T288 628Q288 635 231 637ZM649 544Q649 574 634 600T585 634Q578 636 493 637Q473 637 451 637T416 636H403Q388 635 384 626Q382 622 352 506Q352 503 351 500L320 374H401Q482 374 494 376Q554 386 601 434T649 544ZM595 229Q595 273 572 302T512 336Q506 337 429 337Q311 337 310 336Q310 334 293 263T258 122L240 52Q240 48 252 48T333 46Q422 46 429 47Q491 54 543 105T595 229Z"
+        />
+        <path
+            id="MJX-36-TEX-I-1D446"
+            d="M308 24Q367 24 416 76T466 197Q466 260 414 284Q308 311 278 321T236 341Q176 383 176 462Q176 523 208 573T273 648Q302 673 343 688T407 704H418H425Q521 704 564 640Q565 640 577 653T603 682T623 704Q624 704 627 704T632 705Q645 705 645 698T617 577T585 459T569 456Q549 456 549 465Q549 471 550 475Q550 478 551 494T553 520Q553 554 544 579T526 616T501 641Q465 662 419 662Q362 662 313 616T263 510Q263 480 278 458T319 427Q323 425 389 408T456 390Q490 379 522 342T554 242Q554 216 546 186Q541 164 528 137T492 78T426 18T332 -20Q320 -22 298 -22Q199 -22 144 33L134 44L106 13Q83 -14 78 -18T65 -22Q52 -22 52 -14Q52 -11 110 221Q112 227 130 227H143Q149 221 149 216Q149 214 148 207T144 186T142 153Q144 114 160 87T203 47T255 29T308 24Z"
+        />
+        <path
+            id="MJX-39-TEX-I-1D436"
+            d="M50 252Q50 367 117 473T286 641T490 704Q580 704 633 653Q642 643 648 636T656 626L657 623Q660 623 684 649Q691 655 699 663T715 679T725 690L740 705H746Q760 705 760 698Q760 694 728 561Q692 422 692 421Q690 416 687 415T669 413H653Q647 419 647 422Q647 423 648 429T650 449T651 481Q651 552 619 605T510 659Q484 659 454 652T382 628T299 572T226 479Q194 422 175 346T156 222Q156 108 232 58Q280 24 350 24Q441 24 512 92T606 240Q610 253 612 255T628 257Q648 257 648 248Q648 243 647 239Q618 132 523 55T319 -22Q206 -22 128 53T50 252Z"
+        />
+    </defs>
+    <g class="">
+        <use
+            xlink:href="#node_american-xor-port"
+            fill="#fff"
+            stroke="#000"
+            transform="matrix(1,0,0,1,141.46697,-351.27167)"
+            style="color: #000;"
+        />
+    </g>
+    <g class="">
+        <use
+            xlink:href="#node_american-and-port"
+            fill="#fff"
+            stroke="#000"
+            transform="matrix(1,0,0,1,139.95497,-286.26367)"
+            style="color: #000;"
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="141.732,-340.157 37.795,-340.157"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#000"
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="141.732,-318.992 37.795,-318.992"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#000"
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="140.221,-275.15 75.591,-275.15 75.591,-274.016"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#000"
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="140.221,-253.984 95.591,-253.984 95.591,-254.016"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#000"
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="75.591,-340.157 75.591,-275.15"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#000"
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="95.591,-320.157 95.591,-254.016"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#000"
+        />
+    </g>
+    <g class="">
+        <use
+            xlink:href="#node_circ"
+            fill="#fff"
+            stroke="#000"
+            transform="matrix(1,0,0,1,73.20913999999999,-342.53886)"
+            style="color: #000;"
+        />
+    </g>
+    <g class="">
+        <use
+            xlink:href="#node_circ"
+            fill="#fff"
+            stroke="#000"
+            transform="matrix(1,0,0,1,93.20913999999999,-322.53886)"
+            style="color: #000;"
+        />
+    </g>
+    <g class="">
+        <rect
+            width="17.564666666666668"
+            height="17.564666666666668"
+            x="0.6666666666666661"
+            y="0.6666666666666661"
+            transform="matrix(1,0,0,1,18.897,-349.606)"
+            style=""
+            stroke-dasharray="1pt 0pt"
+            stroke-opacity="0"
+            stroke-width="0"
+            stroke="#000"
+            fill-opacity="1"
+            fill="none"
+        />
+        <g
+            class="pointerNone"
+            transform="matrix(1,0,0,1,23.223677828073498,-335.3377804107666)"
+            fill="#000"
+        >
+            <g
+                transform="matrix(0.013462081844122755,0,0,0.01346150571383706,0,0)"
+            >
+                <g
+                    stroke="currentColor"
+                    fill="inherit"
+                    stroke-width="0"
+                    transform="scale(1,-1)"
+                >
+                    <use xlink:href="#MJX-34-TEX-I-1D434" />
+                </g>
+            </g>
+        </g>
+        <g
+            transform="matrix(1,0,0,1,0,0)"
+            style="pointer-events: none;"
+            class=""
+        >
+            <g fill="#000" transform="matrix(1,0,0,1,26.897,-341.606)" />
+            <g fill="#000" transform="matrix(1,0,0,1,26.897,-341.606)" />
+        </g>
+    </g>
+    <g class="">
+        <rect
+            width="17.564666666666668"
+            height="17.564666666666668"
+            style=""
+            x="0.6666666666666661"
+            y="0.6666666666666661"
+            transform="matrix(1,0,0,1,18.897,-328.44100000000003)"
+            stroke-dasharray="1pt 0pt"
+            stroke-opacity="0"
+            stroke-width="0"
+            stroke="#000"
+            fill-opacity="1"
+            fill="none"
+        />
+        <g
+            class="pointerNone"
+            transform="matrix(1,0,0,1,23.022874756813046,-314.395892993927)"
+            fill="#000"
+        >
+            <g
+                transform="matrix(0.013459228519031943,0,0,0.013458585805868112,0,0)"
+            >
+                <g
+                    stroke="currentColor"
+                    fill="inherit"
+                    stroke-width="0"
+                    transform="scale(1,-1)"
+                >
+                    <use xlink:href="#MJX-35-TEX-I-1D435" />
+                </g>
+            </g>
+        </g>
+        <g
+            transform="matrix(1,0,0,1,0,0)"
+            style="pointer-events: none;"
+            class=""
+        >
+            <g
+                fill="#000"
+                transform="matrix(1,0,0,1,26.897,-320.44100000000003)"
+            />
+            <g
+                fill="#000"
+                transform="matrix(1,0,0,1,26.897,-320.44100000000003)"
+            />
+        </g>
+    </g>
+    <g class="">
+        <polyline
+            points="237.732,-329.575 199.937,-329.575"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#000"
+        />
+    </g>
+    <g class="">
+        <polyline
+            points="236.22,-264.567 198.425,-264.567"
+            fill="none"
+            stroke-dasharray="0.4pt 0pt"
+            stroke-opacity="1"
+            stroke-width="0.5333333333333333"
+            stroke="#000"
+        />
+    </g>
+    <g class="">
+        <rect
+            width="17.564666666666668"
+            height="17.564666666666668"
+            x="0.6666666666666661"
+            y="0.6666666666666661"
+            transform="matrix(1,0,0,1,237.732,-339.024)"
+            style=""
+            stroke-dasharray="1pt 0pt"
+            stroke-opacity="0"
+            stroke-width="0"
+            stroke="#000"
+            fill-opacity="1"
+            fill="none"
+        />
+        <g
+            class="pointerNone"
+            transform="matrix(1,0,0,1,242.4908140358925,-324.97758359909056)"
+            fill="#000"
+        >
+            <g
+                transform="matrix(0.013458207651378699,0,0,0.013462420109592579,0,0)"
+            >
+                <g
+                    stroke="currentColor"
+                    fill="inherit"
+                    stroke-width="0"
+                    transform="scale(1,-1)"
+                >
+                    <use xlink:href="#MJX-36-TEX-I-1D446" />
+                </g>
+            </g>
+        </g>
+        <g
+            transform="matrix(1,0,0,1,0,0)"
+            style="pointer-events: none;"
+            class=""
+        >
+            <g fill="#000" transform="matrix(1,0,0,1,245.732,-331.024)" />
+            <g fill="#000" transform="matrix(1,0,0,1,245.732,-331.024)" />
+        </g>
+    </g>
+    <g class="">
+        <rect
+            width="17.564666666666668"
+            height="17.564666666666668"
+            style=""
+            x="0.6666666666666661"
+            y="0.6666666666666661"
+            transform="matrix(1,0,0,1,236.22029133858265,-274.01592913385826)"
+            stroke-dasharray="1pt 0pt"
+            stroke-opacity="0"
+            stroke-width="0"
+            stroke="#000"
+            fill-opacity="1"
+            fill="none"
+        />
+        <g
+            class="pointerNone"
+            transform="matrix(1,0,0,1,240.21913554396215,-259.96951273294883)"
+            fill="#000"
+        >
+            <g
+                transform="matrix(0.013457175989777052,0,0,0.013462420109592579,0,0)"
+            >
+                <g
+                    stroke="currentColor"
+                    fill="inherit"
+                    stroke-width="0"
+                    transform="scale(1,-1)"
+                >
+                    <use xlink:href="#MJX-39-TEX-I-1D436" />
+                </g>
+            </g>
+        </g>
+        <g
+            transform="matrix(1,0,0,1,0,0)"
+            style="pointer-events: none;"
+            class=""
+        >
+            <g
+                fill="#000"
+                transform="matrix(1,0,0,1,244.22029133858265,-266.01592913385826)"
+            />
+            <g
+                fill="#000"
+                transform="matrix(1,0,0,1,244.22029133858265,-266.01592913385826)"
+            />
+        </g>
+    </g>
+</svg>
