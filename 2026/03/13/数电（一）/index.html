@@ -30,7 +30,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://redstone6835.github.io/images/avatar.png">
 <meta property="article:published_time" content="2026-03-12T16:03:56.000Z">
-<meta property="article:modified_time" content="2026-03-12T16:13:22.595Z">
+<meta property="article:modified_time" content="2026-03-13T03:36:01.856Z">
 <meta property="article:author" content="Redstone6835">
 <meta property="article:tag" content="IC">
 <meta property="article:tag" content="Math">
@@ -55,7 +55,7 @@
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png"},"dateCreated":"2026-03-13T00:03:56+08:00","dateModified":"2026-03-13T00:13:22+08:00","datePublished":"2026-03-13T00:03:56+08:00","description":"","headline":"数电（一）","mainEntityOfPage":{"@type":"WebPage","@id":"https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png","logo":{"@type":"ImageObject","url":"/images/avatar.png"}},"url":"https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/","keywords":"IC, Math","image":[]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png"},"dateCreated":"2026-03-13T00:03:56+08:00","dateModified":"2026-03-13T11:36:01+08:00","datePublished":"2026-03-13T00:03:56+08:00","description":"","headline":"数电（一）","mainEntityOfPage":{"@type":"WebPage","@id":"https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png","logo":{"@type":"ImageObject","url":"/images/avatar.png"}},"url":"https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/","keywords":"IC, Math","image":[]}</script>
   
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
@@ -91,7 +91,7 @@
   <div class="content">
     <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
 <span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
-<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-03-12T16:03:56.000Z">2026-03-13</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-03-12T16:13:22.595Z">2026-03-13</time></span></div></div></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-03-12T16:03:56.000Z">2026-03-13</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-03-13T03:36:01.856Z">2026-03-13</time></span></div></div></div>
     
     <div class="bottom only-title">
       
@@ -324,14 +324,7 @@ $$</p>
 A\odot B=\neg(A\oplus B)<br>
 $$</p>
 <h2 id="第二章-逻辑运算的代数结构">第二章 逻辑运算的代数结构</h2>
-<p>逻辑变量取值集合为</p>
-<p>${0,1}$</p>
-<p>该系统可用<strong>布尔代数</strong>描述。</p>
-<p>此外，逻辑运算还可嵌入到有限域</p>
-<p>$\mathbb{F}_2$</p>
-<p>的多项式结构中。</p>
-<p>注意：</p>
-<p>在  $\mathbb{F}_2$  中只有两种基本运算：</p>
+<p>逻辑变量取值集合为 ${0,1}$ ，该系统可用<strong>布尔代数</strong>描述。逻辑运算还可嵌入到有限域 $\mathbb{F}_2$ 的多项式结构中。在  $\mathbb{F}_2$  中只有两种基本运算：</p>
 <ul>
 <li>
 <p>加法  $+$</p>
@@ -341,202 +334,326 @@ $$</p>
 </li>
 </ul>
 <p>逻辑运算可通过如下映射关系，与有限域  $\mathbb{F}_2$  中的运算对应，实现逻辑运算的代数化表示：</p>
-<p>$A\land B \leftrightarrow AB$ （逻辑与运算对应有限域中的乘法运算）</p>
-<p>$A\oplus B \leftrightarrow A+B$ （逻辑异或运算对应有限域中的加法运算）</p>
-<p>$\neg A \leftrightarrow 1+A$ （逻辑非运算对应有限域中“1加变量”的运算）</p>
-<p>而逻辑或运算无法直接对应有限域的基本运算，需通过上述映射关系推导得出，其多项式表示为</p>
-<p>$A\lor B=A+B+AB$</p>
-<p>该表达式属于<strong>布尔环多项式表示</strong>，是逻辑或运算在有限域  $\mathbb{F}_2$  中的代数等价形式。</p>
+<p>$$<br>
+A\land B \leftrightarrow AB \tag{2.1}<br>
+$$</p>
+<p>$$<br>
+A\oplus B \leftrightarrow A+B \tag{2.2}<br>
+$$</p>
+<p>$$<br>
+\neg A \leftrightarrow 1+A \tag{2.3}<br>
+$$</p>
+<p>由此可见，逻辑非运算对应有限域中“1加变量”的运算，逻辑异或运算对应有限域中的加法运算，逻辑与运算对应有限域中的乘法运算。而逻辑或运算无法直接对应有限域的基本运算，需通过上述映射关系推导得出，其多项式表示为</p>
+<p>$$<br>
+A\lor B=A+B+AB \tag{2.4}<br>
+$$<br>
+该表达式属于<strong>布尔环多项式表示</strong>，是逻辑或运算在有限域  $\mathbb{F}_2$  中的代数等价形式。</p>
 <h3 id="2-1-非运算性质">2.1 非运算性质</h3>
 <p>由逻辑非运算与有限域  $\mathbb{F}_2$  运算的映射关系，非运算可表示为</p>
-<p>$\neg A=1+A \tag{2.1}$</p>
+<p>$$<br>
+\neg A=1+A \tag{2.3}<br>
+$$</p>
 <h4 id="双重否定律">双重否定律</h4>
 <p>双重否定律表明，对逻辑变量A进行两次非运算，结果仍为A本身，其表达式为</p>
-<p>$\neg(\neg A)=A \tag{2.2}$</p>
-<p><strong>证</strong>：根据非运算的代数表达式（2.1），对 $\neg A$ 再次进行非运算，可将 $\neg A$ 整体代入公式（2.1），得到：</p>
-<p>$\neg(\neg A)=1+(\neg A)=1+(1+A)$</p>
-<p>在有限域  $\mathbb{F}_2$  中，加法运算满足特殊性质：两个1相加的结果为0，即</p>
-<p>$1+1=0$</p>
-<p>利用加法结合律，将上式中的1+1优先计算，可得：</p>
-<p>$1+(1+A)=(1+1)+A=0+A$</p>
-<p>又因为在有限域  $\mathbb{F}_2$  中，0为加法单位元，满足 $0+A=A$ ，因此：</p>
-<p>$(1+1)+A=0+A=A$</p>
-<p>即 $\neg(\neg A)=A$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+\neg(\neg A)=A \tag{2.5}<br>
+$$<br>
+<strong>证</strong>：根据非运算的代数表达式（2.1），对 $\neg A$ 再次进行非运算，可将 $\neg A$ 整体代入公式（2.1），得到：<br>
+$$<br>
+\neg(\neg A)=1+(\neg A)=1+(1+A)<br>
+$$<br>
+在有限域  $\mathbb{F}_2$  中，加法运算满足特殊性质：两个1相加的结果为0，即</p>
+<p>$$<br>
+1+1=0<br>
+$$<br>
+利用加法结合律，将上式中的$1+1$优先计算，可得：</p>
+<p>$$<br>
+1+(1+A)=(1+1)+A=0+A<br>
+$$<br>
+又因为在有限域  $\mathbb{F}_2$  中，0为加法单位元，满足 $0+A=A$ ，因此：</p>
+<p>$$<br>
+(1+1)+A=0+A=A<br>
+$$<br>
+即 $\neg(\neg A)=A$ ，<strong>得证</strong>。</p>
 <h4 id="互补律">互补律</h4>
 <p>互补律反映了逻辑变量与其非运算结果之间的核心关系，即一个逻辑变量与其非变量的“或运算”结果恒为1（逻辑真），“与运算”结果恒为0（逻辑假），表达式为</p>
-<p>$A\lor\neg A=1$</p>
-<p>$A\land\neg A=0 \tag{2.3}$</p>
+<p>$$<br>
+A\lor\neg A=1 \tag{2.6.1}<br>
+$$</p>
+<p>$$<br>
+A\land\neg A=0 \tag{2.6.2}<br>
+$$</p>
 <p><strong>证</strong>：结合非运算的代数表达式 $\neg A=1+A$ 和逻辑运算的有限域映射关系，分别证明两个等式：</p>
 <ol>
 <li>证明 $A\lor\neg A=1$ ：</li>
 </ol>
 <p>由逻辑或的布尔环多项式表示 $A\lor B=A+B+AB$ ，令 $B=\neg A=1+A$ ，代入得：</p>
-<p>$A\lor\neg A=A+(1+A)+A(1+A)$</p>
-<p>展开右边多项式： $A+1+A+A\cdot1+A\cdot A=1+(A+A)+A+A^2$</p>
-<p>在有限域  $\mathbb{F}_2$  中， $A+A=0$ （异或运算自反性），且 $A^2=A$ （幂等性），代入化简：</p>
-<p>$1+0+A+A=1+0=1$ ，故 $A\lor\neg A=1$ 。</p>
+<p>$$<br>
+A\lor\neg A=A+(1+A)+A(1+A)<br>
+$$<br>
+展开右边多项式：<br>
+$$<br>
+A+1+A+A\cdot1+A\cdot A=1+(A+A)+A+A^2<br>
+$$<br>
+在有限域  $\mathbb{F}_2$  中， $A+A=0$ （异或运算自反性），且 $A^2=A$ （幂等性），代入化简：</p>
+<p>$$<br>
+1+0+A+A=1+0=1<br>
+$$<br>
+故<br>
+$$<br>
+A\lor\neg A=1<br>
+$$</p>
 <ol start="2">
 <li>证明 $A\land\neg A=0$ ：</li>
 </ol>
 <p>由逻辑与的映射关系 $A\land\neg A=A\cdot\neg A$ ，代入 $\neg A=1+A$ ，得：</p>
-<p>$A\cdot(1+A)=A\cdot1+A\cdot A=A+A^2=A+A=0$</p>
-<p>综上，互补律的两个等式均成立，<strong>得证</strong>。</p>
+<p>$$<br>
+A\cdot(1+A)=A\cdot1+A\cdot A=A+A^2=A+A=0<br>
+$$<br>
+综上，互补律的两个等式均成立，<strong>得证</strong>。</p>
 <h3 id="2-2-与运算性质">2.2 与运算性质</h3>
 <p>逻辑与运算对应有限域  $\mathbb{F}_2$  中的乘法运算 $A\land B=AB$ ，因此其性质可由有限域乘法的性质推导得出。</p>
 <h4 id="交换律">交换律</h4>
 <p>与运算的交换律表明，两个逻辑变量进行与运算时，交换变量顺序，结果不变，表达式为</p>
-<p>$A\land B=B\land A \tag{2.4}$</p>
-<p><strong>证</strong>：由与运算与有限域乘法的映射关系， $A\land B=AB$ ， $B\land A=BA$ 。</p>
+<p>$$<br>
+A\land B=B\land A \tag{2.7}<br>
+$$<br>
+<strong>证</strong>：由与运算与有限域乘法的映射关系， $A\land B=AB$ ， $B\land A=BA$ 。</p>
 <p>在有限域  $\mathbb{F}_2$  中，乘法运算满足交换律，即 $AB=BA$ ，因此</p>
 <p>$A\land B=AB=BA=B\land A$ ，<strong>得证</strong>。</p>
 <h4 id="结合律">结合律</h4>
 <p>与运算的结合律表明，三个及以上逻辑变量进行与运算时，改变运算顺序（添加括号），结果不变，表达式为</p>
-<p>$(A\land B)\land C=A\land(B\land C) \tag{2.5}$</p>
+<p>$$<br>
+(A\land B)\land C=A\land(B\land C) \tag{2.8}<br>
+$$</p>
 <p><strong>证</strong>：根据映射关系， $(A\land B)\land C=(AB)C$ ， $A\land(B\land C)=A(BC)$ 。</p>
 <p>在有限域  $\mathbb{F}_2$  中，乘法运算满足结合律，即 $(AB)C=A(BC)$ ，因此</p>
 <p>$(A\land B)\land C=(AB)C=A(BC)=A\land(B\land C)$ ，<strong>得证</strong>。</p>
 <h4 id="幂等律">幂等律</h4>
 <p>与运算的幂等律表明，一个逻辑变量与自身进行与运算，结果仍为该变量本身，表达式为</p>
-<p>$A\land A=A \tag{2.6}$</p>
-<p><strong>证</strong>：由映射关系， $A\land A=A\cdot A=A^2$ 。</p>
-<p>在有限域  $\mathbb{F}_2$  中，对于任意逻辑变量A（取值为0或1），均满足 $A^2=A$ （当A=0时， $0^2=0$ ；当A=1时， $1^2=1$ ），因此</p>
-<p>$A\land A=A^2=A$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+A\land A=A \tag{2.9}<br>
+$$<br>
+<strong>证</strong>：由映射关系， $A\land A=A\cdot A=A^2$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，对于任意逻辑变量$A$（取值为0或1），均满足 $A^2=A$ （当A=0时， $0^2=0$ ；当A=1时， $1^2=1$ ），因此$A\land A=A^2=A$ ，<strong>得证</strong>。</p>
 <h4 id="单位元">单位元</h4>
 <p>与运算的单位元为1，即一个逻辑变量与1进行与运算，结果仍为该变量本身，表达式为</p>
-<p>$A\land1=A$</p>
-<p><strong>证</strong>：由映射关系， $A\land1=A\cdot1$ 。</p>
-<p>在有限域  $\mathbb{F}_2$  中，1是乘法单位元，满足 $A\cdot1=A$ ，因此</p>
-<p>$A\land1=A\cdot1=A$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+A\land1=A \tag{2.10}<br>
+$$<br>
+<strong>证</strong>：由映射关系， $A\land1=A\cdot1$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，1是乘法单位元，满足 $A\cdot1=A$ ，因此$A\land1=A\cdot1=A$ ，<strong>得证</strong>。</p>
 <h4 id="零元">零元</h4>
 <p>与运算的零元为0，即一个逻辑变量与0进行与运算，结果恒为0，表达式为</p>
-<p>$A\land0=0$</p>
-<p><strong>证</strong>：由映射关系， $A\land0=A\cdot0$ 。</p>
+<p>$$<br>
+A\land0=0 \tag{2.11}<br>
+$$<br>
+<strong>证</strong>：由映射关系， $A\land0=A\cdot0$ 。</p>
 <p>在有限域  $\mathbb{F}_2$  中，0是乘法零元，满足 $A\cdot0=0$ ，因此</p>
 <p>$A\land0=A\cdot0=0$ ，<strong>得证</strong>。</p>
 <h4 id="吸收律">吸收律</h4>
 <p>与运算的吸收律表明，一个逻辑变量与该变量和另一个变量的或运算结果进行与运算，结果仍为该变量本身，表达式为</p>
-<p>$A\land(A\lor B)=A$</p>
-<p><strong>证</strong>：结合逻辑或的布尔环多项式表示 $A\lor B=A+B+AB$ ，将其代入左边表达式：</p>
-<p>$A\land(A\lor B)=A\cdot(A+B+AB)$</p>
-<p>展开多项式，利用有限域乘法分配律：</p>
-<p>$A\cdot A + A\cdot B + A\cdot AB = A^2 + AB + A^2B$</p>
-<p>由幂等性 $A^2=A$ ，代入化简：</p>
-<p>$A + AB + AB = A + (AB + AB)$</p>
-<p>在有限域  $\mathbb{F}_2$  中， $AB + AB=0$ ，因此：</p>
-<p>$A + 0 = A$ ，即 $A\land(A\lor B)=A$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+A\land(A\lor B)=A \tag{2.12}<br>
+$$<br>
+<strong>证</strong>：结合逻辑或的布尔环多项式表示 $A\lor B=A+B+AB$ ，将其代入左边表达式：</p>
+<p>$$<br>
+A\land(A\lor B)=A\cdot(A+B+AB)<br>
+$$<br>
+展开多项式，利用有限域乘法分配律：</p>
+<p>$$<br>
+A\cdot A + A\cdot B + A\cdot AB = A^2 + AB + A^2B<br>
+$$<br>
+由幂等性 $A^2=A$ ，代入化简：</p>
+<p>$$<br>
+A + AB + AB = A + (AB + AB)<br>
+$$<br>
+在有限域  $\mathbb{F}_2$  中， $AB + AB=0$ ，因此：</p>
+<p>$$<br>
+A + 0 = A<br>
+$$<br>
+即：<br>
+$$<br>
+A\land(A\lor B)=A<br>
+$$</p>
+<p><strong>得证</strong>。</p>
 <h3 id="2-3-或运算性质">2.3 或运算性质</h3>
 <p>逻辑或运算无直接对应的有限域基本运算，需借助其布尔环多项式表示 $A\lor B=A+B+AB$ ，结合有限域的运算性质，推导其各类性质。</p>
 <h4 id="交换律-2">交换律</h4>
 <p>或运算的交换律表明，两个逻辑变量进行或运算时，交换变量顺序，结果不变，表达式为</p>
-<p>$A\lor B=B\lor A$</p>
-<p><strong>证</strong>：根据或运算的多项式表示， $A\lor B=A+B+AB$ ， $B\lor A=B+A+BA$ 。</p>
+<p>$$<br>
+A\lor B=B\lor A \tag{2.13}<br>
+$$<br>
+<strong>证</strong>：根据或运算的多项式表示， $A\lor B=A+B+AB$ ， $B\lor A=B+A+BA$ 。</p>
 <p>在有限域  $\mathbb{F}_2$  中，加法满足交换律（ $A+B=B+A$ ），乘法满足交换律（ $AB=BA$ ），因此：</p>
 <p>$A+B+AB=B+A+BA$ ，即 $A\lor B=B\lor A$ ，<strong>得证</strong>。</p>
 <h4 id="分配律">分配律</h4>
 <p>与运算对或运算的分配律表明，一个逻辑变量与另外两个变量的或运算结果进行与运算，等价于该变量分别与两个变量进行与运算后，再进行或运算，表达式为</p>
-<p>$A\land(B\lor C)=(A\land B)\lor(A\land C)$</p>
-<p><strong>证</strong>：分别对等式左右两边进行代数化简，验证其等价性。</p>
+<p>$$<br>
+A\land(B\lor C)=(A\land B)\lor(A\land C) \tag{2.14}<br>
+$$<br>
+<strong>证</strong>：分别对等式左右两边进行代数化简，验证其等价性。</p>
 <ol>
 <li>化简左边 $A\land(B\lor C)$ ：</li>
 </ol>
 <p>代入或运算多项式表示，结合与运算映射关系，得：</p>
-<p>$A\land(B\lor C)=A\cdot(B+C+BC)=AB+AC+ABC$ （分配律展开）</p>
+<p>$$<br>
+A\land(B\lor C)=A\cdot(B+C+BC)=AB+AC+ABC<br>
+$$</p>
 <ol start="2">
 <li>化简右边 $(A\land B)\lor(A\land C)$ ：</li>
 </ol>
 <p>先计算 $A\land B=AB$ ， $A\land C=AC$ ，再代入或运算多项式表示：</p>
-<p>$(A\land B)\lor(A\land C)=AB+AC+(AB)(AC)=AB+AC+A^2BC$</p>
-<p>由幂等性 $A^2=A$ ，化简得： $AB+AC+ABC$</p>
-<p>左边化简结果与右边化简结果完全一致，因此 $A\land(B\lor C)=(A\land B)\lor(A\land C)$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+(A\land B)\lor(A\land C)=AB+AC+(AB)(AC)=AB+AC+A^2BC<br>
+$$<br>
+由幂等性 $A^2=A$ ，化简得： $AB+AC+ABC$</p>
+<p>$左边 = 右边$，<strong>得证</strong>。</p>
 <h3 id="2-4-德摩根定律">2.4 德摩根定律</h3>
 <p>德摩根定律揭示了非运算与与、或运算之间的反向关系，可将与运算的非运算转化为非运算的或运算，或将或运算的非运算转化为非运算的与运算，表达式为</p>
-<p>$\neg(A\land B)=\neg A\lor\neg B$</p>
-<p>$\neg(A\lor B)=\neg A\land\neg B$</p>
+<p>$$<br>
+\neg(A\land B)=\neg A\lor\neg B \tag{2.15.1}<br>
+$$</p>
+<p>$$<br>
+\neg(A\lor B)=\neg A\land\neg B \tag{2.15.2}<br>
+$$</p>
 <p><strong>证</strong>：此处以第一个等式 $\neg(A\land B)=\neg A\lor\neg B$ 为例，结合有限域运算和逻辑映射关系证明，第二个等式可同理推导。</p>
 <ol>
 <li>化简左边 $\neg(A\land B)$ ：</li>
 </ol>
 <p>由与运算映射关系 $A\land B=AB$ ，结合非运算表达式 $\neg X=1+X$ ，令 $X=AB$ ，得：</p>
-<p>$\neg(AB)=1+AB$</p>
+<p>$$<br>
+\neg(AB)=1+AB<br>
+$$</p>
 <ol start="2">
 <li>化简右边 $\neg A\lor\neg B$ ：</li>
 </ol>
 <p>先由非运算表达式得出 $\neg A=1+A$ ， $\neg B=1+B$ ，再代入或运算多项式表示：</p>
-<p>$\neg A\lor\neg B=(1+A)+(1+B)+(1+A)(1+B)$</p>
-<p>展开右边多项式，利用有限域运算性质化简：</p>
-<p>第一步展开 $(1+A)(1+B)=1\cdot1 + 1\cdot B + A\cdot1 + A\cdot B=1+B+A+AB$</p>
-<p>第二步代入原式并合并同类项：</p>
-<p>$1+A+1+B+1+A+B+AB=(1+1+1)+(A+A)+(B+B)+AB$</p>
-<p>在有限域  $\mathbb{F}_2$  中， $1+1=0$ 、 $A+A=0$ 、 $B+B=0$ ，因此：</p>
-<p>$(0+1)+0+0+AB=1+AB$</p>
-<p>左边 $\neg(AB)=1+AB$ 与右边化简结果一致，故 $\neg(A\land B)=\neg A\lor\neg B$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+\neg A\lor\neg B=(1+A)+(1+B)+(1+A)(1+B)<br>
+$$<br>
+展开右边多项式，利用有限域运算性质化简：</p>
+<p>$$<br>
+(1+A)(1+B)=1\cdot1 + 1\cdot B + A\cdot1 + A\cdot B=1+B+A+AB<br>
+$$<br>
+代入原式并合并同类项：</p>
+<p>$$<br>
+1+A+1+B+1+A+B+AB=(1+1+1)+(A+A)+(B+B)+AB<br>
+$$<br>
+在有限域  $\mathbb{F}_2$  中， $1+1=0$ 、 $A+A=0$ 、 $B+B=0$ ，因此：</p>
+<p>$$<br>
+(0+1)+0+0+AB=1+AB<br>
+$$<br>
+左边 $\neg(AB)=1+AB$ 与右边化简结果一致，故 $\neg(A\land B)=\neg A\lor\neg B$ ，<strong>得证</strong>。</p>
 <p>同理，可证明 $\neg(A\lor B)=\neg A\land\neg B$ ，此处不再赘述。</p>
 <h3 id="2-5-异或运算性质">2.5 异或运算性质</h3>
 <p>由前文映射关系可知，逻辑异或运算直接对应有限域  $\mathbb{F}_2$  中的加法运算，即</p>
-<p>$A\oplus B=A+B$</p>
-<p>由于有限域  $\mathbb{F}_2$  中的加法运算满足阿贝尔群的所有条件（交换律、结合律、单位元存在、逆元存在），因此集合</p>
-<p>$({0,1},\oplus)$</p>
-<p>构成阿贝尔群（交换群），其各项性质均可由有限域加法性质推导得出。</p>
+<p>$$<br>
+A\oplus B=A+B<br>
+$$<br>
+由于有限域  $\mathbb{F}_2$  中的加法运算满足阿贝尔群的所有条件（交换律、结合律、单位元存在、逆元存在），因此集合</p>
+<p>$$<br>
+({0,1},\oplus) \tag{2.16}<br>
+$$<br>
+构成阿贝尔群（交换群），其各项性质均可由有限域加法性质推导得出。</p>
 <h4 id="交换律-3">交换律</h4>
 <p>异或运算的交换律表明，两个逻辑变量进行异或运算时，交换变量顺序，结果不变，表达式为</p>
-<p>$A\oplus B=B\oplus A$</p>
-<p><strong>证</strong>：由异或与有限域加法的映射关系， $A\oplus B=A+B$ ， $B\oplus A=B+A$ 。</p>
-<p>在有限域  $\mathbb{F}_2$  中，加法运算满足交换律，即 $A+B=B+A$ ，因此</p>
-<p>$A\oplus B=A+B=B+A=B\oplus A$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+A\oplus B=B\oplus A \tag{2.17}<br>
+$$<br>
+<strong>证</strong>：由异或与有限域加法的映射关系， $A\oplus B=A+B$ ， $B\oplus A=B+A$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，加法运算满足交换律，即 $A+B=B+A$ ，因此有：</p>
+<p>$$<br>
+A\oplus B=A+B=B+A=B\oplus A<br>
+$$<br>
+<strong>得证</strong>。</p>
 <h4 id="结合律-2">结合律</h4>
 <p>异或运算的结合律表明，三个及以上逻辑变量进行异或运算时，改变运算顺序（添加括号），结果不变，表达式为</p>
-<p>$(A\oplus B)\oplus C=A\oplus(B\oplus C)$</p>
-<p><strong>证</strong>：由映射关系， $(A\oplus B)\oplus C=(A+B)+C$ ， $A\oplus(B\oplus C)=A+(B+C)$ 。</p>
-<p>在有限域  $\mathbb{F}_2$  中，加法运算满足结合律，即 $(A+B)+C=A+(B+C)$ ，因此</p>
-<p>$(A\oplus B)\oplus C=(A+B)+C=A+(B+C)=A\oplus(B\oplus C)$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+(A\oplus B)\oplus C=A\oplus(B\oplus C) \tag{2.18}<br>
+$$<br>
+<strong>证</strong>：由映射关系， $(A\oplus B)\oplus C=(A+B)+C$ ， $A\oplus(B\oplus C)=A+(B+C)$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，加法运算满足结合律，即 $(A+B)+C=A+(B+C)$ ，因此有：</p>
+<p>$$<br>
+(A\oplus B)\oplus C=(A+B)+C=A+(B+C)=A\oplus(B\oplus C)<br>
+$$<br>
+<strong>得证</strong>。</p>
 <h4 id="单位元-2">单位元</h4>
 <p>异或运算的单位元为0，即一个逻辑变量与0进行异或运算，结果仍为该变量本身，表达式为</p>
-<p>$A\oplus0=A$</p>
-<p><strong>证</strong>：由映射关系， $A\oplus0=A+0$ 。</p>
-<p>在有限域  $\mathbb{F}_2$  中，0是加法单位元，满足 $A+0=A$ ，因此</p>
-<p>$A\oplus0=A+0=A$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+A\oplus0=A \tag{2.19}<br>
+$$<br>
+<strong>证</strong>：由映射关系， $A\oplus0=A+0$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，0是加法单位元，满足 $A+0=A$ ，因此有：</p>
+<p>$$<br>
+A\oplus0=A+0=A<br>
+$$<br>
+<strong>得证</strong>。</p>
 <h4 id="逆元">逆元</h4>
 <p>异或运算中，每个逻辑变量的逆元为其自身，即一个逻辑变量与自身进行异或运算，结果为加法单位元0，表达式为</p>
-<p>$A\oplus A=0$</p>
-<p><strong>证</strong>：由映射关系， $A\oplus A=A+A$ 。</p>
-<p>在有限域  $\mathbb{F}_2$  中，任意元素与自身相加的结果为0，即 $A+A=0$ ，因此</p>
-<p>$A\oplus A=A+A=0$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+A\oplus A=0 \tag{2.20}<br>
+$$<br>
+<strong>证</strong>：由映射关系， $A\oplus A=A+A$ 。</p>
+<p>在有限域  $\mathbb{F}_2$  中，任意元素与自身相加的结果为0，即 $A+A=0$ ，因此有：</p>
+<p>$$<br>
+A\oplus A=A+A=0<br>
+$$<br>
+<strong>得证</strong>。</p>
 <h4 id="反转性质">反转性质</h4>
 <p>异或运算的反转性质表明，一个逻辑变量与1进行异或运算，结果等价于该变量的非运算，表达式为</p>
-<p>$A\oplus1=\neg A$</p>
-<p><strong>证</strong>：由映射关系， $A\oplus1=A+1$ 。</p>
-<p>由非运算的代数表达式（2.1）可知， $\neg A=1+A$ ，而有限域加法满足交换律， $A+1=1+A$ ，因此</p>
-<p>$A\oplus1=A+1=1+A=\neg A$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+A\oplus1=\neg A \tag{2.21}<br>
+$$<br>
+<strong>证</strong>：由映射关系， $A\oplus1=A+1$ 。</p>
+<p>由非运算的代数表达式（2.1）可知， $\neg A=1+A$ ，而有限域加法满足交换律，因此有：</p>
+<p>$$<br>
+A\oplus1=A+1=1+A=\neg A<br>
+$$<br>
+<strong>得证</strong>。</p>
 <h4 id="奇偶校验性质">奇偶校验性质</h4>
 <p>多个逻辑变量的异或运算结果，等价于所有变量取值之和对2取模，其核心作用是实现奇偶校验，即</p>
-<p>$A_1\oplus A_2\oplus\cdots\oplus A_n$</p>
-<p>等价于</p>
-<p>$\sum A_i \pmod2$</p>
-<p>若参与运算的变量中，取值为1的个数为奇数，则异或结果为1；若为偶数，则结果为0。</p>
+<p>$$<br>
+A_1\oplus A_2\oplus\cdots\oplus A_n = \sum A_i \pmod2 \tag{2.22}<br>
+$$<br>
+若参与运算的变量中，取值为1的个数为奇数，则异或结果为1；若为偶数，则结果为0。</p>
 <p><strong>证</strong>：采用数学归纳法证明，结合异或运算与有限域加法的等价性（ $A\oplus B=A+B$ ）。</p>
 <ol>
 <li>
 <p>当n=1时， $A_1\oplus=A_1$ ， $\sum A_i \pmod2=A_1 \pmod2=A_1$ ，等式成立；</p>
 </li>
 <li>
-<p>假设当n=k（k≥1）时，等式成立，即 $A_1\oplus A_2\oplus\cdots\oplus A_k = (A_1+A_2+\cdots+A_k) \pmod2$ ；</p>
-</li>
-<li>
-<p>当n=k+1时， $A_1\oplus A_2\oplus\cdots\oplus A_k\oplus A_{k+1} = (A_1\oplus\cdots\oplus A_k)\oplus A_{k+1}$ ，由归纳假设和映射关系：</p>
+<p>假设当n=k（k≥1）时，等式成立，即：<br>
+$$<br>
+A_1\oplus A_2\oplus\cdots\oplus A_k = (A_1+A_2+\cdots+A_k) \pmod2<br>
+$$<br>
+当n=k+1时，有：<br>
+$$<br>
+A_1\oplus A_2\oplus\cdots\oplus A_k\oplus A_{k+1} = (A_1\oplus\cdots\oplus A_k)\oplus A_{k+1}<br>
+$$<br>
+由归纳假设和映射关系：<br>
+$$<br>
+(A_1+\cdots+A_k) \pmod2 + A_{k+1} = (A_1+\cdots+A_k+A_{k+1}) \pmod2<br>
+$$<br>
+因此，当n=k+1时，等式仍成立。</p>
 </li>
 </ol>
-<p>$(A_1+\cdots+A_k) \pmod2 + A_{k+1} = (A_1+\cdots+A_k+A_{k+1}) \pmod2$</p>
-<p>因此，当n=k+1时，等式仍成立。</p>
 <p>综上，对任意正整数n，等式均成立，<strong>得证</strong>。</p>
 <h3 id="2-6-同或运算性质">2.6 同或运算性质</h3>
 <p>同或运算定义为异或运算的非运算，即</p>
-<p>$A\odot B=\neg(A\oplus B)$</p>
-<p>结合异或运算与有限域加法的映射关系（ $A\oplus B=A+B$ ）和非运算的代数表达式（ $\neg X=1+X$ ），同或运算可进一步表示为</p>
-<p>$A\odot B=1+A+B$</p>
+<p>$$<br>
+A\odot B=\neg(A\oplus B)<br>
+$$<br>
+结合异或运算与有限域加法的映射关系（ $A\oplus B=A+B$ ）和非运算的代数表达式（ $\neg X=1+X$ ），同或运算可进一步表示为</p>
+<p>$$<br>
+A\odot B=1+A+B \tag{2.23}<br>
+$$</p>
 <h4 id="交换律-4">交换律</h4>
 <p>同或运算的交换律表明，两个逻辑变量进行同或运算时，交换变量顺序，结果不变，表达式为</p>
-<p>$A\odot B=B\odot A$</p>
-<p><strong>证</strong>：根据同或运算的代数表达式 $A\odot B=1+A+B$ ， $B\odot A=1+B+A$ 。</p>
+<p>$$<br>
+A\odot B=B\odot A \tag{2.24}<br>
+$$<br>
+<strong>证</strong>：根据同或运算的代数表达式 $A\odot B=1+A+B$ ， $B\odot A=1+B+A$ 。</p>
 <p>在有限域  $\mathbb{F}_2$  中，加法满足交换律（ $A+B=B+A$ ），因此：</p>
 <p>$1+A+B=1+B+A$ ，即 $A\odot B=B\odot A$ ，<strong>得证</strong>。</p>
 <h4 id="结合律-3">结合律</h4>
@@ -560,11 +677,12 @@ $$</p>
 \overline{X} \oplus Y = \overline{X \oplus Y}<br>
 $$</p>
 <p>因此：</p>
-<p>$$\overline{\overline{(A \oplus B)} \oplus C}=\overline{\overline{(A \oplus B \oplus C)}}$$</p>
-<p>于是得到：</p>
+<p>$$<br>
+\overline{\overline{(A \oplus B)} \oplus C}=\overline{\overline{(A \oplus B \oplus C)}}<br>
+$$<br>
+于是得到：</p>
 <p>$$<br>
 (A \odot B) \odot C = A \oplus B \oplus C<br>
-\tag{2.27}<br>
 $$</p>
 <p><strong>右边：</strong></p>
 <p>$$<br>
@@ -584,27 +702,18 @@ $$</p>
 因此：<br>
 $$<br>
 A \odot (B \odot C) = A \oplus B \oplus C<br>
-\tag{2.28}<br>
-$$</p>
-<p>由于：<br>
-$$<br>
-(A \odot B) \odot C = A \oplus B \oplus C<br>
-$$</p>
-<p>$$<br>
-A \odot (B \odot C) = A \oplus B \oplus C<br>
-$$</p>
-<p>因此：</p>
-<p>$$<br>
-(A \odot B) \odot C = A \odot (B \odot C)<br>
 $$</p>
 <p><strong>得证</strong>。</p>
 <h4 id="自反性质">自反性质</h4>
 <p>同或运算的自反性质表明，一个逻辑变量与自身进行同或运算，结果恒为1。</p>
-<p>$$A\odot A=1$$</p>
-<p><strong>证</strong>：将 $B=A$ 代入同或运算的代数表达式，得：</p>
-<p>$$A\odot A=1+A+A$$</p>
-<p>在有限域  $\mathbb{F}_2$  中， $A+A=0$ ，因此：</p>
-<p>$1+0=1$ ，即 $A\odot A=1$ ，<strong>得证</strong>。</p>
+<p>$$<br>
+A\odot A=1 \tag{2.26}<br>
+$$<br>
+<strong>证</strong>：将 $B=A$ 代入同或运算的代数表达式，得：<br>
+$$<br>
+A\odot A=1+A+A<br>
+$$<br>
+在有限域  $\mathbb{F}_2$  中， $A+A=0$ ，因此 $1+0=1$ ，即 $A\odot A=1$ ，<strong>得证</strong>。</p>
 <p>(未完结)</p>
 </article>
 <div class="article-footer">
