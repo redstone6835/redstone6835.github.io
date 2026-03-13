@@ -18,26 +18,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
-  <title>RedstoneDist</title>
+  <title>数电（一） - RedstoneDist</title>
 
   
-    <meta name="description" content="数电（一）        &#x2F;* Default styles provided by pandoc.     ** See https:&#x2F;&#x2F;pandoc.org&#x2F;MANUAL.html#variables-for-html for config info.     *&#x2F;     html {       color: #1a1a1a;       background-">
+    <meta name="description" content="众所周知，现代计算机的 ALU（算术逻辑单元）整体是建立在逻辑电路理论的基础上的，因此，要搞清楚计算机的运算原理，就必须搞清楚逻辑电路原理. 本文将从基本逻辑运算与抽象代数结构的角度出发，论证 ALU 的运算原理，并在必要位置给出严谨的数学证明. 第一章 基本逻辑门 1. 1 非门（NOT Gate） 1. 1. 1 定义 非门又称反相器，是最简单的逻辑门，仅具有一个输入端口和一个输出端口，其核心">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RedstoneDist">
+<meta property="og:title" content="数电（一）">
 <meta property="og:url" content="https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/">
 <meta property="og:site_name" content="RedstoneDist">
-<meta property="og:description" content="数电（一）        &#x2F;* Default styles provided by pandoc.     ** See https:&#x2F;&#x2F;pandoc.org&#x2F;MANUAL.html#variables-for-html for config info.     *&#x2F;     html {       color: #1a1a1a;       background-">
+<meta property="og:description" content="众所周知，现代计算机的 ALU（算术逻辑单元）整体是建立在逻辑电路理论的基础上的，因此，要搞清楚计算机的运算原理，就必须搞清楚逻辑电路原理. 本文将从基本逻辑运算与抽象代数结构的角度出发，论证 ALU 的运算原理，并在必要位置给出严谨的数学证明. 第一章 基本逻辑门 1. 1 非门（NOT Gate） 1. 1. 1 定义 非门又称反相器，是最简单的逻辑门，仅具有一个输入端口和一个输出端口，其核心">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://redstone6835.github.io/images/avatar.png">
-<meta property="article:published_time" content="2026-03-13T05:58:01.899Z">
-<meta property="article:modified_time" content="2026-03-13T05:58:01.905Z">
+<meta property="article:published_time" content="2026-03-12T16:03:56.000Z">
+<meta property="article:modified_time" content="2026-03-13T06:05:25.996Z">
 <meta property="article:author" content="Redstone6835">
+<meta property="article:tag" content="IC">
+<meta property="article:tag" content="Math">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://redstone6835.github.io/images/avatar.png">
   
   
   
-  
+  <meta name="keywords" content="IC,Math">
 
   <!-- feed -->
   
@@ -53,7 +55,7 @@
 
   
 
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png"},"dateCreated":"2026-03-13T13:58:01+08:00","dateModified":"2026-03-13T13:58:01+08:00","datePublished":"2026-03-13T13:58:01+08:00","description":"","headline":"","mainEntityOfPage":{"@type":"WebPage","@id":"https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png","logo":{"@type":"ImageObject","url":"/images/avatar.png"}},"url":"https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/","image":[]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png"},"dateCreated":"2026-03-13T00:03:56+08:00","dateModified":"2026-03-13T14:05:25+08:00","datePublished":"2026-03-13T00:03:56+08:00","description":"","headline":"数电（一）","mainEntityOfPage":{"@type":"WebPage","@id":"https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/"},"publisher":{"@type":"Organization","name":"Redstone6835","sameAs":[],"image":"/images/avatar.png","logo":{"@type":"ImageObject","url":"/images/avatar.png"}},"url":"https://redstone6835.github.io/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/","keywords":"IC, Math","image":[]}</script>
   
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
@@ -76,7 +78,7 @@
 
 
 
-<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">Recent Update</span></div><div class="widget-body fs14"><a class="item title" href="/2026/01/02/home-red%E9%BE%99%E8%8A%AF%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%9A%E8%8F%9C%E9%B8%A1%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%8A%98%E8%85%BELoongarch32%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%AE%B0/"><span class="title">龙芯嵌入式：菜鸡大学生折腾Loongarch32嵌入式记</span></a><a class="item title" href="/2025/11/18/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%EF%BC%9A%E7%AC%AC%E4%B9%9D%E7%AB%A0/"><span class="title">深入浅出：第九章</span></a><a class="item title" href="/2025/11/12/sys-write/"><span class="title">sys_write</span></a><a class="item title" href="/2025/11/12/sys-stat-sys-fstat-%E4%BB%A5%E5%8F%8A-sys-lstat/"><span class="title">sys_stat, sys_fstat 以及 sys_lstat</span></a><a class="item title" href="/2025/11/12/sys-read/"><span class="title">sys_read</span></a><a class="item title" href="/2025/11/12/sys-poll/"><span class="title">sys_poll</span></a><a class="item title" href="/2025/11/12/sys-open-%E4%B8%8E-sys-close/"><span class="title">sys_open 与 sys_close</span></a><a class="item title" href="/2025/11/12/sys-mprotect/"><span class="title">sys_mprotect</span></a><a class="item title" href="/2025/11/12/sys-mmap-%E4%B8%8E-sys-munmap/"><span class="title">sys_mmap 与 sys_munmap</span></a><a class="item title" href="/2025/11/12/sys-lseek/"><span class="title">sys_lseek</span></a></div></widget>
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">Recent Update</span></div><div class="widget-body fs14"><a class="item title" href="/2026/03/13/%E6%95%B0%E7%94%B5%EF%BC%88%E4%B8%80%EF%BC%89/"><span class="title">数电（一）</span></a><a class="item title" href="/2026/01/02/home-red%E9%BE%99%E8%8A%AF%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%9A%E8%8F%9C%E9%B8%A1%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%8A%98%E8%85%BELoongarch32%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%AE%B0/"><span class="title">龙芯嵌入式：菜鸡大学生折腾Loongarch32嵌入式记</span></a><a class="item title" href="/2025/11/18/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%EF%BC%9A%E7%AC%AC%E4%B9%9D%E7%AB%A0/"><span class="title">深入浅出：第九章</span></a><a class="item title" href="/2025/11/12/sys-write/"><span class="title">sys_write</span></a><a class="item title" href="/2025/11/12/sys-stat-sys-fstat-%E4%BB%A5%E5%8F%8A-sys-lstat/"><span class="title">sys_stat, sys_fstat 以及 sys_lstat</span></a><a class="item title" href="/2025/11/12/sys-read/"><span class="title">sys_read</span></a><a class="item title" href="/2025/11/12/sys-poll/"><span class="title">sys_poll</span></a><a class="item title" href="/2025/11/12/sys-open-%E4%B8%8E-sys-close/"><span class="title">sys_open 与 sys_close</span></a><a class="item title" href="/2025/11/12/sys-mprotect/"><span class="title">sys_mprotect</span></a><a class="item title" href="/2025/11/12/sys-mmap-%E4%B8%8E-sys-munmap/"><span class="title">sys_mmap 与 sys_munmap</span></a></div></widget>
 </div>
 
 </div></aside><div class="l_main" id="main">
@@ -89,190 +91,18 @@
   <div class="content">
     <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">Home</a>
 <span class="sep"></span><a class="cap breadcrumb" href="/">Blog</a></div>
-<div class="flex-row" id="post-meta"><span class="text created">Posted on: <time datetime="2026-03-13T05:58:01.899Z">2026-03-13</time></span><span class="sep updated"></span><span class="text updated">Updated on: <time datetime="2026-03-13T05:58:01.905Z">2026-03-13</time></span></div></div></div>
+<div class="flex-row" id="post-meta"><span class="text created">Posted on: <time datetime="2026-03-12T16:03:56.000Z">2026-03-13</time></span><span class="sep updated"></span><span class="text updated">Updated on: <time datetime="2026-03-13T06:05:25.996Z">2026-03-13</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>数电（一）</span></h1>
+        
+      </div>
+    </div>
     
   </div>
-  </div><article class="md-text content"><!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
-<head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>数电（一）</title>
-  <style>
-    /* Default styles provided by pandoc.
-    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-    */
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
-    }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
-    }
-    a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
-    }
-    img {
-      max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
-    }
-    blockquote {
-      margin: 1em 0 1em 1.7em;
-      padding-left: 1em;
-      border-left: 2px solid #e6e6e6;
-      color: #606060;
-    }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      border: none;
-      border-top: 1px solid #1a1a1a;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-  </style>
-  <script defer=""
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
-  type="text/javascript"></script>
-</head>
-<body>
-<header id="title-block-header">
-<h1 class="title">数电（一）</h1>
-<p class="date">2026-03-13 00:03:56</p>
-</header>
-<p>众所周知，现代计算机的
+  </div><article class="md-text content"><p>众所周知，现代计算机的
 ALU（算术逻辑单元）整体是建立在逻辑电路理论的基础上的，因此，要搞清楚计算机的运算原理，就必须搞清楚逻辑电路原理.
 本文将从基本逻辑运算与抽象代数结构的角度出发，论证 ALU
 的运算原理，并在必要位置给出严谨的数学证明.</p>
@@ -1018,8 +848,6 @@ A\odot A=1+A+A
 中， <span class="math inline">\(A+A=0\)</span> ，因此 <span
 class="math inline">\(1+0=1\)</span> ，即 <span
 class="math inline">\(A\odot A=1\)</span> ，<strong>得证</strong>.</p>
-</body>
-</html>
 </article>
 <div class="article-footer">
     <section id="license">
@@ -1066,7 +894,7 @@ target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-
 
 
 
-<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">On This Page</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#title-block-header"><span class="toc-text">数电（一）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E5%9F%BA%E6%9C%AC%E9%80%BB%E8%BE%91%E9%97%A8"><span class="toc-text">第一章 基本逻辑门</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E9%97%A8not-gate"><span class="toc-text">1. 1 非门（NOT Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text">1. 1. 1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E5%80%BC%E8%A1%A8"><span class="toc-text">1. 1. 2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">1. 1. 3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-text">1. 1. 4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E9%97%A8and-gate"><span class="toc-text">1. 2 与门（AND Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="toc-text">1. 2. 1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E5%80%BC%E8%A1%A8-1"><span class="toc-text">1. 2. 2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F-1"><span class="toc-text">1. 2. 3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0-1"><span class="toc-text">1. 2. 4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%96%E9%97%A8or-gate"><span class="toc-text">1. 3 或门（OR Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="toc-text">1. 3. 1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E5%80%BC%E8%A1%A8-2"><span class="toc-text">1. 3. 2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F-2"><span class="toc-text">1. 3. 3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0-2"><span class="toc-text">1. 3. 4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%88%96%E9%97%A8xor-gate"><span class="toc-text">1. 4 异或门（XOR Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="toc-text">1. 4. 1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E5%80%BC%E8%A1%A8-3"><span class="toc-text">1. 4. 2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F-3"><span class="toc-text">1. 4. 3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0-3"><span class="toc-text">1. 4. 4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%88%96%E9%97%A8xnor-gate"><span class="toc-text">1. 5 同或门（XNOR Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="toc-text">1. 5. 1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E5%80%BC%E8%A1%A8-4"><span class="toc-text">1. 5. 2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F-4"><span class="toc-text">1. 5. 3 运算表达式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%9A%84%E4%BB%A3%E6%95%B0%E7%BB%93%E6%9E%84"><span class="toc-text">第二章 逻辑运算的代数结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 1 非运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8C%E9%87%8D%E5%90%A6%E5%AE%9A%E5%BE%8B"><span class="toc-text">双重否定律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%92%E8%A1%A5%E5%BE%8B"><span class="toc-text">互补律</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 2 与运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%93%E5%90%88%E5%BE%8B"><span class="toc-text">结合律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B9%82%E7%AD%89%E5%BE%8B"><span class="toc-text">幂等律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%95%E4%BD%8D%E5%85%83"><span class="toc-text">单位元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9B%B6%E5%85%83"><span class="toc-text">零元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%B8%E6%94%B6%E5%BE%8B"><span class="toc-text">吸收律</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%96%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 3 或运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B-1"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E9%85%8D%E5%BE%8B"><span class="toc-text">分配律</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%B7%E6%91%A9%E6%A0%B9%E5%AE%9A%E5%BE%8B"><span class="toc-text">2. 4 德摩根定律</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 5 异或运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B-2"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%93%E5%90%88%E5%BE%8B-1"><span class="toc-text">结合律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%95%E4%BD%8D%E5%85%83-1"><span class="toc-text">单位元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%86%E5%85%83"><span class="toc-text">逆元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E8%BD%AC%E6%80%A7%E8%B4%A8"><span class="toc-text">反转性质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A5%87%E5%81%B6%E6%A0%A1%E9%AA%8C%E6%80%A7%E8%B4%A8"><span class="toc-text">奇偶校验性质</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%88%96%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 6 同或运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B-3"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%93%E5%90%88%E5%BE%8B-2"><span class="toc-text">结合律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%8F%8D%E6%80%A7%E8%B4%A8"><span class="toc-text">自反性质</span></a></li></ol></li></ol></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>Scroll to Top</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M8 10.5h8M8 14h5.5M17 3.338A9.95 9.95 0 0 0 12 2C6.477 2 2 6.477 2 12c0 1.6.376 3.112 1.043 4.453c.178.356.237.763.134 1.148l-.595 2.226a1.3 1.3 0 0 0 1.591 1.592l2.226-.596a1.63 1.63 0 0 1 1.149.133A9.96 9.96 0 0 0 12 22c5.523 0 10-4.477 10-10c0-1.821-.487-3.53-1.338-5"/></svg><span>Join Discussion</span></a></div></widget>
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">On This Page</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E5%9F%BA%E6%9C%AC%E9%80%BB%E8%BE%91%E9%97%A8"><span class="toc-text">第一章 基本逻辑门</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E9%97%A8not-gate"><span class="toc-text">1. 1 非门（NOT Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-text">1. 1. 1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E5%80%BC%E8%A1%A8"><span class="toc-text">1. 1. 2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="toc-text">1. 1. 3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0"><span class="toc-text">1. 1. 4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E9%97%A8and-gate"><span class="toc-text">1. 2 与门（AND Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="toc-text">1. 2. 1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E5%80%BC%E8%A1%A8-1"><span class="toc-text">1. 2. 2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F-1"><span class="toc-text">1. 2. 3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0-1"><span class="toc-text">1. 2. 4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%96%E9%97%A8or-gate"><span class="toc-text">1. 3 或门（OR Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="toc-text">1. 3. 1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E5%80%BC%E8%A1%A8-2"><span class="toc-text">1. 3. 2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F-2"><span class="toc-text">1. 3. 3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0-2"><span class="toc-text">1. 3. 4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%88%96%E9%97%A8xor-gate"><span class="toc-text">1. 4 异或门（XOR Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="toc-text">1. 4. 1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E5%80%BC%E8%A1%A8-3"><span class="toc-text">1. 4. 2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F-3"><span class="toc-text">1. 4. 3 运算表达式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0-3"><span class="toc-text">1. 4. 4 实现</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%88%96%E9%97%A8xnor-gate"><span class="toc-text">1. 5 同或门（XNOR Gate）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="toc-text">1. 5. 1 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9C%9F%E5%80%BC%E8%A1%A8-4"><span class="toc-text">1. 5. 2 真值表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%90%E7%AE%97%E8%A1%A8%E8%BE%BE%E5%BC%8F-4"><span class="toc-text">1. 5. 3 运算表达式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%9A%84%E4%BB%A3%E6%95%B0%E7%BB%93%E6%9E%84"><span class="toc-text">第二章 逻辑运算的代数结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9D%9E%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 1 非运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8C%E9%87%8D%E5%90%A6%E5%AE%9A%E5%BE%8B"><span class="toc-text">双重否定律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%92%E8%A1%A5%E5%BE%8B"><span class="toc-text">互补律</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 2 与运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%93%E5%90%88%E5%BE%8B"><span class="toc-text">结合律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B9%82%E7%AD%89%E5%BE%8B"><span class="toc-text">幂等律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%95%E4%BD%8D%E5%85%83"><span class="toc-text">单位元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%9B%B6%E5%85%83"><span class="toc-text">零元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%B8%E6%94%B6%E5%BE%8B"><span class="toc-text">吸收律</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%96%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 3 或运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B-1"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E9%85%8D%E5%BE%8B"><span class="toc-text">分配律</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%B7%E6%91%A9%E6%A0%B9%E5%AE%9A%E5%BE%8B"><span class="toc-text">2. 4 德摩根定律</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%82%E6%88%96%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 5 异或运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B-2"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%93%E5%90%88%E5%BE%8B-1"><span class="toc-text">结合律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%95%E4%BD%8D%E5%85%83-1"><span class="toc-text">单位元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%86%E5%85%83"><span class="toc-text">逆元</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E8%BD%AC%E6%80%A7%E8%B4%A8"><span class="toc-text">反转性质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A5%87%E5%81%B6%E6%A0%A1%E9%AA%8C%E6%80%A7%E8%B4%A8"><span class="toc-text">奇偶校验性质</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%88%96%E8%BF%90%E7%AE%97%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 6 同或运算性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%A4%E6%8D%A2%E5%BE%8B-3"><span class="toc-text">交换律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%93%E5%90%88%E5%BE%8B-2"><span class="toc-text">结合律</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%8F%8D%E6%80%A7%E8%B4%A8"><span class="toc-text">自反性质</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>Scroll to Top</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="M8 10.5h8M8 14h5.5M17 3.338A9.95 9.95 0 0 0 12 2C6.477 2 2 6.477 2 12c0 1.6.376 3.112 1.043 4.453c.178.356.237.763.134 1.148l-.595 2.226a1.3 1.3 0 0 0 1.591 1.592l2.226-.596a1.63 1.63 0 0 1 1.149.133A9.96 9.96 0 0 0 12 22c5.523 0 10-4.477 10-10c0-1.821-.487-3.53-1.338-5"/></svg><span>Join Discussion</span></a></div></widget>
 </div></aside><div class='float-panel'>
   <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
@@ -1786,6 +1614,29 @@ target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-
     }
   });
 </script>
+
+<script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  });
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     window.codeElements = document.querySelectorAll('.code');
