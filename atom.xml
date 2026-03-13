@@ -363,27 +363,4 @@ Linux
     
   </entry>
   
-  <entry>
-    <title>Hello World</title>
-    <link href="https://redstone6835.github.io/2025/11/12/Hello-world%EF%BC%81/"/>
-    <id>https://redstone6835.github.io/2025/11/12/Hello-world%EF%BC%81/</id>
-    <published>2025-11-12T06:57:12.000Z</published>
-    <updated>2026-03-13T06:21:26.479Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="一级标题">一级标题</h1><p>这是 <strong>Markdown 渲染测试文档</strong>，用于验证： -普通文本是否显示正常 - 各种语法（标题、列表、链接、图片、代码、表格等）- 是否支持数学公式（需启用 <code>hexo-renderer-markdown-it</code> +<code>markdown-it-katex</code> 或 <code>mathjax</code>）</p><h2 id="二级标题">二级标题</h2><h3 id="文本格式">1. 文本格式</h3><p>普通文字<br /><strong>加粗文字</strong><br /><em>斜体文字</em><br /><sub>删除线文字</sub>~<br />==高亮文字==（部分主题支持）</p><blockquote><p>这是一个引用区块，可以用于强调一句话。</p></blockquote><h3 id="无序与有序列表">2. 无序与有序列表</h3><h4 id="无序列表">无序列表</h4><ul><li>苹果 🍎</li><li>香蕉 🍌</li><li>西瓜 🍉</li></ul><h4 id="有序列表">有序列表</h4><ol type="1"><li>第一项</li><li>第二项</li><li>第三项</li></ol><h3 id="代码块与语法高亮">3. 代码块与语法高亮</h3><h4 id="行内代码">行内代码</h4><p>在行内可以使用反引号：<code>printf("Hello World");</code></p><h4 id="多行代码">多行代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Hello Hexo Markdown!&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h3 id="表格">4. 表格</h3><table><thead><tr><th>姓名</th><th>年龄</th><th>爱好</th></tr></thead><tbody><tr><td>小明</td><td>18</td><td>篮球</td></tr><tr><td>小红</td><td>20</td><td>阅读</td></tr><tr><td>小刚</td><td>22</td><td>编程</td></tr></tbody></table><h3 id="链接与图片">5. 链接与图片</h3><p><a href="https://hexo.io">访问 Hexo 官网</a></p><figure><img src="https://picsum.photos/600/200" alt="示例图片" /><figcaption aria-hidden="true">示例图片</figcaption></figure><h3 id="数学公式">6. 数学公式</h3><h4 id="行内公式">行内公式</h4><p>这是行内公式：<span class="math inline">\(E = mc^2\)</span>。</p><h4 id="独立公式块级公式">独立公式（块级公式）</h4><p><span class="math display">\[\int_{0}^{\infty} e^{-x^2} dx = \frac{\sqrt{\pi}}{2}\]</span></p><p><span class="math display">\[a^2 + b^2 = c^2\]</span></p><blockquote><p>⚠️ 注意：要显示数学公式，你需要启用 <strong>MathJax</strong> 或<strong>KaTeX</strong>。 例如在<code>_config.yml</code>（或主题配置）中开启： <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">math:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">engine:</span> <span class="string">mathjax</span></span><br></pre></td></tr></table></figure></p></blockquote><h3 id="引用与提示框部分主题支持">7. 引用与提示框（部分主题支持）</h3><blockquote><p>💡 提示：Hexo 可以用来写技术笔记、数学博客、读书笔记等。</p></blockquote><blockquote><p>⚠️ 警告：生成静态文件后记得执行<code>hexo clean &amp;&amp; hexo g</code>。</p></blockquote><h3 id="分隔线与脚注">8. 分隔线与脚注</h3><p>这是一个脚注示例<a href="#fn1" class="footnote-ref" id="fnref1"role="doc-noteref"><sup>1</sup></a>。</p><h3 id="嵌入-html部分主题支持">9. 嵌入 HTML（部分主题支持）</h3><p align="center"><b>这是嵌入的 HTML 示例</b><br> <i>可以用于居中内容或自定义样式</i></p><h3 id="总结">✅ 总结</h3><p>这篇文章展示了以下内容：</p><table><thead><tr><th>功能</th><th>是否测试</th></tr></thead><tbody><tr><td>文本格式</td><td>✅</td></tr><tr><td>列表</td><td>✅</td></tr><tr><td>代码高亮</td><td>✅</td></tr><tr><td>图片与链接</td><td>✅</td></tr><tr><td>表格</td><td>✅</td></tr><tr><td>数学公式</td><td>✅</td></tr><tr><td>HTML</td><td>✅</td></tr></tbody></table><p>恭喜 🎉<br />如果你的页面渲染正确，说明 Hexo 的 Markdown 解析器配置是正常的！</p><section id="footnotes" class="footnotes footnotes-end-of-document"role="doc-endnotes"><hr /><ol><li id="fn1"><p>这是脚注的内容。<a href="#fnref1" class="footnote-back"role="doc-backlink">↩︎</a></p></li></ol></section>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;一级标题&quot;&gt;一级标题&lt;/h1&gt;
-&lt;p&gt;这是 &lt;strong&gt;Markdown 渲染测试文档&lt;/strong&gt;，用于验证： -
-普通文本是否显示正常 - 各种语法（标题、列表、链接、图片、代码、表格等）
-- 是否支持数学公式（需启用 &lt;code&gt;hexo-rende</summary>
-      
-    
-    
-    
-    
-  </entry>
-  
 </feed>
