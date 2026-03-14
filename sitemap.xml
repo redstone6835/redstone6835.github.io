@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://redstone6835.github.io/2026/03/13/CPU%20From%20Scratch/</loc>
+    <loc>https://redstone6835.github.io/posts/CPU-From-Scratch/</loc>
     
     <lastmod>2026-03-14</lastmod>
     
@@ -11,7 +11,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/about/</loc>
+    <loc>https://redstone6835.github.io/posts/about/</loc>
     
     <lastmod>2026-03-12</lastmod>
     
@@ -20,7 +20,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2026/01/02/home-red%E9%BE%99%E8%8A%AF%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%9A%E8%8F%9C%E9%B8%A1%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%8A%98%E8%85%BELoongarch32%E5%B5%8C%E5%85%A5%E5%BC%8F%E8%AE%B0/</loc>
+    <loc>https://redstone6835.github.io/posts/Loongson1/</loc>
     
     <lastmod>2026-01-02</lastmod>
     
@@ -29,16 +29,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/18/%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA%EF%BC%9A%E7%AC%AC%E4%B9%9D%E7%AB%A0/</loc>
-    
-    <lastmod>2025-11-18</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://redstone6835.github.io/2025/11/12/sys-write/</loc>
+    <loc>https://redstone6835.github.io/posts/sys-write/</loc>
     
     <lastmod>2025-11-16</lastmod>
     
@@ -47,7 +38,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/12/sys-stat-sys-fstat-%E4%BB%A5%E5%8F%8A-sys-lstat/</loc>
+    <loc>https://redstone6835.github.io/posts/sys-stat-fstat-lstat/</loc>
     
     <lastmod>2025-11-16</lastmod>
     
@@ -56,7 +47,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/12/sys-read/</loc>
+    <loc>https://redstone6835.github.io/posts/sys-read/</loc>
     
     <lastmod>2025-11-16</lastmod>
     
@@ -65,7 +56,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/12/sys-poll/</loc>
+    <loc>https://redstone6835.github.io/posts/sys-poll/</loc>
     
     <lastmod>2025-11-16</lastmod>
     
@@ -74,7 +65,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/12/sys-open-%E4%B8%8E-sys-close/</loc>
+    <loc>https://redstone6835.github.io/posts/sys-open-close/</loc>
     
     <lastmod>2025-11-16</lastmod>
     
@@ -83,7 +74,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/12/sys-mprotect/</loc>
+    <loc>https://redstone6835.github.io/posts/sys-mprotect/</loc>
     
     <lastmod>2025-11-16</lastmod>
     
@@ -92,7 +83,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/12/sys-mmap-%E4%B8%8E-sys-munmap/</loc>
+    <loc>https://redstone6835.github.io/posts/sys-mmap-munmap/</loc>
     
     <lastmod>2025-11-16</lastmod>
     
@@ -101,7 +92,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/12/sys-lseek/</loc>
+    <loc>https://redstone6835.github.io/posts/sys-lseek/</loc>
     
     <lastmod>2025-11-16</lastmod>
     
@@ -110,7 +101,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/12/sys-brk/</loc>
+    <loc>https://redstone6835.github.io/posts/sys-brk/</loc>
     
     <lastmod>2025-11-16</lastmod>
     
@@ -119,7 +110,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/16/%E4%BD%BF%E7%94%A8-Rust-%E8%AF%AD%E8%A8%80%E7%BC%96%E5%86%99%E5%9F%BA%E4%BA%8E-STM32-%E7%9A%84%E6%99%BA%E8%83%BD%E8%BD%A6%E7%A8%8B%E5%BA%8F/</loc>
+    <loc>https://redstone6835.github.io/posts/Rust-car/</loc>
     
     <lastmod>2025-11-15</lastmod>
     
@@ -128,7 +119,7 @@
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/2025/11/12/Linux-x86-64-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E8%A1%A8/</loc>
+    <loc>https://redstone6835.github.io/posts/Linux-table/</loc>
     
     <lastmod>2025-11-12</lastmod>
     
@@ -138,7 +129,7 @@
   
 
   <url>
-    <loc>https://redstone6835.github.io/</loc>
+    <loc>https://redstone6835.github.io/posts</loc>
     <lastmod>2026-03-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -146,42 +137,35 @@
 
   
   <url>
-    <loc>https://redstone6835.github.io/tags/Linux/</loc>
+    <loc>https://redstone6835.github.io/posts/tags/Linux/</loc>
     <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/tags/Embedded/</loc>
+    <loc>https://redstone6835.github.io/posts/tags/Embedded/</loc>
     <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/tags/Rust/</loc>
+    <loc>https://redstone6835.github.io/posts/tags/Rust/</loc>
     <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/tags/Algorithm/</loc>
+    <loc>https://redstone6835.github.io/posts/tags/IC/</loc>
     <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://redstone6835.github.io/tags/IC/</loc>
-    <lastmod>2026-03-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://redstone6835.github.io/tags/Math/</loc>
+    <loc>https://redstone6835.github.io/posts/tags/Math/</loc>
     <lastmod>2026-03-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
